@@ -45,7 +45,7 @@ jobs:
           flags: '-auvzrl --delete'
           options: ''
           ssh_options: ''
-          src: './'
+          src: './dist'
           dest: ${{vars.DEPLOY_DEST}}
 
       - name: 🧨 Kickstart node server
