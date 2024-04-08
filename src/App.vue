@@ -42,11 +42,14 @@
         </div>
       </div>
 
-      <div class="inputVerbContainer" :class="conjugatedVerb === userInput && 'bravo'">
+      <div
+        class="inputVerbContainer"
+        :class="conjugatedVerb === userInput.toLowerCase() && 'bravo'"
+      >
         <input
           class="text-xl rounded-lg block w-full p-2.5 border-4 font-bold bg-transparent placeholder:text-gray-500 outline-none"
           :class="
-            conjugatedVerb === userInput
+            conjugatedVerb === userInput.toLowerCase()
               ? 'border-green-400 text-green-400 bg-green-600'
               : 'border-red-300 text-red-300 bg-white'
           "
@@ -115,6 +118,7 @@ const fullVerb = ref('')
 const fetchVerb = async () => {
   try {
     const response = await axios.get(`/api/verbecc/conjugate/fr/${verb.value.fr}`)
+    console.log(response)
     conjugatedVerb.value =
       response.data.value.moods['indicatif'][selectedTense.value][selectedPerson.value]
     fullVerb.value = response.data.value.moods

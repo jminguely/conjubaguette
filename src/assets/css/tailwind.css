@@ -11,3 +11,7 @@ body {
   font-style: normal;
   overscroll-behavior: none;
 }
+
+html {
+  overscroll-behavior: none;
+}
