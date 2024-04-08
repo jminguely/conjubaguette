@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col min-h-screen">
+  <div class="flex flex-col min-h-svh">
     <header class="text-center p-5 bg-red-700 border-b-2">
       <h1 class="text-3xl font-bold uppercase">Conju-baguette</h1>
     </header>
