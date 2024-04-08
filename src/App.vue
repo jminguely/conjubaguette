@@ -52,7 +52,7 @@
           class="text-xl rounded-lg block w-full p-2.5 border-4 font-bold bg-transparent placeholder:text-gray-500 outline-none"
           :class="
             conjugatedVerb === userInput.toLowerCase()
-              ? 'border-green-400 text-green-400 bg-green-600'
+              ? 'border-green-400 text-green-400 bg-green-700'
               : 'border-red-300 text-red-300 bg-white'
           "
           v-model="userInput"
