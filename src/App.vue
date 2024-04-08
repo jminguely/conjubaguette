@@ -66,28 +66,27 @@
           <span class="underline">Solution</span> {{ showFullVerb ? '⬆' : '⬇' }}
         </button>
         <div v-if="showFullVerb" class="flex flex-wrap gap-5">
-          <template v-for="(tense, tenseLabel) in fullVerb['indicatif']" :key="tenseLabel">
-            <div
-              class="grow border-2 border-white rounded-lg p-8"
-              v-if="tenses.includes(tenseLabel)"
-            >
-              <h3 class="font-bold mb-5">
-                {{ tenseLabel }}
-              </h3>
+          <div
+            v-for="tenseLabel in tenses"
+            :key="tenseLabel"
+            class="grow border-2 border-white rounded-lg p-8"
+          >
+            <h3 class="font-bold mb-5">
+              {{ tenseLabel }}
+            </h3>
 
-              <div v-for="(person, key) in tense" :key="key">
-                <p
-                  :class="
-                    selectedTense === tenseLabel &&
-                    selectedPerson === key &&
-                    'text-green-400 font-bold'
-                  "
-                >
-                  {{ person }}
-                </p>
-              </div>
+            <div v-for="(person, key) in fullVerb['indicatif'][tenseLabel]" :key="key">
+              <p
+                :class="
+                  selectedTense === tenseLabel &&
+                  selectedPerson === key &&
+                  'text-green-400 font-bold'
+                "
+              >
+                {{ person }}
+              </p>
             </div>
-          </template>
+          </div>
         </div>
       </div>
     </main>
