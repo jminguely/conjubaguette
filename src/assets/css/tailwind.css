@@ -4,7 +4,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');
 
 body {
-  @apply bg-red-500 text-white;
+  @apply bg-red-500 text-white h-full;
   font-family: 'Work Sans', sans-serif;
   font-optical-sizing: auto;
   font-weight: 400;
@@ -13,5 +13,6 @@ body {
 }
 
 html {
+@apply h-full;
   overscroll-behavior: none;
 }
