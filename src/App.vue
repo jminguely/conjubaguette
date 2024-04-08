@@ -1,21 +1,23 @@
 <template>
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col min-h-screen">
     <header class="text-center p-5 bg-red-700 border-b-2">
       <h1 class="text-3xl font-bold uppercase">Conju-baguette</h1>
     </header>
     <main class="text-center p-5 container max-w-7xl mx-auto">
-      <div class="p-5">
-        <h2>Español</h2>
-        <p class="text-lg font-bold">{{ verb.sp }}</p>
-      </div>
-      <div class="p-5">
-        <h2>Français:</h2>
-        <button class="text-lg font-bold underline" @click="showVerb = !showVerb">
-          {{ showVerb ? verb.fr : '???' }}
-        </button>
+      <div class="flex gap-5 mb-5">
+        <div class="text-left w-1/2">
+          <h2>Español</h2>
+          <p class="text-xl font-bold">{{ verb.sp }}</p>
+        </div>
+        <div class="text-left w-1/2">
+          <h2>Français:</h2>
+          <button class="text-xl font-bold underline" @click="showVerb = !showVerb">
+            {{ showVerb ? verb.fr : '???' }}
+          </button>
+        </div>
       </div>
 
-      <div class="flex gap-5 my-5">
+      <div class="flex gap-5 mb-5">
         <div class="text-left w-1/2">
           <label for="tense">Temps</label>
           <select
