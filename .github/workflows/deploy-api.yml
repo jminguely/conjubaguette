@@ -1,0 +1,52 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/deploy-api.yml
+      - api/**
+
+jobs:
+  ci:
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: ./api
+
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: [18]
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: 🚀 Ship the whole thin
+        id: deploy
+        uses: Pendect/action-rsyncer@v1.1.0
+        env:
+          DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
+        with:
+          flags: "-auvzrl --delete"
+          options: ""
+          ssh_options: ""
+          src: "./api/*"
+          dest: ${{vars.DEPLOY_DEST}}/api
+
+      - name: 🧨 Kickstart node server
+        run: curl --basic --user '${{ secrets.ALWAYSDATA_API }} account=eikon:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID_API }}/restart/

@@ -16,6 +16,10 @@ You need to have Python installed on your machine.
 2. Install the required Python packages:
    `pip install`
 
+   `python3 -m venv venv`
+
+   `. venv/bin/activate`
+
 3. Running the Application
    To run the application, use the following command in the terminal:
 

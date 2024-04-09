@@ -53,7 +53,7 @@ jobs:
           options: ""
           ssh_options: ""
           src: "./app/dist/*"
-          dest: ${{vars.DEPLOY_DEST}}
+          dest: ${{vars.DEPLOY_DEST}}/app
 
       - name: 🧨 Kickstart node server
         run: curl --basic --user '${{ secrets.ALWAYSDATA_API }} account=eikon:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID }}/restart/
