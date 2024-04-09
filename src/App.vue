@@ -1,13 +1,20 @@
 <template>
   <div class="flex flex-col h-full">
-    <header class="text-center p-5 bg-red-700 border-b-2">
-      <h1 class="text-3xl font-bold uppercase">Conju-baguette</h1>
-    </header>
-    <main class="text-center p-5 container max-w-7xl mx-auto">
+    <SiteHeader @toggle-modal="handleToggleModal" />
+
+    <main class="grow p-5 container max-w-7xl mx-auto relative">
+      <div
+        class="modal absolute h-full w-full z-10 inset-0 overflow-y-auto flex items-center justify-center bg-red-300 transition-opacity duration-300"
+        :class="showModal ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
+      >
+        <div class="modal-content bg-white text-black p-6 rounded shadow-lg m-5">
+          <TenseSettings />
+        </div>
+      </div>
       <div class="flex gap-5 mb-5">
         <div class="text-left w-1/2">
           <h2>Español</h2>
-          <p class="text-xl font-bold">{{ verb.sp }}</p>
+          <p class="text-xl font-bold">{{ verb.es }}</p>
         </div>
         <div class="text-left w-1/2">
           <h2>Français:</h2>
@@ -25,7 +32,7 @@
             v-model="selectedTense"
             id="tense"
           >
-            <option v-for="tense in tenses" :key="tense" :value="tense">
+            <option v-for="tense in store.checkedTenses" :key="tense" :value="tense">
               {{ tense }}
             </option>
           </select>
@@ -62,76 +69,86 @@
       </div>
 
       <div class="py-5">
-        <button class="mb-5" @click="showFullVerb = !showFullVerb">
-          <span class="underline">Solution</span> {{ showFullVerb ? '⬆' : '⬇' }}
-        </button>
-        <div v-if="showFullVerb" class="flex flex-wrap gap-5">
-          <div
-            v-for="tenseLabel in tenses"
-            :key="tenseLabel"
-            class="grow border-2 border-white rounded-lg p-8"
-          >
-            <h3 class="font-bold mb-5">
-              {{ tenseLabel }}
-            </h3>
-
-            <div v-for="(person, key) in fullVerb['indicatif'][tenseLabel]" :key="key">
-              <p
-                :class="
-                  selectedTense === tenseLabel &&
-                  selectedPerson === key &&
-                  'text-green-400 font-bold'
-                "
-              >
-                {{ person }}
-              </p>
-            </div>
-          </div>
-        </div>
+        <TenseDisplay
+          :checkedTenses="checkedTenses"
+          :availableMoods="availableMoods"
+          :fullVerb="fullVerb"
+          :selectedTense="selectedTense"
+          :selectedPerson="selectedPerson"
+          :showFullVerb="showFullVerb"
+          @toggle-show-full-verb="handleToggleShowFullVerb"
+        />
       </div>
     </main>
-    <footer class="border-t-2 text-center mt-auto">
-      <button class="text-2xl font-bold bg-red-700 p-5 w-full" @click="selectRandomVerb">
-        Shuffle 🃏
-      </button>
-    </footer>
+    <SiteFooter :selectRandomVerb="selectRandomVerb" />
   </div>
 </template>
 
 <script setup>
+import SiteHeader from './components/SiteHeader.vue'
+import SiteFooter from './components/SiteFooter.vue'
+import TenseDisplay from './components/TenseDisplay.vue'
+import TenseSettings from './components/TenseSettings.vue'
+
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import verbs from './assets/data/verbs.json'
+import availableVerbs from './assets/data/verbs.json'
+import availableMoods from './assets/data/moods.json'
+import { useStore } from '/store/tenses'
+
+const store = useStore()
 
 const selectedTense = ref('présent')
 const selectedPerson = ref(0)
 const userInput = ref('')
 const showVerb = ref(false)
 const showFullVerb = ref(false)
+const showModal = ref(false)
+const checkedTenses = ref([])
 
-const tenses = ref(['présent', 'imparfait', 'passé-composé'])
+const handleToggleModal = () => {
+  showModal.value = !showModal.value
+}
+
+const handleToggleShowFullVerb = () => {
+  showFullVerb.value = !showFullVerb.value
+}
+
 const persons = ref(['je', 'tu', 'il', 'nous', 'vous', 'ils'])
 
-let verb = ref(verbs[Math.floor(Math.random() * verbs.length)])
+let verb = ref('')
 const conjugatedVerb = ref('')
-const fullVerb = ref('')
+const fullVerb = ref({})
 
 const fetchVerb = async () => {
+  if (!verb.value) {
+    return
+  }
   try {
-    const response = await axios.get(`/api/verbecc/conjugate/fr/${verb.value.fr}`)
-    console.log(response)
-    conjugatedVerb.value =
-      response.data.value.moods['indicatif'][selectedTense.value][selectedPerson.value]
-    fullVerb.value = response.data.value.moods
+    const response = await axios.get(`/conjugate/${verb.value.fr}`)
+    console.log(response.data.moods)
+    if (selectedTense.value && selectedTense.value.includes('/')) {
+      const [mood, tense] = selectedTense.value.split('/', 2)
+
+      if (response.data.moods[mood] && response.data.moods[mood][tense]) {
+        conjugatedVerb.value = response.data.moods[mood][tense][selectedPerson.value]
+      } else {
+        console.error(`Mood ${mood} or tense ${tense} not found in response data`)
+      }
+    } else {
+      console.error('selectedTense.value is not properly initialized or does not contain a /')
+    }
+
+    fullVerb.value = response.data.moods
   } catch (error) {
     console.error(error)
   }
 }
 
 const selectRandomVerb = () => {
-  selectedTense.value = tenses.value[Math.floor(Math.random() * tenses.value.length)]
+  selectedTense.value = store.checkedTenses[Math.floor(Math.random() * store.checkedTenses.length)]
   selectedPerson.value = Math.floor(Math.random() * persons.value.length)
-  verb.value = verbs[Math.floor(Math.random() * verbs.length)]
+  verb.value = availableVerbs[Math.floor(Math.random() * availableVerbs.length)]
   showVerb.value = false
   showFullVerb.value = false
   userInput.value = ''
@@ -139,6 +156,10 @@ const selectRandomVerb = () => {
 }
 
 onMounted(fetchVerb)
+
+setTimeout(() => {
+  selectRandomVerb()
+}, 500)
 </script>
 
 <style lang="postcss" scoped>

@@ -1,0 +1,15 @@
+{
+  "indicatif": [
+    "présent",
+    "futur-simple",
+    "imparfait",
+    "futur-antérieur",
+    "passé-antérieur",
+    "passé-composé",
+    "passé-simple",
+    "plus-que-parfait"
+  ],
+  "conditionnel": ["présent", "passé"],
+  "imperatif": ["imperatif-passé", "imperatif-présent"],
+  "subjonctif": ["imparfait", "passé", "plus-que-parfait", "présent"]
+}
