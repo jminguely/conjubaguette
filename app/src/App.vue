@@ -125,7 +125,7 @@ const fetchVerb = async () => {
     return
   }
   try {
-    const response = await axios.get(`/conjugate/${verb.value.fr}`)
+    const response = await axios.get(`/conjugate/fr/${verb.value.fr}`)
     // console.log(response.data.moods)
     if (selectedTense.value && selectedTense.value.includes('/')) {
       const [mood, tense] = selectedTense.value.split('/', 2)
