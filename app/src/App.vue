@@ -125,13 +125,13 @@ const fetchVerb = async () => {
     return
   }
   try {
-    const response = await axios.get(`/conjugate/${verb.value.fr}`)
-    console.log(response.data.moods)
+    const response = await axios.get(`/api/verbecc/conjugate/fr/${verb.value.fr}`)
+    // console.log(response.data.value.moods)
     if (selectedTense.value && selectedTense.value.includes('/')) {
       const [mood, tense] = selectedTense.value.split('/', 2)
 
-      if (response.data.moods[mood] && response.data.moods[mood][tense]) {
-        conjugatedVerb.value = response.data.moods[mood][tense][selectedPerson.value]
+      if (response.data.value.moods[mood] && response.data.value.moods[mood][tense]) {
+        conjugatedVerb.value = response.data.value.moods[mood][tense][selectedPerson.value]
       } else {
         console.error(`Mood ${mood} or tense ${tense} not found in response data`)
       }
@@ -139,7 +139,7 @@ const fetchVerb = async () => {
       console.error('selectedTense.value is not properly initialized or does not contain a /')
     }
 
-    fullVerb.value = response.data.moods
+    fullVerb.value = response.data.value.moods
   } catch (error) {
     console.error(error)
   }
