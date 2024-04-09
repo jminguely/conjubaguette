@@ -5,7 +5,7 @@
     </button>
     <div class="flex gap-5 flex-wrap" v-if="showFullVerb">
       <div
-        class="grow rounded-lg p-8 bg-white text-gray-800"
+        class="grow rounded-lg py-5 bg-white text-gray-800"
         v-for="tense in store.checkedTenses"
         :key="tense"
       >

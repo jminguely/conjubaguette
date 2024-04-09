@@ -4,10 +4,10 @@
 
     <main class="grow p-5 container max-w-7xl mx-auto relative">
       <div
-        class="modal absolute h-full w-full z-10 inset-0 overflow-y-auto flex items-center justify-center bg-red-300 transition-opacity duration-300"
+        class="modal absolute min-h-full w-full z-10 inset-0 overflow-y-auto flex bg-red-300 transition-opacity duration-300 p-5"
         :class="showModal ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
       >
-        <div class="modal-content bg-white text-black p-6 rounded shadow-lg m-5">
+        <div class="modal-content m-auto bg-white text-black p-6 rounded shadow-lg">
           <TenseSettings />
         </div>
       </div>

@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex gap-5 flex-wrap">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 flex-wrap">
       <div
-        class="grow rounded-lg p-8 bg-white text-gray-800"
+        class="grow rounded-lg py-5 bg-white text-gray-800"
         v-for="(moods, moodKey) in availableMoods"
         :key="moodKey"
       >
