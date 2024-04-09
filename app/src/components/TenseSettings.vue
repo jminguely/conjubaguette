@@ -31,8 +31,6 @@ import { useStore } from '/store/tenses'
 const store = useStore()
 const emit = defineEmits(['update-checked-tenses'])
 
-const checkedTenses = ref([])
-
 onMounted(() => {
   let cookies = document.cookie.split('; ')
   let checkedTensesCookie = cookies.find((row) => row.startsWith('checkedTenses='))
