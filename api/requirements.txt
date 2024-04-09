@@ -1,2 +1,3 @@
 fastapi
 verbecc
+uvicorn
