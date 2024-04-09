@@ -25,7 +25,7 @@
 
 <script setup>
 import availableMoods from '../assets/data/moods.json'
-import { ref, onMounted, watch } from 'vue'
+import { onMounted, watch } from 'vue'
 import { useStore } from '/store/tenses'
 
 const store = useStore()
