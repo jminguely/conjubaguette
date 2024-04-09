@@ -31,13 +31,6 @@ jobs:
         with:
           python-version: 3.9
 
-      - name: Install dependencies
-        run: |
-          python -m venv venv
-          . venv/bin/activate
-          pip install -r requirements.txt
-          echo "$(python -m site --user-base)/bin" >> $GITHUB_PATH
-
       - name: 🚀 Ship the whole thin
         id: deploy
         uses: Pendect/action-rsyncer@v1.1.0
@@ -51,4 +44,4 @@ jobs:
           dest: ${{vars.DEPLOY_DEST}}/api
 
       - name: 🧨 Kickstart node server
-        run: curl --basic --user '${{ secrets.ALWAYSDATA_API }} account=eikon:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID_API }}/restart/
+        run: curl --basic --user '${{ secrets.ALWAYSDATA_API }} account=jminguely:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID_API }}/restart/

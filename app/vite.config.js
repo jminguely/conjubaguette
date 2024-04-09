@@ -15,10 +15,10 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/api': {
-        target: 'http://verbe.cc',
+      '/conjugate': {
+        target: 'https://baguette-api.mingus.space/conjugate/',
         changeOrigin: true,
-        rewrite: path => path.replace(/^\/api/, '')
+        rewrite: path => path.replace(/^\/conjugate/, '')
       }
     }
   }
