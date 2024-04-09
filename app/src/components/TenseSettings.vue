@@ -24,41 +24,23 @@
 </template>
 
 <script setup>
-import availableMoods from '../assets/data/moods.json'
 import { onMounted, watch } from 'vue'
+
+import availableMoods from '../assets/data/moods.json'
 import { useStore } from '/store/tenses'
 
 const store = useStore()
 const emit = defineEmits(['update-checked-tenses'])
 
 onMounted(() => {
-  let cookies = document.cookie.split('; ')
-  let checkedTensesCookie = cookies.find((row) => row.startsWith('checkedTenses='))
-
-  if (checkedTensesCookie) {
-    let checkedTensesSerialized = checkedTensesCookie.slice(14)
-    store.setCheckedTenses(JSON.parse(checkedTensesSerialized)) // deserialize the array
-  } else {
-    console.log('checkedTenses cookie not found')
-  }
+  store.loadFromCookie()
 })
 
 watch(
   () => store.checkedTenses,
   (newVal) => {
-    if (typeof document !== 'undefined') {
-      let serializedCheckFilm = JSON.stringify(newVal) // serialize the new array
-
-      let d = new Date()
-      d.setTime(d.getTime() + 1 * 365 * 24 * 60 * 60 * 1000)
-      let expires = 'expires=' + d.toUTCString()
-
-      document.cookie = 'checkedTenses=' + serializedCheckFilm + ';' + expires
-
-      emit('update-checked-tenses', newVal)
-    } else {
-      console.error('document object is not available')
-    }
+    emit('update-checked-tenses', newVal)
+    store.updateCookie()
   },
   { deep: true }
 )
