@@ -3,9 +3,12 @@
     <button class="mb-5" @click="$emit('toggle-show-full-verb')">
       <span class="underline">Solution</span> {{ showFullVerb ? '⬆' : '⬇' }}
     </button>
-    <div class="flex gap-5 flex-wrap" v-if="showFullVerb">
+    <div
+      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap"
+      v-if="showFullVerb"
+    >
       <div
-        class="grow rounded-lg py-5 bg-white text-gray-800"
+        class="grow rounded-lg p-5 bg-white text-gray-800"
         v-for="tense in store.checkedTenses"
         :key="tense"
       >

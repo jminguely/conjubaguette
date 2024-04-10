@@ -5,10 +5,13 @@
     <main class="grow p-5 container max-w-7xl mx-auto relative">
       <div
         class="modal absolute min-h-full w-full z-10 inset-0 overflow-y-auto flex bg-red-300 transition-opacity duration-300 p-5"
-        :class="showModal ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
+        :class="
+          showModal != false ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        "
       >
         <div class="modal-content m-auto bg-white text-black p-6 rounded shadow-lg">
-          <TenseSettings />
+          <TenseSettings v-if="showModal === 'tenses'" />
+          <VerbsSettings v-if="showModal === 'verbs'" />
         </div>
       </div>
       <div class="flex gap-5 mb-5">
@@ -80,7 +83,7 @@
         />
       </div>
     </main>
-    <SiteFooter :selectRandomVerb="selectRandomVerb" />
+    <SiteFooter :shuffle="shuffle" />
   </div>
 </template>
 
@@ -89,6 +92,7 @@ import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import TenseDisplay from './components/TenseDisplay.vue'
 import TenseSettings from './components/TenseSettings.vue'
+import VerbsSettings from './components/VerbsSettings.vue'
 
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
@@ -106,8 +110,14 @@ const showFullVerb = ref(false)
 const showModal = ref(false)
 const checkedTenses = ref([])
 
-const handleToggleModal = () => {
-  showModal.value = !showModal.value
+const handleToggleModal = (page) => {
+  console.log('page', page)
+  if (page === showModal.value) {
+    showModal.value = false
+    shuffle()
+  } else {
+    showModal.value = page
+  }
 }
 
 const handleToggleShowFullVerb = () => {
@@ -145,20 +155,22 @@ const fetchVerb = async () => {
   }
 }
 
-const selectRandomVerb = () => {
+const shuffle = () => {
   selectedTense.value = store.checkedTenses[Math.floor(Math.random() * store.checkedTenses.length)]
   selectedPerson.value = Math.floor(Math.random() * persons.value.length)
   verb.value = availableVerbs[Math.floor(Math.random() * availableVerbs.length)]
   showVerb.value = false
   showFullVerb.value = false
   userInput.value = ''
+  if (showModal.value) showModal.value = false
+
   fetchVerb()
 }
 
 onMounted(fetchVerb)
 
 setTimeout(() => {
-  selectRandomVerb()
+  shuffle()
 }, 500)
 </script>
 
