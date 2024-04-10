@@ -111,7 +111,6 @@ const showModal = ref(false)
 const checkedTenses = ref([])
 
 const handleToggleModal = (page) => {
-  console.log('page', page)
   if (page === showModal.value) {
     showModal.value = false
     shuffle()
@@ -167,11 +166,11 @@ const shuffle = () => {
   fetchVerb()
 }
 
-onMounted(fetchVerb)
-
-setTimeout(() => {
+onMounted(() => {
+  fetchVerb()
+  store.loadFromCookie()
   shuffle()
-}, 500)
+})
 </script>
 
 <style lang="postcss" scoped>

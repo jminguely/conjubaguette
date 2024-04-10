@@ -24,17 +24,13 @@
 </template>
 
 <script setup>
-import { onMounted, watch } from 'vue'
+import { watch } from 'vue'
 
 import availableMoods from '../assets/data/moods.json'
 import { useStore } from '/store/tenses'
 
 const store = useStore()
 const emit = defineEmits(['update-checked-tenses'])
-
-onMounted(() => {
-  store.loadFromCookie()
-})
 
 watch(
   () => store.checkedTenses,
