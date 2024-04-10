@@ -141,6 +141,11 @@ const fetchVerb = async () => {
 
       if (response.data.moods[mood] && response.data.moods[mood][tense]) {
         conjugatedVerb.value = response.data.moods[mood][tense][selectedPerson.value]
+        if (conjugatedVerb.value.startsWith("j'")) {
+          userInput.value = "j'"
+        } else {
+          userInput.value = conjugatedVerb.value.split(' ')[0] + ' '
+        }
       } else {
         console.error(`Mood ${mood} or tense ${tense} not found in response data`)
       }
@@ -160,10 +165,10 @@ const shuffle = () => {
   verb.value = availableVerbs[Math.floor(Math.random() * availableVerbs.length)]
   showVerb.value = false
   showFullVerb.value = false
-  userInput.value = ''
-  if (showModal.value) showModal.value = false
 
   fetchVerb()
+
+  if (showModal.value) showModal.value = false
 }
 
 onMounted(() => {
