@@ -30,12 +30,10 @@ import availableMoods from '../assets/data/moods.json'
 import { useStore } from '/store/tenses'
 
 const store = useStore()
-const emit = defineEmits(['update-checked-tenses'])
 
 watch(
   () => store.checkedTenses,
-  (newVal) => {
-    emit('update-checked-tenses', newVal)
+  () => {
     store.updateCookie()
   },
   { deep: true }

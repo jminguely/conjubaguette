@@ -5,3 +5,9 @@
     <button class="text-xl md:text-3xl" @click="$emit('toggle-modal', 'verbs')">📋</button>
   </header>
 </template>
+
+<script setup>
+import { defineEmits } from 'vue'
+
+defineEmits(['toggle-modal'])
+</script>

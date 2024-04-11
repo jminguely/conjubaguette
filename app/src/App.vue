@@ -78,8 +78,6 @@
           :fullVerb="fullVerb"
           :selectedTense="selectedTense"
           :selectedPerson="selectedPerson"
-          :showFullVerb="showFullVerb"
-          @toggle-show-full-verb="handleToggleShowFullVerb"
         />
       </div>
     </main>
@@ -119,10 +117,6 @@ const handleToggleModal = (page) => {
   }
 }
 
-const handleToggleShowFullVerb = () => {
-  showFullVerb.value = !showFullVerb.value
-}
-
 const persons = ref(['je', 'tu', 'il', 'nous', 'vous', 'ils'])
 
 let verb = ref('')
@@ -135,7 +129,6 @@ const fetchVerb = async () => {
   }
   try {
     const response = await axios.get(`/conjugate/fr/${verb.value.fr}`)
-    // console.log(response.data.moods)
     if (selectedTense.value && selectedTense.value.includes('/')) {
       const [mood, tense] = selectedTense.value.split('/', 2)
 
@@ -153,7 +146,7 @@ const fetchVerb = async () => {
       console.error('selectedTense.value is not properly initialized or does not contain a /')
     }
 
-    fullVerb.value = response.data.moods
+    fullVerb.value = response.data
   } catch (error) {
     console.error(error)
   }

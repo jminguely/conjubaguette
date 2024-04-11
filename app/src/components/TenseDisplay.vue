@@ -1,8 +1,9 @@
 <template>
-  <div>
-    <button class="mb-5" @click="$emit('toggle-show-full-verb')">
-      <span class="underline">Solution</span> {{ showFullVerb ? '⬆' : '⬇' }}
+  <div v-if="availableMoods">
+    <button class="mb-5" @click="showFullVerb = !showFullVerb">
+      <span class="underline">Solution</span> {{ !showFullVerb ? '↑' : '↓' }}
     </button>
+
     <div
       class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap"
       v-if="showFullVerb"
@@ -12,26 +13,21 @@
         v-for="tense in store.checkedTenses"
         :key="tense"
       >
-        <h3 class="font-bold mb-5">
+        <h3 class="font-bold mb-1 p-1">
           {{ tense.split('/', 2)[0] }}:
           {{ tense.split('/', 2)[1] }}
         </h3>
 
         <template
-          v-for="(person, key) in fullVerb?.[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]"
+          v-for="(person, key) in fullVerb?.moods[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]"
           :key="key"
         >
-          <ul
-            class="list-disc pl-4"
-            v-if="fullVerb?.[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]"
-          >
+          <ul class="" v-if="fullVerb?.moods[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]">
             <li
-              :class="
-                selectedTense === tense && selectedPerson === key && 'text-green-400 font-bold'
-              "
-            >
-              {{ person }}
-            </li>
+              class="inline p-1"
+              :class="selectedTense === tense && selectedPerson === key && 'bg-green-200'"
+              v-html="highlightStem(person)"
+            ></li>
           </ul>
         </template>
       </div>
@@ -41,14 +37,27 @@
 
 <script setup>
 import { useStore } from '/store/tenses'
+import { ref } from 'vue'
 
 const store = useStore()
 
-defineProps({
+const showFullVerb = ref(false)
+
+const props = defineProps({
   fullVerb: Object,
-  showFullVerb: Boolean,
   selectedTense: String,
   selectedPerson: Number,
   availableMoods: Object
 })
+
+const highlightStem = (person) => {
+  if (props.fullVerb && props.fullVerb.verb) {
+    const stem = props.fullVerb.verb.stem
+    const highlightedPerson = person.replace(
+      new RegExp(stem, 'i'),
+      `<span class="text-red-500 font-bold">${stem}</span>`
+    )
+    return highlightedPerson
+  }
+}
 </script>
