@@ -75,17 +75,5 @@
   { "fr": "partir", "es": "partir", "group": 3 },
   { "fr": "mourir", "es": "morir", "group": 3 },
   { "fr": "ouvrir", "es": "abrir", "group": 3 },
-  { "fr": "lire", "es": "leer", "group": 3 },
-  { "fr": "servir", "es": "servir", "group": 3 },
-  { "fr": "recevoir", "es": "recibir", "group": 3 },
-  { "fr": "perdre", "es": "perder", "group": 3 },
-  { "fr": "sourire", "es": "sonreír", "group": 3 },
-  { "fr": "apercevoir", "es": "percibir", "group": 3 },
-  { "fr": "reconnaître", "es": "reconocer", "group": 3 },
-  { "fr": "descendre", "es": "descender", "group": 3 },
-  { "fr": "courir", "es": "correr", "group": 3 },
-  { "fr": "permettre", "es": "permitir", "group": 3 },
-  { "fr": "offrir", "es": "ofrecer", "group": 3 },
-  { "fr": "apprendre", "es": "aprender", "group": 3 },
-  { "fr": "souffrir", "es": "sufrir", "group": 3 }
+  { "fr": "lire", "es": "leer", "group": 3 }
 ]

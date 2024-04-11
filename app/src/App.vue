@@ -134,9 +134,9 @@ const fetchVerb = async () => {
 
       if (response.data.moods[mood] && response.data.moods[mood][tense]) {
         conjugatedVerb.value = response.data.moods[mood][tense][selectedPerson.value]
-        if (conjugatedVerb.value.startsWith("j'")) {
+        if (conjugatedVerb.value && conjugatedVerb.value.startsWith("j'")) {
           userInput.value = "j'"
-        } else {
+        } else if (conjugatedVerb.value) {
           userInput.value = conjugatedVerb.value.split(' ')[0] + ' '
         }
       } else {
