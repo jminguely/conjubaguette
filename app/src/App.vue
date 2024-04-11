@@ -117,6 +117,8 @@ watch([fullVerb, selectedTense, selectedPerson], () => {
 
   personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
     if (person.startsWith("j'")) return "j'"
+    else if (person.startsWith('ils')) return 'ils/elles'
+    else if (person.startsWith('il')) return 'il/elle/on'
     else return person.split(' ')[0] + ' '
   })
 
