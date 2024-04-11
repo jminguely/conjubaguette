@@ -47,13 +47,12 @@
             v-model="selectedPerson"
             id="person"
           >
-            <option v-for="(person, index) in persons" :key="index" :value="index">
+            <option v-for="(person, index) in personsList" :key="index" :value="index">
               {{ person }}
             </option>
           </select>
         </div>
       </div>
-
       <div
         class="inputVerbContainer"
         :class="conjugatedVerb === userInput.toLowerCase().trim() && 'bravo'"
@@ -92,7 +91,7 @@ import TenseDisplay from './components/TenseDisplay.vue'
 import TenseSettings from './components/TenseSettings.vue'
 import VerbsSettings from './components/VerbsSettings.vue'
 
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
 import availableVerbs from './assets/data/verbs.json'
 import availableMoods from './assets/data/moods.json'
@@ -108,6 +107,32 @@ const showFullVerb = ref(false)
 const showModal = ref(false)
 const checkedTenses = ref([])
 
+let verb = ref('')
+const conjugatedVerb = ref('')
+const fullVerb = ref({})
+let personsList = ref(['je', 'tu', 'il', 'nous', 'vous', 'ils'])
+
+watch([fullVerb, selectedTense, selectedPerson], () => {
+  const [mood, tense] = selectedTense.value.split('/', 2)
+
+  personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
+    if (person.startsWith("j'")) return "j'"
+    else return person.split(' ')[0] + ' '
+  })
+
+  selectedPerson.value = Math.floor(Math.random() * personsList?.value?.length)
+
+  conjugatedVerb.value = fullVerb.value?.moods?.[mood]?.[tense]?.[selectedPerson.value]
+  if (!conjugatedVerb.value) {
+    return
+  }
+  if (conjugatedVerb.value.startsWith("j'")) {
+    userInput.value = "j'"
+  } else {
+    userInput.value = conjugatedVerb.value.split(' ')[0] + ' '
+  }
+})
+
 const handleToggleModal = (page) => {
   if (page === showModal.value) {
     showModal.value = false
@@ -117,49 +142,29 @@ const handleToggleModal = (page) => {
   }
 }
 
-const persons = ref(['je', 'tu', 'il', 'nous', 'vous', 'ils'])
-
-let verb = ref('')
-const conjugatedVerb = ref('')
-const fullVerb = ref({})
-
 const fetchVerb = async () => {
-  if (!verb.value) {
-    return
-  }
+  if (!verb.value) return
+
   try {
     const response = await axios.get(`/conjugate/fr/${verb.value.fr}`)
-    if (selectedTense.value && selectedTense.value.includes('/')) {
-      const [mood, tense] = selectedTense.value.split('/', 2)
-
-      if (response.data.moods[mood] && response.data.moods[mood][tense]) {
-        conjugatedVerb.value = response.data.moods[mood][tense][selectedPerson.value]
-        if (conjugatedVerb.value && conjugatedVerb.value.startsWith("j'")) {
-          userInput.value = "j'"
-        } else if (conjugatedVerb.value) {
-          userInput.value = conjugatedVerb.value.split(' ')[0] + ' '
-        }
-      } else {
-        console.error(`Mood ${mood} or tense ${tense} not found in response data`)
-      }
-    } else {
-      console.error('selectedTense.value is not properly initialized or does not contain a /')
-    }
-
     fullVerb.value = response.data
+
+    if (!selectedTense.value || !selectedTense.value.includes('/')) {
+      console.error('selectedTense.value is not properly initialized or does not contain a /')
+      return
+    }
   } catch (error) {
     console.error(error)
   }
 }
 
 const shuffle = () => {
-  selectedTense.value = store.checkedTenses[Math.floor(Math.random() * store.checkedTenses.length)]
-  selectedPerson.value = Math.floor(Math.random() * persons.value.length)
   verb.value = availableVerbs[Math.floor(Math.random() * availableVerbs.length)]
+  fetchVerb()
   showVerb.value = false
   showFullVerb.value = false
 
-  fetchVerb()
+  selectedTense.value = store.checkedTenses[Math.floor(Math.random() * store.checkedTenses.length)]
 
   if (showModal.value) showModal.value = false
 }
