@@ -2,6 +2,11 @@
   <div class="flex flex-col -m-5">
     <div class="overflow-x-auto">
       <div class="align-middle inline-block min-w-full sm:px-2 lg:px-8">
+        <h3 class="font-bold text-lg pt-5">Verbs</h3>
+        <div class="flex gap-5 mt-2 mb-4">
+          <button @click="uncheckAll" class="btn">Uncheck All</button>
+          <button @click="checkAll" class="btn">Check All</button>
+        </div>
         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
           <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -63,9 +68,23 @@ watch(
   { deep: true }
 )
 
+function checkAll() {
+  store.value.loadAllVerbs()
+}
+
+function uncheckAll() {
+  store.value.uncheckAllVerbs()
+}
+
 function checkVerb(e) {
   if (store.value) {
     store.value.checkVerb(e.target.value)
   }
 }
 </script>
+
+<style>
+.btn {
+  @apply text-xs font-bold py-2 px-4 rounded bg-red-500 text-white;
+}
+</style>

@@ -42,5 +42,9 @@ export const useVerbsStore = defineStore('checkedVerbs', {
       this.checkedVerbs = availableVerbs.map(verb => verb.fr);
       this.updateCookie();
     },
+    uncheckAllVerbs() {
+      this.checkedVerbs = [];
+      this.updateCookie();
+    },
   },
 })

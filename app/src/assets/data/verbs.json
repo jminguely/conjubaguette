@@ -1,8 +1,6 @@
 [
-  { "es": "ser", "fr": "être" },
-  { "es": "estar", "fr": "être" },
-  { "es": "haber", "fr": "avoir" },
-  { "es": "tener", "fr": "avoir" },
+  { "es": "ser/estar", "fr": "être" },
+  { "es": "haber/tener", "fr": "avoir" },
   { "es": "hacer", "fr": "faire" },
   { "es": "poner", "fr": "mettre" },
   { "es": "pagar", "fr": "payer" },
