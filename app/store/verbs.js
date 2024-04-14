@@ -35,10 +35,10 @@ export const useVerbsStore = defineStore('checkedVerbs', {
         this.checkedVerbs = JSON.parse(cookieValue);
       }
       if (this.checkedVerbs.length === 0) {
-        this.checkedVerbs = [];
+        this.checkAllVerbs();
       }
     },
-    loadAllVerbs() {
+    checkAllVerbs() {
       this.checkedVerbs = availableVerbs.map(verb => verb.fr);
       this.updateCookie();
     },

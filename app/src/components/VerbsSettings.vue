@@ -69,7 +69,7 @@ watch(
 )
 
 function checkAll() {
-  store.value.loadAllVerbs()
+  store.value.checkAllVerbs()
 }
 
 function uncheckAll() {

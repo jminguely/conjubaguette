@@ -18,18 +18,21 @@
           {{ tense.split('/', 2)[1] }}
         </h3>
 
-        <template
-          v-for="(person, key) in fullVerb?.moods[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]"
-          :key="key"
-        >
-          <ul class="" v-if="fullVerb?.moods[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]">
+        <ul class="flex flex-col items-start">
+          <template
+            v-for="(person, key) in fullVerb?.moods[tense.split('/', 2)[0]]?.[
+              tense.split('/', 2)[1]
+            ]"
+            :key="key"
+          >
             <li
+              v-if="fullVerb?.moods[tense.split('/', 2)[0]]?.[tense.split('/', 2)[1]]"
               class="inline p-1"
               :class="selectedTense === tense && selectedPerson === key && 'bg-green-200'"
               v-html="highlightStem(person)"
             ></li>
-          </ul>
-        </template>
+          </template>
+        </ul>
       </div>
     </div>
   </div>
