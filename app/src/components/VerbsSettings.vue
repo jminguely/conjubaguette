@@ -1,24 +1,47 @@
 <template>
-  <div class="flex flex-col">
-    <!-- ... -->
-    <tbody class="bg-white divide-y divide-gray-200">
-      <tr v-for="(verb, index) in availableVerbs" :key="index">
-        <td class="px-2 py-4 whitespace-nowrap">
-          <input
-            class="mr-2"
-            type="checkbox"
-            :id="verb.fr"
-            :value="verb.fr"
-            :checked="store.checkedVerbs.includes(verb.fr)"
-            @change="checkVerb($event)"
-          />
-          <label :for="verb.fr">{{ verb.fr }}</label>
-        </td>
-        <td class="px-2 py-4 whitespace-nowrap">
-          {{ verb.es }}
-        </td>
-      </tr>
-    </tbody>
+  <div class="flex flex-col -m-5">
+    <div class="overflow-x-auto">
+      <div class="align-middle inline-block min-w-full sm:px-2 lg:px-8">
+        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+              <tr>
+                <th
+                  scope="col"
+                  class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  French
+                </th>
+                <th
+                  scope="col"
+                  class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Spanish
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr v-for="(verb, index) in availableVerbs" :key="index">
+                <td class="px-2 py-1 whitespace-nowrap">
+                  <input
+                    class="mr-2"
+                    type="checkbox"
+                    :id="verb.fr"
+                    :value="verb.fr"
+                    :checked="store.checkedVerbs.includes(verb.fr)"
+                    @change="checkVerb($event)"
+                  />
+                  <label :for="verb.fr">{{ verb.fr }}</label>
+                </td>
+                <td class="px-2 py-1 whitespace-nowrap">
+                  {{ verb.es }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 

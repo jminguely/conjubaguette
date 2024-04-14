@@ -1,12 +1,14 @@
-# Project Title
+# Conju-Baguette
+
+## API
 
 This is a simple Flask API that uses the verbecc library to conjugate French verbs. The API is hosted on a local server and can be accessed through a specific endpoint.
 
-## Getting Started
+### Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## API Installation
+### API Installation
 
 You need to have Python installed on your machine.
 
@@ -35,22 +37,22 @@ Example:
 
 `GET http://0.0.0.0:8080/conjugate/manger`
 
-## Deployment
+### Deployment
 
 Add additional notes about how to deploy this on a live system.
 
-## Built With
+### Built With
 
 Flask - The web framework used
 verbecc - Library for conjugating French verbs
 Contributing
 Please read CONTRIBUTING.md for details on our code of conduct, and the process for submitting pull requests to us.
 
-## License
+### License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details
 
-## Acknowledgments
+### Acknowledgments
 
 Hat tip to anyone whose code was used
 Inspiration
