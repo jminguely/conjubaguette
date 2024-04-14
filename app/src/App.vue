@@ -17,7 +17,7 @@
       <div class="flex gap-5 mb-5">
         <div class="text-left w-1/2">
           <h2>Español</h2>
-          <p class="text-xl font-bold">{{ verb.es }}</p>
+          <p class="text-xl font-bold">{{ verb?.es }}</p>
         </div>
         <div class="text-left w-1/2">
           <h2>Français:</h2>
@@ -35,7 +35,7 @@
             v-model="selectedTense"
             id="tense"
           >
-            <option v-for="tense in store.checkedTenses" :key="tense" :value="tense">
+            <option v-for="tense in tenseStore.checkedTenses" :key="tense" :value="tense">
               {{ tense }}
             </option>
           </select>
@@ -73,7 +73,6 @@
       <div class="py-5">
         <TenseDisplay
           :checkedTenses="checkedTenses"
-          :availableMoods="availableMoods"
           :fullVerb="fullVerb"
           :selectedTense="selectedTense"
           :selectedPerson="selectedPerson"
@@ -91,13 +90,16 @@ import TenseDisplay from './components/TenseDisplay.vue'
 import TenseSettings from './components/TenseSettings.vue'
 import VerbsSettings from './components/VerbsSettings.vue'
 
+import availableVerbs from './assets/data/verbs.json'
+
 import { ref, onMounted, watch } from 'vue'
 import axios from 'axios'
-import availableVerbs from './assets/data/verbs.json'
-import availableMoods from './assets/data/moods.json'
-import { useStore } from '/store/tenses'
 
-const store = useStore()
+import { useTensesStore } from '/store/tenses'
+import { useVerbsStore } from '/store/verbs'
+
+const tenseStore = useTensesStore()
+const verbsStore = useVerbsStore()
 
 const selectedTense = ref('présent')
 const selectedPerson = ref(0)
@@ -160,20 +162,28 @@ const fetchVerb = async () => {
   }
 }
 
+const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
+
 const shuffle = () => {
-  verb.value = availableVerbs[Math.floor(Math.random() * availableVerbs.length)]
+  const randomVerbFr = getRandomItem(verbsStore.checkedVerbs)
+  verb.value = availableVerbs.find((verb) => verb.fr === randomVerbFr)
+
   fetchVerb()
   showVerb.value = false
   showFullVerb.value = false
 
-  selectedTense.value = store.checkedTenses[Math.floor(Math.random() * store.checkedTenses.length)]
+  selectedTense.value = getRandomItem(tenseStore.checkedTenses)
 
   if (showModal.value) showModal.value = false
 }
 
 onMounted(() => {
   fetchVerb()
-  store.loadFromCookie()
+  tenseStore.loadFromCookie()
+  verbsStore.loadFromCookie()
+  if (verbsStore.checkedVerbs.length === 0) {
+    verbsStore.loadAllVerbs()
+  }
   shuffle()
 })
 </script>

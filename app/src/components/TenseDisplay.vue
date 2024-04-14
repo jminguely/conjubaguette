@@ -1,7 +1,7 @@
 <template>
-  <div v-if="availableMoods">
+  <div>
     <button class="mb-5" @click="showFullVerb = !showFullVerb">
-      <span class="underline">Solution</span> {{ !showFullVerb ? '↑' : '↓' }}
+      <span class="underline">Solution</span> {{ !showFullVerb ? '↓' : '↑' }}
     </button>
 
     <div
@@ -10,7 +10,7 @@
     >
       <div
         class="grow rounded-lg p-5 bg-white text-gray-800"
-        v-for="tense in store.checkedTenses"
+        v-for="tense in tenseStore.checkedTenses"
         :key="tense"
       >
         <h3 class="font-bold mb-1 p-1">
@@ -36,18 +36,17 @@
 </template>
 
 <script setup>
-import { useStore } from '/store/tenses'
+import { useTensesStore } from '/store/tenses'
 import { ref } from 'vue'
 
-const store = useStore()
+const tenseStore = useTensesStore()
 
 const showFullVerb = ref(false)
 
 const props = defineProps({
   fullVerb: Object,
   selectedTense: String,
-  selectedPerson: Number,
-  availableMoods: Object
+  selectedPerson: Number
 })
 
 const highlightStem = (person) => {

@@ -24,22 +24,26 @@
 </template>
 
 <script setup>
-import { watch } from 'vue'
+import { watch, ref } from 'vue'
 
 import availableMoods from '../assets/data/moods.json'
-import { useStore } from '/store/tenses'
+import { useTensesStore } from '/store/tenses'
 
-const store = useStore()
+let store = ref(useTensesStore())
 
 watch(
-  () => store.checkedTenses,
+  () => store.value?.checkedTenses,
   () => {
-    store.updateCookie()
+    if (store.value) {
+      store.value.updateCookie()
+    }
   },
   { deep: true }
 )
 
 function checkTense(e) {
-  store.checkTense(e.target.value)
+  if (store.value) {
+    store.value.checkTense(e.target.value)
+  }
 }
 </script>

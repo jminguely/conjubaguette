@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 
-export const useStore = defineStore('checkedTenses', {
+export const useTensesStore = defineStore('checkedTenses', {
   state: () => ({
     checkedTenses: [],
   }),
