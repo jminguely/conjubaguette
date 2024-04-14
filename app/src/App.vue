@@ -27,8 +27,8 @@
         </div>
       </div>
 
-      <div class="flex gap-5 mb-5">
-        <div class="text-left w-1/2">
+      <div class="flex flex-col md:flex-row gap-5 mb-5">
+        <div class="text-left w-full md:w-1/2">
           <label for="tense">Temps</label>
           <select
             class="text-xl rounded-lg block w-full p-2.5 border-4 bg-transparent text-white"
@@ -40,7 +40,7 @@
             </option>
           </select>
         </div>
-        <div class="text-left w-1/2">
+        <div class="text-left w-full md:w-1/2">
           <label for="person">Personne</label>
           <select
             class="text-xl rounded-lg block w-full p-2.5 border-4 bg-transparent text-white"
@@ -57,6 +57,7 @@
         class="inputVerbContainer"
         :class="conjugatedVerb === userInput.toLowerCase().trim() && 'bravo'"
       >
+        <label for="answer">Réponse</label>
         <input
           class="text-xl rounded-lg block w-full p-2.5 border-4 font-bold placeholder:text-gray-500 outline-none"
           :class="
@@ -67,6 +68,7 @@
           v-model="userInput"
           type="text"
           placeholder="Conjuguez le verbe ici"
+          id="answer"
         />
       </div>
 

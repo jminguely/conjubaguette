@@ -9,3 +9,7 @@ const app = createApp(App)
 
 app.use(pinia)
 app.mount('#app')
+
+if ("virtualKeyboard" in navigator) {
+  navigator.virtualKeyboard.overlaysContent = true;
+}
