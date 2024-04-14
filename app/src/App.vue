@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col h-full">
+  <div class="flex flex-col h-svh">
     <SiteHeader @toggle-modal="handleToggleModal" />
 
     <main class="grow p-5 container max-w-7xl mx-auto relative">
