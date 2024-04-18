@@ -55,21 +55,10 @@ const props = defineProps({
 const highlightStem = (person) => {
   if (props.fullVerb && props.fullVerb.verb) {
     const stem = props.fullVerb.verb.stem
-    const pronouns = ['je', 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles']
+    const pronouns = ['je', "j'", 'tu', 'il', 'elle', 'on', 'nous', 'vous', 'ils', 'elles']
     const words = person.split(' ')
     const highlightedWords = words.map((word) => {
-      if (word.startsWith("j'")) {
-        const verbPart = word.slice(2)
-        if (verbPart.toLowerCase().startsWith(stem)) {
-          return (
-            "j'" +
-            verbPart.replace(
-              new RegExp(`^${stem}`, 'i'),
-              `<span class="text-red-500 font-bold">${stem}</span>`
-            )
-          )
-        }
-      } else if (!pronouns.includes(word) && word.toLowerCase().startsWith(stem)) {
+      if (!pronouns.includes(word) && word.toLowerCase().startsWith(stem)) {
         return word.replace(
           new RegExp(`^${stem}`, 'i'),
           `<span class="text-red-500 font-bold">${stem}</span>`
