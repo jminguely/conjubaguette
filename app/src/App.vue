@@ -6,7 +6,7 @@
       <h2>Objectif journalier: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
       <div class="w-full bg-red-200 rounded-full h-2.5 dark:bg-red-700 mb-5">
         <div
-          class="bg-yellow-300 h-2.5 rounded-full transition-all duration-1000 ease-in-out"
+          class="bg-yellow-500 h-2.5 rounded-full transition-all duration-1000 ease-in-out"
           :style="{
             width: `${(100 / sessionStore.dailyGoal) * Math.min(sessionStore.dailyGoal, sessionStore.counter)}%`
           }"
@@ -90,7 +90,7 @@
         />
       </div>
     </main>
-    <SiteFooter :shuffle="shuffle" />
+    <SiteFooter :shuffle="shuffle" :conjubravo="conjubravo" />
   </div>
 </template>
 
@@ -187,8 +187,6 @@ const shuffle = () => {
 }
 
 onMounted(() => {
-  tenseStore.loadFromCookie()
-  verbsStore.loadFromCookie()
   shuffle()
 })
 </script>

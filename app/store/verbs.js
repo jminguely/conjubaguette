@@ -1,50 +1,28 @@
 import { defineStore } from 'pinia'
+import Cookies from 'js-cookie'
 import availableVerbs from '../src/assets/data/verbs.json'
 
 export const useVerbsStore = defineStore('checkedVerbs', {
   state: () => ({
-    checkedVerbs: [],
+    checkedVerbs: JSON.parse(Cookies.get('checkedVerbs')) || [],
   }),
-  getters: {
-    checkedVerbsWithDefault() {
-      return this.checkedVerbs.length > 0 ? this.checkedVerbs : [];
-    }
-  },
   actions: {
-    checkVerb(verb) {
-      if (!this.checkedVerbs.includes(verb)) {
-        this.checkedVerbs.push(verb)
-      } else {
-        this.checkedVerbs.splice(this.checkedVerbs.indexOf(verb), 1)
-      }
-      this.updateCookie();
-    },
-    setCheckedVerbs(verbs) {
-      this.checkedVerbs = verbs
-      this.updateCookie();
-    },
-    updateCookie() {
-      document.cookie = `checkedVerbs=${JSON.stringify(this.checkedVerbs)}; path=/`;
-    },
-    loadFromCookie() {
-      const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('checkedVerbs='))
-        ?.split('=')[1];
-      if (cookieValue) {
-        this.checkedVerbs = JSON.parse(cookieValue);
-      }
-      if (this.checkedVerbs.length === 0) {
-        this.checkAllVerbs();
-      }
-    },
     checkAllVerbs() {
       this.checkedVerbs = availableVerbs.map(verb => verb.fr);
-      this.updateCookie();
+      Cookies.set('checkedVerbs', JSON.stringify(this.checkedVerbs));
     },
     uncheckAllVerbs() {
       this.checkedVerbs = [];
-      this.updateCookie();
+      Cookies.set('checkedVerbs', JSON.stringify(this.checkedVerbs));
+    },
+    toggleVerb(verb) {
+      const index = this.checkedVerbs.indexOf(verb);
+      if (index >= 0) {
+        this.checkedVerbs.splice(index, 1);
+      } else {
+        this.checkedVerbs.push(verb);
+      }
+      Cookies.set('checkedVerbs', JSON.stringify(this.checkedVerbs));
     },
   },
 })

@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
+import Cookies from 'js-cookie'
 
 export const useTensesStore = defineStore('checkedTenses', {
   state: () => ({
-    checkedTenses: [],
+    checkedTenses: JSON.parse(Cookies.get('checkedTenses')) || [],
   }),
   getters: {
     checkedTensesWithDefault() {
@@ -23,19 +24,7 @@ export const useTensesStore = defineStore('checkedTenses', {
       this.updateCookie();
     },
     updateCookie() {
-      document.cookie = `checkedTenses=${JSON.stringify(this.checkedTenses)}; path=/`;
-    },
-    loadFromCookie() {
-      const cookieValue = document.cookie
-        .split('; ')
-        .find(row => row.startsWith('checkedTenses='))
-        ?.split('=')[1];
-      if (cookieValue) {
-        this.checkedTenses = JSON.parse(cookieValue);
-      }
-      if (this.checkedTenses.length === 0) {
-        this.checkedTenses = ['indicatif/présent'];
-      }
+      Cookies.set('checkedTenses', JSON.stringify(this.checkedTenses));
     },
   },
 })

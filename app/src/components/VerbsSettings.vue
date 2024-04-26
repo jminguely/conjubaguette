@@ -33,8 +33,8 @@
                     type="checkbox"
                     :id="verb.fr"
                     :value="verb.fr"
-                    :checked="store.checkedVerbs.includes(verb.fr)"
-                    @change="checkVerb($event)"
+                    :checked="verbsStore.checkedVerbs.includes(verb.fr)"
+                    @change="toggleVerb($event)"
                   />
                   <label :for="verb.fr">{{ verb.fr }}</label>
                 </td>
@@ -51,34 +51,24 @@
 </template>
 
 <script setup>
-import { watch, ref } from 'vue'
+import { ref } from 'vue'
 import availableVerbs from '../assets/data/verbs.json'
 
 import { useVerbsStore } from '/store/verbs'
 
-let store = ref(useVerbsStore())
-
-watch(
-  () => store.value?.checkedVerbs,
-  () => {
-    if (store.value) {
-      store.value.updateCookie()
-    }
-  },
-  { deep: true }
-)
+let verbsStore = ref(useVerbsStore())
 
 function checkAll() {
-  store.value.checkAllVerbs()
+  verbsStore.value.checkAllVerbs()
 }
 
 function uncheckAll() {
-  store.value.uncheckAllVerbs()
+  verbsStore.value.uncheckAllVerbs()
 }
 
-function checkVerb(e) {
-  if (store.value) {
-    store.value.checkVerb(e.target.value)
+function toggleVerb(e) {
+  if (verbsStore.value) {
+    verbsStore.value.toggleVerb(e.target.value)
   }
 }
 </script>
