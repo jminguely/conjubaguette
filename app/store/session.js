@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 export const useSessionStore = defineStore('session', {
   state: () => ({
     counter: Number(Cookies.get('counter')) || 0,
-    dailyGoal: Number(Cookies.get('dailyGoal')) || 50,
+    dailyGoal: Number(Cookies.get('dailyGoal')) || 20,
     lastUpdated: new Date(Cookies.get('lastUpdated')) || new Date(),
   }),
   actions: {

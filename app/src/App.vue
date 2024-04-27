@@ -139,6 +139,8 @@ watch(verb, async () => {
 })
 
 watch([fullVerb, selectedTense, selectedPerson], () => {
+  if (!selectedTense.value) return
+
   const [mood, tense] = selectedTense.value.split('/', 2)
 
   personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {

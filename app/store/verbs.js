@@ -3,9 +3,16 @@ import Cookies from 'js-cookie'
 import availableVerbs from '../src/assets/data/verbs.json'
 
 export const useVerbsStore = defineStore('checkedVerbs', {
-  state: () => ({
-    checkedVerbs: JSON.parse(Cookies.get('checkedVerbs')) || [],
-  }),
+  state: () => {
+    let checkedVerbs = Cookies.get('checkedVerbs') ? JSON.parse(Cookies.get('checkedVerbs')) : [];
+    if (checkedVerbs.length === 0) {
+      checkedVerbs = availableVerbs.map(verb => verb.fr);
+      Cookies.set('checkedVerbs', JSON.stringify(checkedVerbs));
+    }
+    return {
+      checkedVerbs
+    };
+  },
   actions: {
     checkAllVerbs() {
       this.checkedVerbs = availableVerbs.map(verb => verb.fr);
