@@ -1,12 +1,12 @@
 <template>
-  <footer class="border-t-2 text-center mt-auto">
-    <button
-      class="text-2xl font-bold bg-red-700 p-5 w-full transition-all duration-300"
-      :class="conjubravo && 'bg-yellow-500 text-gray-800'"
+  <footer class="text-center mt-auto p-6">
+    <a
+      class="cartoon-input cartoon-button bg-pink text-white hover:bg-pink-dark cursor-pointer"
+      :class="conjubravo && 'bg-pink-dark'"
       @click="shuffle"
     >
-      Shuffle 🃏
-    </button>
+      Shuffle
+    </a>
   </footer>
 </template>
 

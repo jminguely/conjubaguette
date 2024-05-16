@@ -3,10 +3,10 @@ import Cookies from 'js-cookie'
 
 export const useTensesStore = defineStore('checkedTenses', {
   state: () => {
-    let checkedTenses = Cookies.get('checkedTenses') ? JSON.parse(Cookies.get('checkedTenses')) : [];
+    let checkedTenses = Cookies.get('checkedTensesNew') ? JSON.parse(Cookies.get('checkedTensesNew')) : [];
     if (checkedTenses.length === 0) {
-      checkedTenses = ['indicatif/présent'];
-      Cookies.set('checkedTenses', JSON.stringify(checkedTenses));
+      checkedTenses = ['fr/indicatif/présent', 'es/indicativo/presente'];
+      Cookies.set('checkedTensesNew', JSON.stringify(checkedTenses));
     }
     return {
       checkedTenses
@@ -19,14 +19,7 @@ export const useTensesStore = defineStore('checkedTenses', {
       } else {
         this.checkedTenses.splice(this.checkedTenses.indexOf(tense), 1)
       }
-      this.updateCookie();
-    },
-    setCheckedTenses(tenses) {
-      this.checkedTenses = tenses
-      this.updateCookie();
-    },
-    updateCookie() {
-      Cookies.set('checkedTenses', JSON.stringify(this.checkedTenses));
+      Cookies.set('checkedTensesNew', JSON.stringify(this.checkedTenses));
     },
   },
 })

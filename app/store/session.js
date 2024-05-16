@@ -3,9 +3,10 @@ import Cookies from 'js-cookie'
 
 export const useSessionStore = defineStore('session', {
   state: () => ({
-    counter: Number(Cookies.get('counter')) || 0,
-    dailyGoal: Number(Cookies.get('dailyGoal')) || 20,
-    lastUpdated: new Date(Cookies.get('lastUpdated')) || new Date(),
+    counter: Number(Cookies.get('counterNew')) || 0,
+    dailyGoal: Number(Cookies.get('dailyGoalNew')) || 20,
+    lastUpdated: new Date(Cookies.get('lastUpdatedNew')) || new Date(),
+    languageSetting: Cookies.get('languageSettingNew') || 'es',
   }),
   actions: {
     incrementCounter() {
@@ -21,12 +22,16 @@ export const useSessionStore = defineStore('session', {
       this.counter++;
       this.lastUpdated = today;
 
-      Cookies.set('counter', String(this.counter));
-      Cookies.set('lastUpdated', String(this.lastUpdated));
+      Cookies.set('counterNew', String(this.counter));
+      Cookies.set('lastUpdatedNew', String(this.lastUpdated));
     },
     setDailyGoal(event) {
       this.dailyGoal = event.target.value;
-      Cookies.set('dailyGoal', String(this.dailyGoal));
+      Cookies.set('dailyGoalNew', String(this.dailyGoal));
+    },
+    setLanguageSetting(event) {
+      this.languageSetting = event.target.value;
+      Cookies.set('languageSettingNew', this.languageSetting);
     },
   },
 })

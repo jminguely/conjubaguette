@@ -1,45 +1,49 @@
 <template>
   <div class="flex flex-col -m-5">
     <div class="overflow-x-auto">
-      <div class="align-middle inline-block min-w-full sm:px-2 lg:px-8">
+      <div class="align-middle inline-block min-w-full sm:px-2 lg:px-4">
         <h3 class="font-bold text-lg pt-5">Verbs</h3>
         <div class="flex gap-5 mt-2 mb-4">
           <button @click="uncheckAll" class="btn">Uncheck All</button>
           <button @click="checkAll" class="btn">Check All</button>
         </div>
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <div class="shadow overflow-hidden sm:rounded-lg mb-5">
           <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+            <thead class="bg-black text-white">
               <tr>
                 <th
                   scope="col"
-                  class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider"
                 >
                   French
                 </th>
                 <th
                   scope="col"
-                  class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                  class="px-2 py-3 text-left text-xs font-medium uppercase tracking-wider"
                 >
                   Spanish
                 </th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
+            <tbody class="">
               <tr v-for="(verb, index) in availableVerbs" :key="index">
                 <td class="px-2 py-1 whitespace-nowrap">
                   <input
                     class="mr-2"
                     type="checkbox"
-                    :id="verb.fr"
-                    :value="verb.fr"
-                    :checked="verbsStore.checkedVerbs.includes(verb.fr)"
+                    :id="index"
+                    :value="JSON.stringify(verb)"
+                    :checked="
+                      verbsStore.checkedVerbs.some(
+                        (v) => JSON.stringify(v) === JSON.stringify(verb)
+                      )
+                    "
                     @change="toggleVerb($event)"
                   />
-                  <label :for="verb.fr">{{ verb.fr }}</label>
+                  <label :for="verb.fr">{{ verb.fr_label ? verb.fr_label : verb.fr }}</label>
                 </td>
                 <td class="px-2 py-1 whitespace-nowrap">
-                  {{ verb.es }}
+                  {{ verb.es_label ? verb.es_label : verb.es }}
                 </td>
               </tr>
             </tbody>
@@ -75,6 +79,6 @@ function toggleVerb(e) {
 
 <style>
 .btn {
-  @apply text-xs font-bold py-2 px-4 rounded bg-red-500 text-white;
+  @apply text-xs font-bold py-2 px-4 rounded bg-pink text-white;
 }
 </style>

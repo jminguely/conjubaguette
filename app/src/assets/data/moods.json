@@ -1,15 +1,41 @@
 {
-  "indicatif": [
-    "présent",
-    "futur-simple",
-    "imparfait",
-    "futur-antérieur",
-    "passé-antérieur",
-    "passé-composé",
-    "passé-simple",
-    "plus-que-parfait"
-  ],
-  "conditionnel": ["présent", "passé"],
-  "imperatif": ["imperatif-passé", "imperatif-présent"],
-  "subjonctif": ["imparfait", "passé", "plus-que-parfait", "présent"]
+  "es": {
+    "indicativo": [
+      "presente",
+      "pretérito-imperfecto",
+      "pretérito-perfecto-simple",
+      "futuro",
+      "pretérito-perfecto-compuesto",
+      "pretérito-pluscuamperfecto",
+      "pretérito-anterior",
+      "futuro-perfecto"
+    ],
+    "subjuntivo": [
+      "presente",
+      "pretérito-imperfecto-1",
+      "pretérito-imperfecto-2",
+      "futuro",
+      "pretérito-perfecto",
+      "pretérito-pluscuamperfecto-1",
+      "pretérito-pluscuamperfecto-2",
+      "futuro-perfecto"
+    ],
+    "imperativo": ["afirmativo", "negativo"],
+    "condicional": ["presente", "perfecto"]
+  },
+  "fr": {
+    "indicatif": [
+      "présent",
+      "futur-simple",
+      "imparfait",
+      "futur-antérieur",
+      "passé-antérieur",
+      "passé-composé",
+      "passé-simple",
+      "plus-que-parfait"
+    ],
+    "conditionnel": ["présent", "passé"],
+    "imperatif": ["imperatif-passé", "imperatif-présent"],
+    "subjonctif": ["imparfait", "passé", "plus-que-parfait", "présent"]
+  }
 }

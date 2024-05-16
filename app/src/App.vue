@@ -4,16 +4,16 @@
 
     <main class="grow p-5 container max-w-7xl mx-auto relative">
       <h2>Objectif journalier: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
-      <div class="w-full bg-red-200 rounded-full h-2.5 dark:bg-red-700 mb-5">
+      <div class="w-full bg-white rounded-full h-2.5 mb-5">
         <div
-          class="bg-yellow-500 h-2.5 rounded-full transition-all duration-1000 ease-in-out"
+          class="bg-pink h-2.5 rounded-full transition-all duration-1000 ease-in-out"
           :style="{
             width: `${(100 / sessionStore.dailyGoal) * Math.min(sessionStore.dailyGoal, sessionStore.counter)}%`
           }"
         ></div>
       </div>
       <div
-        class="modal absolute min-h-full w-full z-10 inset-0 overflow-y-auto flex bg-red-300 transition-opacity duration-300 p-5"
+        class="modal absolute min-h-full w-full z-10 inset-0 overflow-y-auto flex bg-pink/50 backdrop-blur-lg transition-opacity duration-300 p-5"
         :class="
           showModal != false ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         "
@@ -25,55 +25,55 @@
       </div>
       <div class="flex gap-5 mb-5">
         <div class="text-left w-1/2">
-          <h2>Español</h2>
-          <p class="text-xl font-bold">{{ verb?.es }}</p>
+          <h2>
+            {{ sessionStore.languageSetting === 'fr' ? 'Español' : 'Français' }}
+          </h2>
+          <p class="text-xl font-bold">
+            {{
+              sessionStore.languageSetting === 'fr'
+                ? verb['es_label']
+                  ? verb['es_label']
+                  : verb['es']
+                : verb['fr_label']
+                  ? verb['fr_label']
+                  : verb['fr']
+            }}
+          </p>
         </div>
         <div class="text-left w-1/2">
-          <h2>Français:</h2>
+          <h2>{{ sessionStore.languageSetting === 'fr' ? 'Français' : 'Español' }}</h2>
           <button class="text-xl font-bold underline" @click="showVerb = !showVerb">
-            {{ showVerb ? verb.fr : '???' }}
+            {{ showVerb ? verb[sessionStore.languageSetting] : '???' }}
           </button>
         </div>
       </div>
 
       <div class="flex flex-col md:flex-row gap-5 mb-5">
         <div class="text-left w-full md:w-1/2">
-          <label for="tense">Temps</label>
-          <select
-            class="text-xl rounded-lg block w-full p-2.5 border-4 bg-transparent text-white"
-            v-model="selectedTense"
+          <CustomSelect
+            label="Temps"
+            v-model:selectedOption="selectedTense"
             :disabled="conjubravo"
-            id="tense"
-          >
-            <option v-for="tense in tenseStore.checkedTenses" :key="tense" :value="tense">
-              {{ tense }}
-            </option>
-          </select>
+            :options="availableTenses"
+          />
         </div>
         <div class="text-left w-full md:w-1/2">
-          <label for="person">Personne</label>
-          <select
-            class="text-xl rounded-lg block w-full p-2.5 border-4 bg-transparent text-white"
-            v-model="selectedPerson"
+          <CustomSelect
+            label="Personne"
+            v-if="personsList"
+            v-model:selectedOption="selectedPerson"
             :disabled="conjubravo"
-            id="person"
-          >
-            <option v-for="(person, index) in personsList" :key="index" :value="index">
-              {{ person }}
-            </option>
-          </select>
+            :options="personsList"
+          />
         </div>
       </div>
       <div class="inputVerbContainer" :class="conjubravo && 'bravo'">
-        <label for="answer">Réponse</label>
+        <label for="answer">{{ availableTenses[selectedTense] }}</label>
         <input
-          class="text-xl rounded-lg block w-full p-2.5 border-4 font-bold placeholder:text-gray-500 outline-none transition-all duration-300"
-          :class="
-            conjubravo
-              ? 'border-green-400 text-green-400 bg-green-700'
-              : 'border-red-300 text-red-300 bg-white'
-          "
+          class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300"
+          :class="conjubravo ? 'bg-green text-black' : 'bg-pink text-white'"
           v-model="userInput"
+          ref="userInputField"
           :disabled="conjubravo"
           type="text"
           placeholder="Conjuguez le verbe ici"
@@ -83,10 +83,10 @@
 
       <div class="py-5">
         <TenseDisplay
-          :checkedTenses="checkedTenses"
           :fullVerb="fullVerb"
           :selectedTense="selectedTense"
           :selectedPerson="selectedPerson"
+          :availableTenses="availableTenses"
         />
       </div>
     </main>
@@ -103,56 +103,83 @@ import VerbsSettings from './components/VerbsSettings.vue'
 
 import availableVerbs from './assets/data/verbs.json'
 
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, watchEffect } from 'vue'
 import axios from 'axios'
 
 import { useTensesStore } from '/store/tenses'
 import { useVerbsStore } from '/store/verbs'
 import { useSessionStore } from '/store/session'
+import CustomSelect from './components/CustomSelect.vue'
 
 const tenseStore = useTensesStore()
 const verbsStore = useVerbsStore()
 const sessionStore = useSessionStore()
 
-const selectedTense = ref('présent')
+const selectedTense = ref(0)
 const selectedPerson = ref(0)
 const userInput = ref('')
+const userInputField = ref(null)
 const showVerb = ref(false)
 const showFullVerb = ref(false)
 const showModal = ref(false)
 const conjubravo = ref(false)
-const checkedTenses = ref([])
+const availableTenses = ref([])
 
 let verb = ref('')
 const conjugatedVerb = ref('')
 const fullVerb = ref({})
-let personsList = ref(['je', 'tu', 'il', 'nous', 'vous', 'ils'])
+let personsList = ref([])
+
+const loadAvailableTenses = () => {
+  availableTenses.value = tenseStore.checkedTenses.filter((tense) =>
+    tense.startsWith(sessionStore.languageSetting)
+  )
+}
+
+watchEffect(() => {
+  loadAvailableTenses(sessionStore.languageSetting, tenseStore.checkedTenses)
+})
 
 watch(verb, async () => {
   showVerb.value = false
   showFullVerb.value = false
-  selectedTense.value = getRandomItem(tenseStore.checkedTenses)
+  selectedTense.value = Math.floor(Math.random() * availableTenses?.value?.length)
   if (!verb.value) return
 
-  const response = await axios.get(`/conjugate/fr/${verb.value.fr}`)
+  const response = await axios.get(
+    `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`
+  )
   fullVerb.value = response.data
 })
 
-watch([fullVerb, selectedTense, selectedPerson], () => {
-  if (!selectedTense.value) return
+watch([fullVerb, selectedTense], () => {
+  const [lang, mood, tense] = availableTenses.value[selectedTense.value].split('/', 3)
 
-  const [mood, tense] = selectedTense.value.split('/', 2)
+  if (lang == 'fr') {
+    personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
+      if (person.startsWith("j'")) return "j'"
+      else if (person.startsWith('ils')) return 'ils/elles'
+      else if (person.startsWith('il')) return 'il/elle/on'
+      else return person.split(' ')[0] + ' '
+    })
+  }
 
-  personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
-    if (person.startsWith("j'")) return "j'"
-    else if (person.startsWith('ils')) return 'ils/elles'
-    else if (person.startsWith('il')) return 'il/elle/on'
-    else return person.split(' ')[0] + ' '
-  })
+  if (lang == 'es') {
+    personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
+      if (person.startsWith('yo')) return 'yo'
+      else if (person.startsWith('nosotros')) return 'nosotros/nosotras'
+      else if (person.startsWith('vosotros')) return 'vosotros/vosotras'
+      else if (person.startsWith('ellos')) return 'ellos/ellas'
+      else if (person.startsWith('él')) return 'él/ella/usted'
+      else if (person.startsWith('tú')) return 'tú'
+      else return person.split(' ')[0] + ' '
+    })
+  }
 
   selectedPerson.value = Math.floor(Math.random() * personsList?.value?.length)
 
   conjugatedVerb.value = fullVerb.value?.moods?.[mood]?.[tense]?.[selectedPerson.value]
+
   if (!conjugatedVerb.value) {
     return
   }
@@ -182,10 +209,10 @@ const handleToggleModal = (page) => {
 const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
 
 const shuffle = () => {
-  const randomVerbFr = getRandomItem(verbsStore.checkedVerbs)
-  verb.value = availableVerbs.find((verb) => verb.fr === randomVerbFr)
+  verb.value = getRandomItem(verbsStore.checkedVerbs)
   conjubravo.value = false
   if (showModal.value) showModal.value = false
+  userInputField.value.focus()
 }
 
 onMounted(() => {
@@ -199,9 +226,9 @@ onMounted(() => {
 
   &.bravo::after {
     position: absolute;
-    right: 12px;
-    top: 30px;
-    content: '🥖';
+    right: 30px;
+    top: 32px;
+    content: '✔';
     margin-left: 10px;
     font-size: 30px;
   }

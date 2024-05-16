@@ -1,6 +1,8 @@
 [
-  { "es": "ser/estar", "fr": "être" },
-  { "es": "haber/tener", "fr": "avoir" },
+  { "es": "ser", "fr": "être", "fr_label": "être" },
+  { "es": "estar", "fr": "être", "fr_label": "être (temporaire)" },
+  { "es": "tener", "fr": "avoir" },
+  { "es": "haber", "fr": "avoir", "fr_label": "être (auxiliaire)" },
   { "es": "hacer", "fr": "faire" },
   { "es": "poner", "fr": "mettre" },
   { "es": "pagar", "fr": "payer" },
@@ -88,7 +90,6 @@
   { "es": "cerrar", "fr": "fermer" },
   { "es": "organizar", "fr": "organiser" },
   { "es": "jugar", "fr": "jouer" },
-  { "es": "llover", "fr": "pleuvoir" },
   { "es": "correr", "fr": "courir" },
   { "es": "caminar", "fr": "marcher" },
   { "es": "sentarse", "fr": "s’asseoir" },
