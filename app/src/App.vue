@@ -101,8 +101,6 @@ import TenseDisplay from './components/TenseDisplay.vue'
 import TenseSettings from './components/TenseSettings.vue'
 import VerbsSettings from './components/VerbsSettings.vue'
 
-import availableVerbs from './assets/data/verbs.json'
-
 import { ref, onMounted, watch, watchEffect } from 'vue'
 import axios from 'axios'
 
@@ -140,17 +138,26 @@ watchEffect(() => {
   loadAvailableTenses(sessionStore.languageSetting, tenseStore.checkedTenses)
 })
 
-watch(verb, async () => {
+const prepareVerb = async () => {
   showVerb.value = false
   showFullVerb.value = false
   selectedTense.value = Math.floor(Math.random() * availableTenses?.value?.length)
+
   if (!verb.value) return
 
   const response = await axios.get(
     `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`
   )
   fullVerb.value = response.data
-})
+}
+
+watch(
+  verb,
+  () => {
+    prepareVerb()
+  },
+  { immediate: true }
+)
 
 watch([fullVerb, selectedTense], () => {
   const [lang, mood, tense] = availableTenses.value[selectedTense.value].split('/', 3)
@@ -208,8 +215,26 @@ const handleToggleModal = (page) => {
 
 const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
 
+function getRandomItemNotLast(verbs, lastVerb) {
+  if (verbs.length === 0) {
+    return null
+  } else if (verbs.length === 1) {
+    return verbs[0]
+  } else {
+    let newVerb
+    do {
+      newVerb = getRandomItem(verbs)
+    } while (newVerb === lastVerb)
+    return newVerb
+  }
+}
+
 const shuffle = () => {
-  verb.value = getRandomItem(verbsStore.checkedVerbs)
+  let oldVerb = verb.value
+  verb.value = getRandomItemNotLast(verbsStore.checkedVerbs, verb.value)
+  if (verb.value === oldVerb) {
+    prepareVerb()
+  }
   conjubravo.value = false
   if (showModal.value) showModal.value = false
   userInputField.value.focus()
