@@ -2,7 +2,7 @@
   { "es": "ser", "fr": "être", "fr_label": "être" },
   { "es": "estar", "fr": "être", "fr_label": "être (temporaire)" },
   { "es": "tener", "fr": "avoir" },
-  { "es": "haber", "fr": "avoir", "fr_label": "être (auxiliaire)" },
+  { "es": "haber", "fr": "avoir", "fr_label": "avoir (auxiliaire)" },
   { "es": "hacer", "fr": "faire" },
   { "es": "poner", "fr": "mettre" },
   { "es": "pagar", "fr": "payer" },

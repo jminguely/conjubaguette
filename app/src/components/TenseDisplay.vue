@@ -1,11 +1,11 @@
 <template>
-  <div>
-    <button class="mb-5" @click="showFullVerb = !showFullVerb">
+  <div class="flex flex-col">
+    <button class="mx-auto" @click="showFullVerb = !showFullVerb">
       <span class="underline">Solution</span> {{ !showFullVerb ? '↓' : '↑' }}
     </button>
 
     <div
-      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap"
+      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap pt-3"
       v-if="showFullVerb"
     >
       <template v-for="(tense, keyTense) in availableTenses" :key="keyTense">
@@ -27,7 +27,7 @@
               <li
                 v-if="fullVerb?.moods[tense.split('/', 3)[1]]?.[tense.split('/', 3)[2]]"
                 class="inline p-1"
-                :class="selectedTense === keyTense && selectedPerson === keyPerson && 'bg-green/30'"
+                :class="selectedPerson === keyPerson && 'bg-green/30'"
                 v-html="highlightStem(person)"
               ></li>
             </template>
@@ -49,7 +49,6 @@ const showFullVerb = ref(false)
 const props = defineProps({
   fullVerb: Object,
   availableTenses: Array,
-  selectedTense: Number,
   selectedPerson: Number
 })
 

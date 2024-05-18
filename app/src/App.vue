@@ -2,8 +2,10 @@
   <div class="flex flex-col h-svh">
     <SiteHeader @toggle-modal="handleToggleModal" />
 
-    <main class="grow p-5 container max-w-7xl mx-auto relative">
-      <h2>Objectif journalier: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
+    <main class="grow px-5 container max-w-7xl mx-auto relative">
+      <h2 class="pt-3">
+        Objectif journalier: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}
+      </h2>
       <div class="w-full bg-white rounded-full h-2.5 mb-5">
         <div
           class="bg-pink h-2.5 rounded-full transition-all duration-1000 ease-in-out"
@@ -47,86 +49,119 @@
           </button>
         </div>
       </div>
-
-      <div class="flex flex-col md:flex-row gap-5 mb-5">
-        <div class="text-left w-full md:w-1/2">
-          <CustomSelect
-            label="Temps"
-            v-model:selectedOption="selectedTense"
-            :disabled="conjubravo"
-            :options="availableTenses"
-          />
-        </div>
-        <div class="text-left w-full md:w-1/2">
-          <CustomSelect
-            label="Personne"
-            v-if="personsList"
-            v-model:selectedOption="selectedPerson"
-            :disabled="conjubravo"
-            :options="personsList"
-          />
-        </div>
-      </div>
-      <div class="inputVerbContainer" :class="conjubravo && 'bravo'">
-        <label for="answer">{{ availableTenses[selectedTense] }}</label>
+      <div
+        v-for="(tense, index) in availableTenses"
+        :key="index"
+        class="mb-5 inputVerbContainer"
+        :class="(isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) && 'bravo'"
+      >
+        <label class="label" :for="'answer' + index">{{
+          moods[tense.split('/')[0]][tense.split('/')[1]].find(
+            (item) => item.key === tense.split('/')[2]
+          ).name
+        }}</label>
         <input
           class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300"
-          :class="conjubravo ? 'bg-green text-black' : 'bg-pink text-white'"
-          v-model="userInput"
+          :class="
+            isCorrect?.[index]?.isTotallyCorrect
+              ? 'bg-green-dark'
+              : isCorrect?.[index]?.isCorrect
+                ? 'bg-orange'
+                : 'bg-pink'
+          "
+          v-model="userResponses[index]"
           ref="userInputField"
-          :disabled="conjubravo"
+          :disabled="isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect"
           type="text"
-          placeholder="Conjuguez le verbe ici"
-          id="answer"
+          :id="'answer' + index"
         />
       </div>
 
-      <div class="py-5">
+      <div class="py-2">
         <TenseDisplay
           :fullVerb="fullVerb"
-          :selectedTense="selectedTense"
           :selectedPerson="selectedPerson"
           :availableTenses="availableTenses"
         />
       </div>
     </main>
-    <SiteFooter :shuffle="shuffle" :conjubravo="conjubravo" />
+    <SiteFooter :shuffle="shuffle" />
   </div>
 </template>
 
 <script setup>
+import moods from './assets/data/moods.json'
+
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import TenseDisplay from './components/TenseDisplay.vue'
 import TenseSettings from './components/TenseSettings.vue'
 import VerbsSettings from './components/VerbsSettings.vue'
 
-import { ref, onMounted, watch, watchEffect } from 'vue'
+import { ref, onMounted, watch, watchEffect, computed } from 'vue'
 import axios from 'axios'
 
 import { useTensesStore } from '/store/tenses'
 import { useVerbsStore } from '/store/verbs'
 import { useSessionStore } from '/store/session'
-import CustomSelect from './components/CustomSelect.vue'
 
 const tenseStore = useTensesStore()
 const verbsStore = useVerbsStore()
 const sessionStore = useSessionStore()
 
-const selectedTense = ref(0)
 const selectedPerson = ref(0)
-const userInput = ref('')
+const correctAnswers = ref([])
+
 const userInputField = ref(null)
 const showVerb = ref(false)
 const showFullVerb = ref(false)
 const showModal = ref(false)
-const conjubravo = ref(false)
 const availableTenses = ref([])
+const userResponses = ref([])
+let isPageLoaded = false
+
+function onPageLoad() {
+  isPageLoaded = true
+}
+
+function removeAccents(str) {
+  return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : ''
+}
+
+const isCorrect = computed(() => {
+  const results = userResponses.value.map((response, index) => {
+    const isTotallyCorrect = response === correctAnswers.value[index]
+    const isCorrect = removeAccents(response) === removeAccents(correctAnswers.value[index])
+    return { isCorrect, isTotallyCorrect }
+  })
+
+  if (!isPageLoaded) {
+    return []
+  }
+  return results
+})
+
+watch(
+  isCorrect,
+  () => {
+    if (isCorrect.value.length === 0) return
+    // Return true if all answers are correct
+    const areAllAnswersCorrect = isCorrect.value.reduce(
+      (acc, result) => {
+        acc.value = acc.value && result.isCorrect
+        return acc
+      },
+      { value: true }
+    )
+    if (areAllAnswersCorrect.value) {
+      sessionStore.incrementCounter()
+    }
+  },
+  { immediate: true }
+)
 
 let verb = ref('')
-const conjugatedVerb = ref('')
 const fullVerb = ref({})
-let personsList = ref([])
 
 const loadAvailableTenses = () => {
   availableTenses.value = tenseStore.checkedTenses.filter((tense) =>
@@ -138,10 +173,32 @@ watchEffect(() => {
   loadAvailableTenses(sessionStore.languageSetting, tenseStore.checkedTenses)
 })
 
+const getCorrectConjugation = (verb, tense, person) => {
+  return verb.value?.moods?.[tense.split('/')[1]]?.[tense.split('/')[2]]?.[person]
+}
+
+watchEffect(() => {
+  if (!verb.value) return
+  selectedPerson.value = Math.floor(Math.random() * 6)
+  correctAnswers.value = availableTenses.value.map((tense) =>
+    getCorrectConjugation(fullVerb, tense, selectedPerson.value)
+  )
+  userResponses.value = availableTenses.value.map((tense, index) => {
+    const answer = correctAnswers.value[index]
+    if (answer) {
+      if (sessionStore.languageSetting == 'fr' && answer.startsWith("j'")) {
+        return "j'"
+      } else {
+        return answer.split(' ')[0] + ' '
+      }
+    }
+    return ''
+  })
+})
+
 const prepareVerb = async () => {
   showVerb.value = false
   showFullVerb.value = false
-  selectedTense.value = Math.floor(Math.random() * availableTenses?.value?.length)
 
   if (!verb.value) return
 
@@ -149,6 +206,8 @@ const prepareVerb = async () => {
     `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`
   )
   fullVerb.value = response.data
+
+  onPageLoad()
 }
 
 watch(
@@ -158,51 +217,6 @@ watch(
   },
   { immediate: true }
 )
-
-watch([fullVerb, selectedTense], () => {
-  const [lang, mood, tense] = availableTenses.value[selectedTense.value].split('/', 3)
-
-  if (lang == 'fr') {
-    personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
-      if (person.startsWith("j'")) return "j'"
-      else if (person.startsWith('ils')) return 'ils/elles'
-      else if (person.startsWith('il')) return 'il/elle/on'
-      else return person.split(' ')[0] + ' '
-    })
-  }
-
-  if (lang == 'es') {
-    personsList.value = fullVerb.value?.moods?.[mood]?.[tense].map((person) => {
-      if (person.startsWith('yo')) return 'yo'
-      else if (person.startsWith('nosotros')) return 'nosotros/nosotras'
-      else if (person.startsWith('vosotros')) return 'vosotros/vosotras'
-      else if (person.startsWith('ellos')) return 'ellos/ellas'
-      else if (person.startsWith('él')) return 'él/ella/usted'
-      else if (person.startsWith('tú')) return 'tú'
-      else return person.split(' ')[0] + ' '
-    })
-  }
-
-  selectedPerson.value = Math.floor(Math.random() * personsList?.value?.length)
-
-  conjugatedVerb.value = fullVerb.value?.moods?.[mood]?.[tense]?.[selectedPerson.value]
-
-  if (!conjugatedVerb.value) {
-    return
-  }
-  if (conjugatedVerb.value.startsWith("j'")) {
-    userInput.value = "j'"
-  } else {
-    userInput.value = conjugatedVerb.value.split(' ')[0] + ' '
-  }
-})
-
-watch([userInput], () => {
-  if (conjugatedVerb.value === userInput.value.toLowerCase().trim()) {
-    conjubravo.value = true
-    sessionStore.incrementCounter()
-  }
-})
 
 const handleToggleModal = (page) => {
   if (page === showModal.value) {
@@ -235,9 +249,7 @@ const shuffle = () => {
   if (verb.value === oldVerb) {
     prepareVerb()
   }
-  conjubravo.value = false
   if (showModal.value) showModal.value = false
-  userInputField.value.focus()
 }
 
 onMounted(() => {
@@ -248,14 +260,29 @@ onMounted(() => {
 <style lang="postcss" scoped>
 .inputVerbContainer {
   position: relative;
+  margin-top: 3rem;
+
+  .label {
+    position: absolute;
+    color: white;
+    background-color: black;
+    padding: 0.25rem 0.6rem;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    z-index: -1;
+    top: -1.5rem;
+    left: 50%;
+    transform: translate(-50%);
+  }
 
   &.bravo::after {
     position: absolute;
     right: 30px;
-    top: 32px;
+    top: 12px;
     content: '✔';
     margin-left: 10px;
     font-size: 30px;
+    opacity: 0.7;
   }
 }
 </style>

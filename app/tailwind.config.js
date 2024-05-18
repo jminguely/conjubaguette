@@ -7,6 +7,11 @@ export default {
       'white': 'var(--white)',
       'black': 'var(--black)',
       'yellow': '#fcd607',
+      'orange': {
+        light: '#ffab40',
+        DEFAULT: '#ff9100',
+        dark: '#ff6d00',
+      },
       'green': {
         light: '#48ffd0',
         DEFAULT: '#09f4bc',

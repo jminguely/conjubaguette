@@ -30,25 +30,25 @@
         v-for="(mood, moodKey) in moods"
         :key="moodKey"
       >
-        <h3 class="font-bold">{{ moodKey }}</h3>
+        <h3 class="font-bold capitalize">{{ moodKey }}</h3>
         <div
           v-for="tense in mood"
-          :key="sessionStore.languageSetting + '/' + moodKey + '/' + tense"
+          :key="sessionStore.languageSetting + '/' + moodKey + '/' + tense.key"
         >
           <input
             class="mr-2"
             type="checkbox"
-            :id="sessionStore.languageSetting + '/' + moodKey + '/' + tense"
-            :value="sessionStore.languageSetting + '/' + moodKey + '/' + tense"
+            :id="sessionStore.languageSetting + '/' + moodKey + '/' + tense.key"
+            :value="sessionStore.languageSetting + '/' + moodKey + '/' + tense.key"
             :checked="
               tenseStore.checkedTenses.includes(
-                sessionStore.languageSetting + '/' + moodKey + '/' + tense
+                sessionStore.languageSetting + '/' + moodKey + '/' + tense.key
               )
             "
             @change="checkTense($event)"
           />
-          <label :for="sessionStore.languageSetting + '/' + moodKey + '/' + tense">{{
-            tense
+          <label :for="sessionStore.languageSetting + '/' + moodKey + '/' + tense.key">{{
+            tense.name
           }}</label>
         </div>
       </div>

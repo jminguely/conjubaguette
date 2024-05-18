@@ -5,7 +5,7 @@ import availableVerbs from '../src/assets/data/verbs.json'
 export const useVerbsStore = defineStore('checkedVerbs', {
   state: () => {
     let checkedVerbs = Cookies.get('checkedVerbsNew') ? JSON.parse(Cookies.get('checkedVerbsNew')) : [];
-    console.log(checkedVerbs);
+
     if (checkedVerbs.length === 0) {
       checkedVerbs = availableVerbs.map(verb => verb);
       Cookies.set('checkedVerbsNew', JSON.stringify(checkedVerbs));
