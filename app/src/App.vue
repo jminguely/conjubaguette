@@ -127,7 +127,6 @@ const showModal = ref(false)
 const availableTenses = ref([])
 const userResponses = ref([])
 let isPageLoaded = false
-let isExerciseFinished = false
 
 function onPageLoad() {
   isPageLoaded = true
@@ -150,6 +149,7 @@ const isCorrect = computed(() => {
   return results
 })
 
+// let isExerciseFinished = false
 // watch(
 //   isCorrect,
 //   () => {
@@ -207,7 +207,7 @@ watchEffect(() => {
 })
 
 const prepareVerb = async () => {
-  isExerciseFinished = false
+  // isExerciseFinished = false
   showVerb.value = false
   showFullVerb.value = false
 
