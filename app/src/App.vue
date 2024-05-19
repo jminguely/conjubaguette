@@ -294,7 +294,7 @@ onMounted(() => {
 
   &.bravo::after {
     position: absolute;
-    color: white;
+    color: white !important;
     background-color: black;
     padding: 0.6rem 0.5rem 0.2rem 0.5rem;
     border-bottom-left-radius: 1rem;
