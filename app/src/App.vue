@@ -61,7 +61,7 @@
           ).name
         }}</label>
         <input
-          class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300"
+          class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300 disabled:opacity-100"
           :class="
             isCorrect?.[index]?.isTotallyCorrect
               ? 'bg-green-dark'
