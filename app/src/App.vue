@@ -74,6 +74,10 @@
           :disabled="isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect"
           type="text"
           :id="'answer' + index"
+          spellcheck="false"
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
         />
       </div>
 
