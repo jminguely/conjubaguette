@@ -77,10 +77,10 @@
             ref="userInputField"
             type="text"
             :id="'answer' + index"
-            spellcheck="false"
             autocomplete="off"
             autocorrect="off"
             autocapitalize="off"
+            :spellcheck="false"
           />
         </div>
       </div>
