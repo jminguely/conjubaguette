@@ -118,7 +118,6 @@ const verbsStore = useVerbsStore()
 const sessionStore = useSessionStore()
 
 const selectedPerson = ref(0)
-const correctAnswers = ref([])
 
 const userInputField = ref(null)
 const showVerb = ref(false)
@@ -126,49 +125,52 @@ const showFullVerb = ref(false)
 const showModal = ref(false)
 const availableTenses = ref([])
 const userResponses = ref([])
-let isPageLoaded = false
+const correctAnswers = ref([])
+const isPageLoaded = ref(false)
 
 function onPageLoad() {
-  isPageLoaded = true
+  isPageLoaded.value = true
 }
 
-function removeAccents(str) {
+const removeAccents = (str) => {
   return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : ''
 }
 
 const isCorrect = computed(() => {
+  if (!isPageLoaded.value || !userResponses.value || !correctAnswers.value) {
+    return []
+  }
+
   const results = userResponses.value.map((response, index) => {
     const isTotallyCorrect = response === correctAnswers.value[index]
     const isCorrect = removeAccents(response) === removeAccents(correctAnswers.value[index])
     return { isCorrect, isTotallyCorrect }
   })
 
-  if (!isPageLoaded) {
-    return []
-  }
   return results
 })
 
-// let isExerciseFinished = false
-// watch(
-//   isCorrect,
-//   () => {
-//     if (isExerciseFinished || isCorrect.value.length === 0) return
-//     // Return true if all answers are correct
-//     const areAllAnswersCorrect = isCorrect.value.reduce(
-//       (acc, result) => {
-//         acc.value = acc.value && result.isCorrect
-//         return acc
-//       },
-//       { value: true }
-//     )
-//     if (areAllAnswersCorrect.value) {
-//       sessionStore.incrementCounter()
-//       isExerciseFinished = true
-//     }
-//   },
-//   { immediate: true }
-// )
+let isExerciseFinished = false
+
+watch(
+  isCorrect,
+  () => {
+    if (isExerciseFinished || isCorrect.value.length === 0) return
+    // Return true if all answers are correct
+    const areAllAnswersCorrect = isCorrect.value.reduce(
+      (acc, result) => {
+        acc.value = acc.value && result.isCorrect
+        return acc
+      },
+      { value: true }
+    )
+    if (areAllAnswersCorrect.value) {
+      sessionStore.incrementCounter()
+      isExerciseFinished = true
+    }
+  },
+  { immediate: true }
+)
 
 let verb = ref('')
 const fullVerb = ref({})
@@ -207,7 +209,7 @@ watchEffect(() => {
 })
 
 const prepareVerb = async () => {
-  // isExerciseFinished = false
+  isExerciseFinished = false
   showVerb.value = false
   showFullVerb.value = false
 
