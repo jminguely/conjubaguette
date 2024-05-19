@@ -31,7 +31,7 @@
                   <input
                     class="mr-2"
                     type="checkbox"
-                    :id="index"
+                    :id="`verb-${index}`"
                     :value="JSON.stringify(verb)"
                     :checked="
                       verbsStore.checkedVerbs.some(
@@ -40,7 +40,9 @@
                     "
                     @change="toggleVerb($event)"
                   />
-                  <label :for="verb.fr">{{ verb.fr_label ? verb.fr_label : verb.fr }}</label>
+                  <label :for="`verb-${index}`">{{
+                    verb.fr_label ? verb.fr_label : verb.fr
+                  }}</label>
                 </td>
                 <td class="px-2 py-1 whitespace-nowrap">
                   {{ verb.es_label ? verb.es_label : verb.es }}
