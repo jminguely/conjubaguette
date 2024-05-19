@@ -14,7 +14,11 @@
           class="grow rounded-lg p-5 bg-white text-gray-800"
         >
           <h3 class="font-bold mb-1 p-1">
-            {{ tense.split('/', 3)[1] }}: {{ tense.split('/', 3)[2] }}
+            {{
+              moods[tense.split('/')[0]][tense.split('/')[1]].find(
+                (item) => item.key === tense.split('/')[2]
+              ).name
+            }}
           </h3>
 
           <ul class="flex flex-col items-start">
@@ -41,6 +45,8 @@
 <script setup>
 import { useSessionStore } from '/store/session'
 import { ref } from 'vue'
+
+import moods from '../assets/data/moods.json'
 
 const sessionStore = useSessionStore()
 
