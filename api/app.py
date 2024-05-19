@@ -3,7 +3,7 @@ from verbecc import Conjugator
 
 app = FastAPI()
 
-@app.get('/conjugate/')
+@app.get('/conjugate/{lang}/{verb}')
 async def conjugate(lang: str = Query(...), verb: str = Query(...)):
     cj = Conjugator(lang)
     conjugation = cj.conjugate(verb)
