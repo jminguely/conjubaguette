@@ -16,7 +16,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/conjugate': {
-        target: 'https://baguette-api.mingus.space/conjugate/',
+        target: 'https://api.verbolo.co/conjugate/',
         changeOrigin: true,
         rewrite: path => path.replace(/^\/conjugate/, '')
       }

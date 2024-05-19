@@ -1,4 +1,4 @@
-# Conju-Baguette
+# VerboLoco!
 
 ## API
 
