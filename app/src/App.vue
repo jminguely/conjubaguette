@@ -49,36 +49,40 @@
           </button>
         </div>
       </div>
-      <div
-        v-for="(tense, index) in availableTenses"
-        :key="index"
-        class="mb-5 inputVerbContainer"
-        :class="(isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) && 'bravo'"
-      >
-        <label class="label" :for="'answer' + index">{{
-          moods[tense.split('/')[0]][tense.split('/')[1]].find(
-            (item) => item.key === tense.split('/')[2]
-          ).name
-        }}</label>
-        <input
-          class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300 disabled:opacity-100"
+      <div class="inputsContainer">
+        <div
+          v-for="(tense, index) in availableTenses"
+          :key="index"
+          class="mb-5 inputVerbContainer"
           :class="
-            isCorrect?.[index]?.isTotallyCorrect
-              ? 'bg-green-dark'
-              : isCorrect?.[index]?.isCorrect
-                ? 'bg-orange'
-                : 'bg-pink'
+            (isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) && 'bravo'
           "
-          v-model="userResponses[index]"
-          ref="userInputField"
-          :disabled="isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect"
-          type="text"
-          :id="'answer' + index"
-          spellcheck="false"
-          autocomplete="off"
-          autocorrect="off"
-          autocapitalize="off"
-        />
+        >
+          <label class="label" :for="'answer' + index">{{
+            moods[tense.split('/')[0]][tense.split('/')[1]].find(
+              (item) => item.key === tense.split('/')[2]
+            ).name
+          }}</label>
+          <input
+            class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300 disabled:opacity-100"
+            :class="
+              isCorrect?.[index]?.isTotallyCorrect
+                ? 'bg-green-dark'
+                : isCorrect?.[index]?.isCorrect
+                  ? 'bg-orange'
+                  : 'bg-pink'
+            "
+            :disabled="isCorrect?.[index]?.isTotallyCorrect"
+            v-model="userResponses[index]"
+            ref="userInputField"
+            type="text"
+            :id="'answer' + index"
+            spellcheck="false"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+          />
+        </div>
       </div>
 
       <div class="py-2">
@@ -123,6 +127,7 @@ const showModal = ref(false)
 const availableTenses = ref([])
 const userResponses = ref([])
 let isPageLoaded = false
+let isExerciseFinished = false
 
 function onPageLoad() {
   isPageLoaded = true
@@ -148,7 +153,7 @@ const isCorrect = computed(() => {
 watch(
   isCorrect,
   () => {
-    if (isCorrect.value.length === 0) return
+    if (isExerciseFinished || isCorrect.value.length === 0) return
     // Return true if all answers are correct
     const areAllAnswersCorrect = isCorrect.value.reduce(
       (acc, result) => {
@@ -159,6 +164,7 @@ watch(
     )
     if (areAllAnswersCorrect.value) {
       sessionStore.incrementCounter()
+      isExerciseFinished = true
     }
   },
   { immediate: true }
@@ -201,6 +207,7 @@ watchEffect(() => {
 })
 
 const prepareVerb = async () => {
+  isExerciseFinished = false
   showVerb.value = false
   showFullVerb.value = false
 
@@ -264,7 +271,12 @@ onMounted(() => {
 <style lang="postcss" scoped>
 .inputVerbContainer {
   position: relative;
-  margin-top: 3rem;
+  margin-top: 2.5rem;
+  margin-bottom: 4rem;
+
+  &:last-of-type {
+    margin-bottom: 1rem;
+  }
 
   .label {
     position: absolute;
@@ -281,12 +293,16 @@ onMounted(() => {
 
   &.bravo::after {
     position: absolute;
-    right: 30px;
-    top: 12px;
+    color: white;
+    background-color: black;
+    padding: 0.6rem 0.5rem 0.2rem 0.5rem;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    z-index: -1;
+    bottom: -1.5rem;
+    left: 50%;
+    transform: translate(-50%);
     content: '✔';
-    margin-left: 10px;
-    font-size: 30px;
-    opacity: 0.7;
   }
 }
 </style>

@@ -4,33 +4,33 @@ export default {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      'white': 'var(--white)',
-      'black': 'var(--black)',
-      'yellow': '#fcd607',
-      'orange': {
+      white: 'var(--white)',
+      black: 'var(--black)',
+      yellow: '#fcd607',
+      orange: {
         light: '#ffab40',
         DEFAULT: '#ff9100',
-        dark: '#ff6d00',
+        dark: '#ff6d00'
       },
-      'green': {
+      green: {
         light: '#48ffd0',
         DEFAULT: '#09f4bc',
-        dark: '#00dda4',
+        dark: '#00dda4'
       },
-      'pink': {
+      pink: {
         light: '#ff85aa',
         DEFAULT: '#ff688f',
-        dark: '#e14b76',
-      },
+        dark: '#e14b76'
+      }
     },
     extend: {
       fontFamily: {
-        'sans': ['Fredoka', 'sans-serif'],
-      },
-    },
+        sans: ['Fredoka', 'sans-serif']
+      }
+    }
   },
   variants: {
-    extend: {},
+    extend: {}
   },
-  plugins: [],
+  plugins: []
 }
