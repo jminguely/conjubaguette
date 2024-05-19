@@ -63,7 +63,6 @@
               (item) => item.key === tense.split('/')[2]
             ).name
           }}</label>
-          <small class="text-sm"> {{ correctAnswers?.[index] }} // {{ isCorrect?.[index] }} </small>
           <input
             class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300 disabled:opacity-100"
             :class="
