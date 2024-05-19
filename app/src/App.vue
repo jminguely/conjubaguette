@@ -150,25 +150,25 @@ const isCorrect = computed(() => {
   return results
 })
 
-watch(
-  isCorrect,
-  () => {
-    if (isExerciseFinished || isCorrect.value.length === 0) return
-    // Return true if all answers are correct
-    const areAllAnswersCorrect = isCorrect.value.reduce(
-      (acc, result) => {
-        acc.value = acc.value && result.isCorrect
-        return acc
-      },
-      { value: true }
-    )
-    if (areAllAnswersCorrect.value) {
-      sessionStore.incrementCounter()
-      isExerciseFinished = true
-    }
-  },
-  { immediate: true }
-)
+// watch(
+//   isCorrect,
+//   () => {
+//     if (isExerciseFinished || isCorrect.value.length === 0) return
+//     // Return true if all answers are correct
+//     const areAllAnswersCorrect = isCorrect.value.reduce(
+//       (acc, result) => {
+//         acc.value = acc.value && result.isCorrect
+//         return acc
+//       },
+//       { value: true }
+//     )
+//     if (areAllAnswersCorrect.value) {
+//       sessionStore.incrementCounter()
+//       isExerciseFinished = true
+//     }
+//   },
+//   { immediate: true }
+// )
 
 let verb = ref('')
 const fullVerb = ref({})
