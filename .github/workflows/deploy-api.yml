@@ -44,4 +44,4 @@ jobs:
           dest: ${{vars.DEPLOY_DEST}}/api
 
       - name: 🧨 Kickstart node server
-        run: curl --basic --user '${{ secrets.ALWAYSDATA_API }} account=jminguely:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID_API }}/restart/
+        run: curl --basic --user '${{ vars.ALWAYSDATA_API }} account=jminguely:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID_API }}/restart/
