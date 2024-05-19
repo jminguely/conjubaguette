@@ -275,7 +275,7 @@ onMounted(() => {
   margin-bottom: 4rem;
 
   &:last-of-type {
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
   }
 
   .label {

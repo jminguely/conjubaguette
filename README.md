@@ -25,7 +25,7 @@ You need to have Python installed on your machine.
 3. Running the Application
    To run the application, use the following command in the terminal:
 
-`python app.py`
+`python -m uvicorn app:app --reloady`
 
 The application will start running on http://0.0.0.0:8080.
 
@@ -35,7 +35,7 @@ The API has one endpoint, /conjugate/<verb>, which returns the conjugation of th
 
 Example:
 
-`GET http://0.0.0.0:8080/conjugate/manger`
+`GET http://0.0.0.0:8080/conjugate/fr/manger`
 
 ### Deployment
 
