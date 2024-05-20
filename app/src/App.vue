@@ -15,7 +15,7 @@
         ></div>
       </div>
       <div
-        class="modal absolute min-h-full w-full z-10 inset-0 overflow-y-auto flex bg-pink/50 backdrop-blur-lg transition-opacity duration-300 p-5"
+        class="modal absolute min-h-full w-full z-50 inset-0 overflow-y-auto flex bg-pink/50 backdrop-blur-lg transition-opacity duration-300 p-5"
         :class="
           showModal != false ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         "
@@ -286,12 +286,14 @@ onMounted(() => {
   }
 
   .label {
-    @apply absolute text-white bg-black px-2 py-1 rounded-t-lg z-10 -top-6 left-2/4 -translate-x-2/4;
+    @apply absolute text-white bg-black px-2 py-1 rounded-t-lg -top-6 left-2/4 -translate-x-2/4;
+    z-index: 1;
   }
 
-  .bravo::after {
-    @apply absolute text-white bg-black px-2 py-1 rounded-b-lg z-10 -bottom-6 left-2/4 -translate-x-2/4;
+  &.bravo::after {
+    @apply absolute text-white bg-black px-2 py-1 rounded-b-lg -bottom-6 left-2/4 -translate-x-2/4;
     content: '✔';
+    z-index: 1;
   }
 }
 </style>
