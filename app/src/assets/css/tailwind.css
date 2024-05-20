@@ -9,8 +9,6 @@
 
 body {
   @apply text-black h-full;
-  background-image: url(/img/bg-site.jpg);
-  background-size: cover;
   background-repeat: no-repeat;
   font-family: 'Fredoka', sans-serif;
   font-optical-sizing: auto;
@@ -22,7 +20,7 @@ body {
 html {
   @apply h-full bg-yellow ;
   background-image: url(/img/bg-site.jpg);
-  background-size: contain;
+  background-size: cover;
   overscroll-behavior: none;
 }
 
