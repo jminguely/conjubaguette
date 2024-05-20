@@ -6,7 +6,11 @@ export default {
       current: 'currentColor',
       white: 'var(--white)',
       black: 'var(--black)',
-      yellow: '#fcd607',
+      yellow: {
+        light: '#ffea00',
+        DEFAULT: '#fcd607',
+        dark: '#b59b00',
+      },
       orange: {
         light: '#ffab40',
         DEFAULT: '#ff9100',

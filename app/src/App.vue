@@ -280,30 +280,17 @@ onMounted(() => {
     margin-bottom: 2rem;
   }
 
-  .label {
-    position: absolute;
-    color: white;
-    background-color: black;
-    padding: 0.25rem 0.6rem;
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
-    z-index: -1;
-    top: -1.5rem;
-    left: 50%;
-    transform: translate(-50%);
+  input {
+    position: relative;
+    z-index: 2;
   }
 
-  &.bravo::after {
-    position: absolute;
-    color: white !important;
-    background-color: black;
-    padding: 0.6rem 0.5rem 0.2rem 0.5rem;
-    border-bottom-left-radius: 1rem;
-    border-bottom-right-radius: 1rem;
-    z-index: -1;
-    bottom: -1.5rem;
-    left: 50%;
-    transform: translate(-50%);
+  .label {
+    @apply absolute text-white bg-black px-2 py-1 rounded-t-lg z-10 -top-6 left-2/4 -translate-x-2/4;
+  }
+
+  .bravo::after {
+    @apply absolute text-white bg-black px-2 py-1 rounded-b-lg z-10 -bottom-6 left-2/4 -translate-x-2/4;
     content: '✔';
   }
 }

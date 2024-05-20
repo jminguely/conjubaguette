@@ -11,7 +11,7 @@
       <template v-for="(tense, keyTense) in availableTenses" :key="keyTense">
         <div
           v-if="tense.split('/', 3)[0] === sessionStore.languageSetting"
-          class="grow rounded-lg p-5 bg-white text-gray-800"
+          class="grow rounded-lg p-5 bg-white text-gray-800 noise"
         >
           <h3 class="font-bold mb-1 p-1">
             {{

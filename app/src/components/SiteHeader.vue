@@ -1,5 +1,5 @@
 <template>
-  <header class="sticky top-0 z-10 py-3 bg-yellow shadow-lg">
+  <header class="noise sticky top-0 z-10 py-3 bg-yellow shadow-xl">
     <div class="container max-w-7xl mx-auto flex justify-between items-center px-5">
       <button
         class="text-xl md:text-3xl hover:text-pink-dark"
