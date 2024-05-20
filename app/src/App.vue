@@ -64,9 +64,9 @@
             ).name
           }}</label>
           <input
-            class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300 disabled:opacity-100"
+            class="cartoon-input block w-full placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
             :class="{
-              'text-transparent': isVerbLoading,
+              [isVerbLoading ? 'text-transparent' : 'text-black']: true,
               'bg-green-dark': isCorrect?.[index]?.isTotallyCorrect,
               'bg-orange': isCorrect?.[index]?.isCorrect,
               'bg-pink': !isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect
