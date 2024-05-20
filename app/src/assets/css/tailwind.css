@@ -18,7 +18,7 @@ body {
 }
 
 html {
-  @apply h-full bg-yellow ;
+  @apply h-full bg-yellow;
   background-image: url(/img/bg-site.jpg);
   background-size: cover;
   overscroll-behavior: none;

@@ -15,7 +15,7 @@
         ></div>
       </div>
       <div
-        class="modal absolute min-h-full w-full z-50 inset-0 overflow-y-auto flex bg-pink/50 backdrop-blur-lg transition-opacity duration-300 p-5"
+        class="modal absolute min-h-full w-full z-50 inset-0 overflow-y-auto flex bg-yellow/50 backdrop-blur-md transition-opacity duration-300 p-5"
         :class="
           showModal != false ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         "
@@ -65,13 +65,12 @@
           }}</label>
           <input
             class="cartoon-input block w-full placeholder:text-white outline-none transition-all duration-300 disabled:opacity-100"
-            :class="
-              isCorrect?.[index]?.isTotallyCorrect
-                ? 'bg-green-dark'
-                : isCorrect?.[index]?.isCorrect
-                  ? 'bg-orange'
-                  : 'bg-pink'
-            "
+            :class="{
+              'text-transparent': isVerbLoading,
+              'bg-green-dark': isCorrect?.[index]?.isTotallyCorrect,
+              'bg-orange': isCorrect?.[index]?.isCorrect,
+              'bg-pink': !isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect
+            }"
             :disabled="isCorrect?.[index]?.isTotallyCorrect"
             v-model="userResponses[index]"
             ref="userInputField"
@@ -80,7 +79,7 @@
             autocomplete="off"
             autocorrect="off"
             autocapitalize="off"
-            :spellcheck="false"
+            spellcheck="false"
           />
         </div>
       </div>
@@ -126,18 +125,16 @@ const showModal = ref(false)
 const availableTenses = ref([])
 const userResponses = ref([])
 const correctAnswers = ref([])
-const isPageLoaded = ref(false)
-
-function onPageLoad() {
-  isPageLoaded.value = true
-}
+const isVerbLoading = ref(true)
+let verb = ref('')
+const fullVerb = ref({})
 
 const removeAccents = (str) => {
   return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : ''
 }
 
 const isCorrect = computed(() => {
-  if (!isPageLoaded.value || !userResponses.value || !correctAnswers.value) {
+  if (isVerbLoading.value || !userResponses.value || !correctAnswers.value) {
     return []
   }
 
@@ -172,9 +169,6 @@ watch(
   { immediate: true }
 )
 
-let verb = ref('')
-const fullVerb = ref({})
-
 const loadAvailableTenses = () => {
   availableTenses.value = tenseStore.checkedTenses.filter((tense) =>
     tense.startsWith(sessionStore.languageSetting)
@@ -189,25 +183,6 @@ const getCorrectConjugation = (verb, tense, person) => {
   return verb.value?.moods?.[tense.split('/')[1]]?.[tense.split('/')[2]]?.[person]
 }
 
-watchEffect(() => {
-  if (!verb.value) return
-  selectedPerson.value = Math.floor(Math.random() * 6)
-  correctAnswers.value = availableTenses.value.map((tense) =>
-    getCorrectConjugation(fullVerb, tense, selectedPerson.value)
-  )
-  userResponses.value = availableTenses.value.map((tense, index) => {
-    const answer = correctAnswers.value[index]
-    if (answer) {
-      if (sessionStore.languageSetting == 'fr' && answer.startsWith("j'")) {
-        return "j'"
-      } else {
-        return answer.split(' ')[0] + ' '
-      }
-    }
-    return ''
-  })
-})
-
 const prepareVerb = async () => {
   isExerciseFinished = false
   showVerb.value = false
@@ -220,7 +195,25 @@ const prepareVerb = async () => {
   )
   fullVerb.value = response.data
 
-  onPageLoad()
+  selectedPerson.value = Math.floor(Math.random() * 6)
+
+  correctAnswers.value = availableTenses.value.map((tense) =>
+    getCorrectConjugation(fullVerb, tense, selectedPerson.value)
+  )
+
+  userResponses.value = availableTenses.value.map((tense, index) => {
+    const answer = correctAnswers.value[index]
+    if (answer) {
+      if (sessionStore.languageSetting == 'fr' && answer.startsWith("j'")) {
+        return "j'"
+      } else {
+        return answer.split(' ')[0] + ' '
+      }
+    }
+    return ''
+  })
+
+  isVerbLoading.value = false
 }
 
 watch(
@@ -257,6 +250,7 @@ function getRandomItemNotLast(verbs, lastVerb) {
 }
 
 const shuffle = () => {
+  isVerbLoading.value = true
   let oldVerb = verb.value
   verb.value = getRandomItemNotLast(verbsStore.checkedVerbs, verb.value)
   if (verb.value === oldVerb) {
@@ -286,14 +280,18 @@ onMounted(() => {
   }
 
   .label {
-    @apply absolute text-white bg-black px-2 py-1 rounded-t-lg -top-6 left-2/4 -translate-x-2/4;
+    @apply absolute text-white bg-black text-xs px-2 py-1.5 rounded-t-xl -top-6 left-2/4 -translate-x-2/4;
+    z-index: 1;
+  }
+
+  &::after {
+    @apply absolute text-white bg-black px-2 pt-1 pb-0.5 rounded-b-xl -bottom-0 left-2/4 -translate-x-2/4 opacity-0 transition-all duration-200 ease-in-out;
+    content: '✔';
     z-index: 1;
   }
 
   &.bravo::after {
-    @apply absolute text-white bg-black px-2 py-1 rounded-b-lg -bottom-6 left-2/4 -translate-x-2/4;
-    content: '✔';
-    z-index: 1;
+    @apply opacity-100 -bottom-6;
   }
 }
 </style>

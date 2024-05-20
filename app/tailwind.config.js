@@ -9,7 +9,7 @@ export default {
       yellow: {
         light: '#ffea00',
         DEFAULT: '#fcd607',
-        dark: '#b59b00',
+        dark: '#b59b00'
       },
       orange: {
         light: '#ffab40',
