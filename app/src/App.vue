@@ -68,7 +68,7 @@
             :class="{
               [isVerbLoading ? 'text-transparent' : 'text-black']: true,
               'bg-green-dark': isCorrect?.[index]?.isTotallyCorrect,
-              'bg-orange': isCorrect?.[index]?.isCorrect,
+              'bg-orange': isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect,
               'bg-pink': !isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect
             }"
             :disabled="isCorrect?.[index]?.isTotallyCorrect"
