@@ -64,6 +64,7 @@
             ).name
           }}</label>
           <input
+            ref="inputFields"
             class="cartoon-input block w-full placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
             :class="{
               [isVerbLoading ? 'text-transparent' : 'text-black']: true,
@@ -73,13 +74,8 @@
             }"
             :disabled="isCorrect?.[index]?.isTotallyCorrect"
             v-model="userResponses[index]"
-            ref="userInputField"
             type="text"
             :id="'answer' + index"
-            autocomplete="off"
-            autocorrect="off"
-            autocapitalize="off"
-            spellcheck="false"
           />
         </div>
       </div>
@@ -118,11 +114,11 @@ const sessionStore = useSessionStore()
 
 const selectedPerson = ref(0)
 
-const userInputField = ref(null)
 const showVerb = ref(false)
 const showFullVerb = ref(false)
 const showModal = ref(false)
 const availableTenses = ref([])
+const inputFields = ref(null)
 const userResponses = ref([])
 const correctAnswers = ref([])
 const isVerbLoading = ref(true)
@@ -177,6 +173,15 @@ const loadAvailableTenses = () => {
 
 watchEffect(() => {
   loadAvailableTenses(sessionStore.languageSetting, tenseStore.checkedTenses)
+
+  if (inputFields?.value?.length > 0) {
+    inputFields.value.forEach((input) => {
+      input.setAttribute('autocomplete', 'off')
+      input.setAttribute('autocorrect', 'off')
+      input.setAttribute('autocapitalize', 'off')
+      input.setAttribute('spellcheck', 'false')
+    })
+  }
 })
 
 const getCorrectConjugation = (verb, tense, person) => {
