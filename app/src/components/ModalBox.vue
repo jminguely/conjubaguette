@@ -1,13 +1,11 @@
 <template>
   <div
-    class="modal absolute min-h-full w-full z-40 inset-0 flex bg-yellow/50 backdrop-blur-md transition-opacity duration-300 p-5"
+    class="modal-container"
     :class="
       showModal != undefined ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     "
   >
-    <div
-      class="modal-content w-full h-full overflow-y-auto bg-white text-black p-6 rounded shadow-lg"
-    >
+    <div class="modal-content">
       <div class="-m-6 flex border-b-2 mb-1">
         <button
           class="grow py-3"
@@ -49,3 +47,13 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="postcss">
+.modal-container {
+  @apply absolute min-h-full w-full z-40 inset-0 flex bg-yellow/50 backdrop-blur-md transition-opacity duration-300 p-5;
+}
+
+.modal-content {
+  @apply w-full h-full overflow-y-auto bg-white text-black p-6 rounded shadow-lg overscroll-none;
+}
+</style>

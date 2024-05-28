@@ -20,6 +20,7 @@ body {
 html {
   @apply h-full bg-yellow;
   background-image: url(/img/bg-site.jpg);
+  background-position: center center;
   background-size: cover;
   overscroll-behavior: none;
 }
