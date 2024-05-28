@@ -2,7 +2,7 @@
   <div class="flex flex-col h-svh">
     <SiteHeader @toggle-modal="handleToggleModal" />
 
-    <main class="grow px-5 container max-w-7xl mx-auto relative">
+    <main class="grow px-5 container w-full max-w-7xl mx-auto relative">
       <h2 class="pt-3">
         Objectif journalier: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}
       </h2>
@@ -14,17 +14,7 @@
           }"
         ></div>
       </div>
-      <div
-        class="modal absolute min-h-full w-full z-50 inset-0 overflow-y-auto flex bg-yellow/50 backdrop-blur-md transition-opacity duration-300 p-5"
-        :class="
-          showModal != false ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        "
-      >
-        <div class="modal-content m-auto bg-white text-black p-6 rounded shadow-lg">
-          <TenseSettings v-if="showModal === 'tenses'" />
-          <VerbsSettings v-if="showModal === 'verbs'" />
-        </div>
-      </div>
+      <ModalBox :showModal="showModal" v-model:showModal="showModal" />
       <div class="flex gap-5 mb-5">
         <div class="text-left w-1/2">
           <h2>
@@ -98,8 +88,6 @@ import moods from './assets/data/moods.json'
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
 import TenseDisplay from './components/TenseDisplay.vue'
-import TenseSettings from './components/TenseSettings.vue'
-import VerbsSettings from './components/VerbsSettings.vue'
 
 import { ref, onMounted, watch, watchEffect, computed } from 'vue'
 import axios from 'axios'
@@ -107,6 +95,7 @@ import axios from 'axios'
 import { useTensesStore } from '/store/tenses'
 import { useVerbsStore } from '/store/verbs'
 import { useSessionStore } from '/store/session'
+import ModalBox from './components/ModalBox.vue'
 
 const tenseStore = useTensesStore()
 const verbsStore = useVerbsStore()
@@ -116,7 +105,7 @@ const selectedPerson = ref(0)
 
 const showVerb = ref(false)
 const showFullVerb = ref(false)
-const showModal = ref(false)
+const showModal = ref(undefined)
 const availableTenses = ref([])
 const inputFields = ref(null)
 const userResponses = ref([])
@@ -231,7 +220,7 @@ watch(
 
 const handleToggleModal = (page) => {
   if (page === showModal.value) {
-    showModal.value = false
+    showModal.value = undefined
     shuffle()
   } else {
     showModal.value = page
@@ -261,7 +250,7 @@ const shuffle = () => {
   if (verb.value === oldVerb) {
     prepareVerb()
   }
-  if (showModal.value) showModal.value = false
+  if (showModal.value) showModal.value = undefined
 }
 
 onMounted(() => {

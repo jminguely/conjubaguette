@@ -1,16 +1,16 @@
 <template>
-  <header class="noise sticky top-0 z-10 py-3 bg-yellow shadow-xl">
+  <header class="noise sticky top-0 z-50 py-3 bg-yellow shadow-xl">
     <div class="container max-w-7xl mx-auto flex justify-between items-center px-5">
       <button
         class="text-xl md:text-3xl hover:text-pink-dark"
-        @click="$emit('toggle-modal', 'tenses')"
+        @click="$emit('toggle-modal', 'GeneralSettings')"
       >
         <CustomIcon name="settings" class="w-7 h-7 md:w-9 md:h-9 m-auto" />
       </button>
       <h1 class="logo">VerboLoco!</h1>
       <button
         class="text-xl md:text-3xl hover:text-pink-dark"
-        @click="$emit('toggle-modal', 'verbs')"
+        @click="$emit('toggle-modal', 'VerbsSettings')"
       >
         <CustomIcon name="verbs" class="w-8 h-8 md:w-10 md:h-10 m-auto" />
       </button>

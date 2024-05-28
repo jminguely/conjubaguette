@@ -4,8 +4,8 @@ export default {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      white: 'var(--white)',
-      black: 'var(--black)',
+      white: '#fcfdd3',
+      black: '#1d092c',
       yellow: {
         light: '#ffea00',
         DEFAULT: '#fcd607',
