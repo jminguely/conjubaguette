@@ -1,0 +1,10 @@
+{
+  "simple-present": {
+    "fr": { "name": "Présent", "mood": "Indicatif" },
+    "es": { "name": "Indicativo presente", "mood": "Indicativo" }
+  },
+  "futur-simple": {
+    "fr": { "name": "Futur", "mood": "Indicatif" },
+    "es": { "name": "Indicativo futuro", "mood": "Indicativo" }
+  }
+}

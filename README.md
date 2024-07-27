@@ -25,7 +25,7 @@ You need to have Python installed on your machine.
 3. Running the Application
    To run the application, use the following command in the terminal:
 
-`python -m uvicorn app:app --reloady`
+`python -m uvicorn app:app --reload`
 
 The application will start running on http://0.0.0.0:8080.
 

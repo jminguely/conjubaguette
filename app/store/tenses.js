@@ -7,7 +7,7 @@ export const useTensesStore = defineStore('checkedTenses', {
       ? JSON.parse(Cookies.get('checkedTensesNew'))
       : []
     if (checkedTenses.length === 0) {
-      checkedTenses = ['fr/indicatif/présent', 'es/indicativo/presente']
+      checkedTenses = ['simple-present']
       Cookies.set('checkedTensesNew', JSON.stringify(checkedTenses))
     }
     return {

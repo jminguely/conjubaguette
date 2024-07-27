@@ -41,7 +41,7 @@
       </div>
       <div class="inputsContainer">
         <div
-          v-for="(tense, index) in availableTenses"
+          v-for="(tense, index) in tenseStore.checkedTenses"
           :key="index"
           class="mb-5 inputVerbContainer"
           :class="
@@ -49,32 +49,38 @@
           "
         >
           <label class="label" :for="'answer' + index">{{
-            moods[tense.split('/')[0]][tense.split('/')[1]].find(
-              (item) => item.key === tense.split('/')[2]
-            ).name
+            tenses[tense][sessionStore.languageSetting].name
           }}</label>
-          <input
-            ref="inputFields"
-            class="cartoon-input block w-full placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
+          <div
+            class="cartoon-input flex gap-1.5 transition-colors duration-200 ease-in-out"
             :class="{
               [isVerbLoading ? 'text-transparent' : 'text-black']: true,
               'bg-green-dark': isCorrect?.[index]?.isTotallyCorrect,
               'bg-orange': isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect,
               'bg-pink': !isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect
             }"
-            :disabled="isCorrect?.[index]?.isTotallyCorrect"
-            v-model="userResponses[index]"
-            type="text"
-            :id="'answer' + index"
-          />
+          >
+            <span
+              class="transition-colors duration-200 ease-in-out"
+              :class="isCorrect?.[index]?.isCorrect ? 'opacity-100' : 'opacity-50'"
+              >{{ subjects[sessionStore.languageSetting][selectedPerson] }}</span
+            >
+            <input
+              ref="inputFields"
+              class="bg-transparent placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
+              :disabled="isCorrect?.[index]?.isTotallyCorrect"
+              v-model="userResponses[index]"
+              type="text"
+              :id="'answer' + index"
+            />
+          </div>
         </div>
       </div>
 
       <div class="py-2">
         <TenseDisplay
           :fullVerb="fullVerb"
-          :selectedPerson="selectedPerson"
-          :availableTenses="availableTenses"
+          :selectedPerson="subjects[sessionStore.languageSetting][selectedPerson]"
         />
       </div>
     </main>
@@ -83,7 +89,8 @@
 </template>
 
 <script setup>
-import moods from './assets/data/moods.json'
+import tenses from './assets/data/tenses.json'
+import subjects from './assets/data/subjects.json'
 
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
@@ -106,7 +113,6 @@ const selectedPerson = ref(0)
 const showVerb = ref(false)
 const showFullVerb = ref(false)
 const showModal = ref(undefined)
-const availableTenses = ref([])
 const inputFields = ref(null)
 const userResponses = ref([])
 const correctAnswers = ref([])
@@ -154,15 +160,7 @@ watch(
   { immediate: true }
 )
 
-const loadAvailableTenses = () => {
-  availableTenses.value = tenseStore.checkedTenses.filter((tense) =>
-    tense.startsWith(sessionStore.languageSetting)
-  )
-}
-
 watchEffect(() => {
-  loadAvailableTenses(sessionStore.languageSetting, tenseStore.checkedTenses)
-
   if (inputFields?.value?.length > 0) {
     inputFields.value.forEach((input) => {
       input.setAttribute('autocomplete', 'off')
@@ -173,10 +171,6 @@ watchEffect(() => {
   }
 })
 
-const getCorrectConjugation = (verb, tense, person) => {
-  return verb.value?.moods?.[tense.split('/')[1]]?.[tense.split('/')[2]]?.[person]
-}
-
 const prepareVerb = async () => {
   isExerciseFinished = false
   showVerb.value = false
@@ -184,26 +178,29 @@ const prepareVerb = async () => {
 
   if (!verb.value) return
 
-  const response = await axios.get(
-    `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`
+  const conjugateTenses = {}
+  tenseStore.checkedTenses.forEach((tenseKey) => {
+    conjugateTenses[tenseKey] = tenses[tenseKey][sessionStore.languageSetting]
+  })
+
+  const response = await axios.post(
+    `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`,
+    {
+      tenses: conjugateTenses
+    }
   )
   fullVerb.value = response.data
 
   selectedPerson.value = Math.floor(Math.random() * 6)
 
-  correctAnswers.value = availableTenses.value.map((tense) =>
-    getCorrectConjugation(fullVerb, tense, selectedPerson.value)
+  correctAnswers.value = tenseStore.checkedTenses.map(
+    (tense) =>
+      fullVerb.value?.conjugation[tense][
+        subjects[sessionStore.languageSetting][selectedPerson.value]
+      ]
   )
 
-  userResponses.value = availableTenses.value.map((tense, index) => {
-    const answer = correctAnswers.value[index]
-    if (answer) {
-      if (sessionStore.languageSetting == 'fr' && answer.startsWith("j'")) {
-        return "j'"
-      } else {
-        return answer.split(' ')[0] + ' '
-      }
-    }
+  userResponses.value = tenseStore.checkedTenses.map(() => {
     return ''
   })
 
