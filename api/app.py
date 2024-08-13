@@ -4,25 +4,21 @@ from mlconjug3 import Conjugator
 
 app = Flask(__name__)
 
+# Wrap the Flask app with WsgiToAsgi
 asgi_app = WsgiToAsgi(app)
 
 @app.post('/conjugate/<lang>/<verb>')
 def conjugate(lang, verb):
-    # Extract the JSON body from the POST request
     data = request.json
-    tenses = data.get('tenses', [])  # Default to an empty list if 'tenses' is not provided
+    tenses = data.get('tenses', [])
 
     conjugator = Conjugator(language=lang, model=None)
+    conjugated_verb = conjugator.conjugate(verb)
 
-    # Assuming you have a function to conjugate the verb for the given tenses
-    conjugated_verb = conjugator.conjugate(verb)  # This is a placeholder for your conjugation logic
-
-    # Extracting verb information
     infinitive = conjugated_verb.verb_info.infinitive
     template = conjugated_verb.verb_info.template
     root = conjugated_verb.verb_info.root
 
-    # Constructing the response dictionary
     response = {
         "verb": {
             "infinitive": infinitive,
@@ -32,7 +28,6 @@ def conjugate(lang, verb):
         "conjugation": {}
     }
 
-    # Adding the requested tenses to the response
     for tense_key, tense_value in tenses.items():
         if tense_value['mood'] in conjugated_verb.conjug_info and tense_value['name'] in conjugated_verb.conjug_info[tense_value['mood']]:
             response["conjugation"][tense_key] = conjugated_verb.conjug_info[tense_value['mood']][tense_value['name']]
@@ -42,7 +37,7 @@ def conjugate(lang, verb):
 @app.get('/test')
 def test():
     conjugator = Conjugator(language="es", model=None)
-    conjugated_verb = conjugator.conjugate("comer", subject='pronoun')  # This is a placeholder for your conjugation logic
+    conjugated_verb = conjugator.conjugate("comer", subject='pronoun')
 
     infinitive = conjugated_verb.verb_info.infinitive
     template = conjugated_verb.verb_info.template
@@ -56,3 +51,8 @@ def test():
       },
       "conjugation": conjugated_verb.conjug_info
     })
+
+# Ensure the ASGI app is exposed
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(asgi_app, host="0.0.0.0", port=8000)
