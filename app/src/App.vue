@@ -3,9 +3,7 @@
     <SiteHeader @toggle-modal="handleToggleModal" />
 
     <main class="grow px-5 container w-full max-w-7xl mx-auto relative">
-      <h2 class="pt-3">
-        Objectif journalier: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}
-      </h2>
+      <h2 class="pt-3">Daily goal: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
       <div class="w-full bg-white rounded-full h-2.5 mb-5">
         <div
           class="bg-pink h-2.5 rounded-full transition-all duration-1000 ease-in-out"

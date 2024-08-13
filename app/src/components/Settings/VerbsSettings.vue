@@ -11,8 +11,8 @@
           <table class="min-w-full divide-y divide-black border-2">
             <thead class="bg-black text-white">
               <tr>
-                <th class="text-left px-2 py-2" scope="col">French</th>
-                <th class="text-left px-2 py-2" scope="col">Spanish</th>
+                <th class="text-left px-2 py-2 equal-width" scope="col">French</th>
+                <th class="text-left px-2 py-2 equal-width" scope="col">Spanish</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -25,7 +25,7 @@
                   {{ verb.es_label ? verb.es_label : verb.es }}
                 </td>
 
-                <td class="px-2 py-1">
+                <td class="px-2 py-1 flex">
                   <label class="switch ml-auto">
                     <input
                       type="checkbox"
@@ -114,5 +114,9 @@ input:checked + .slider:before {
 
 .slider.round:before {
   @apply rounded-full;
+}
+
+.equal-width {
+  width: 33.33%;
 }
 </style>
