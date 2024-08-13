@@ -33,7 +33,6 @@ def conjugate(lang, verb):
     }
 
     # Adding the requested tenses to the response
-    print(tenses);
     for tense_key, tense_value in tenses.items():
         if tense_value['mood'] in conjugated_verb.conjug_info and tense_value['name'] in conjugated_verb.conjug_info[tense_value['mood']]:
             response["conjugation"][tense_key] = conjugated_verb.conjug_info[tense_value['mood']][tense_value['name']]
@@ -42,8 +41,8 @@ def conjugate(lang, verb):
 
 @app.get('/test')
 def test():
-    conjugator = Conjugator(language="fr", model=None)
-    conjugated_verb = conjugator.conjugate("manger", subject='pronoun')  # This is a placeholder for your conjugation logic
+    conjugator = Conjugator(language="es", model=None)
+    conjugated_verb = conjugator.conjugate("comer", subject='pronoun')  # This is a placeholder for your conjugation logic
 
     infinitive = conjugated_verb.verb_info.infinitive
     template = conjugated_verb.verb_info.template

@@ -8,10 +8,10 @@
       class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap pt-3"
       v-if="showFullVerb"
     >
-      <template v-for="(tense, keyTense) in fullVerb.conjugation" :key="keyTense">
+      <template v-for="keyTense in availableTenses" :key="keyTense">
         <div class="grow rounded-lg p-5 bg-white text-gray-800 noise">
           <h3 class="font-bold mb-1 p-1">
-            {{ keyTense }}
+            {{ tenses[keyTense][sessionStore.languageSetting].label }}
           </h3>
 
           <ul class="flex flex-col items-start">
@@ -33,7 +33,9 @@
 </template>
 
 <script setup>
-import subjects from '../assets/data/subjects.json'
+import tenses from '@/assets/data/tenses.json'
+import subjects from '@/assets/data/subjects.json'
+
 import { useSessionStore } from '/store/session'
 const sessionStore = useSessionStore()
 

@@ -49,7 +49,7 @@
           "
         >
           <label class="label" :for="'answer' + index">{{
-            tenses[tense][sessionStore.languageSetting].name
+            tenses[tense][sessionStore.languageSetting].label
           }}</label>
           <div
             class="cartoon-input flex gap-1.5 transition-colors duration-200 ease-in-out"
@@ -80,6 +80,7 @@
       <div class="py-2">
         <TenseDisplay
           :fullVerb="fullVerb"
+          :availableTenses="tenseStore.checkedTenses"
           :selectedPerson="subjects[sessionStore.languageSetting][selectedPerson]"
         />
       </div>

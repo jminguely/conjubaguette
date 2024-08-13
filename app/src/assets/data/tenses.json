@@ -1,10 +1,34 @@
 {
   "simple-present": {
-    "fr": { "name": "Présent", "mood": "Indicatif" },
-    "es": { "name": "Indicativo presente", "mood": "Indicativo" }
+    "fr": { "label": "Présent", "name": "Présent", "mood": "Indicatif" },
+    "es": { "label": "Presente", "name": "Indicativo presente", "mood": "Indicativo" }
   },
-  "futur-simple": {
-    "fr": { "name": "Futur", "mood": "Indicatif" },
-    "es": { "name": "Indicativo futuro", "mood": "Indicativo" }
+  "past-simple": {
+    "fr": { "label": "Passé Simple", "name": "Passé Simple", "mood": "Indicatif" },
+    "es": {
+      "label": "Pretérito indefinido",
+      "name": "Indicativo pretérito perfecto simple",
+      "mood": "Indicativo"
+    }
+  },
+  "past-progressive": {
+    "fr": { "label": "Imparfait", "name": "Imparfait", "mood": "Indicatif" },
+    "es": {
+      "label": "Pretérito imperfecto",
+      "name": "Indicativo pretérito imperfecto",
+      "mood": "Indicativo"
+    }
+  },
+  "future-simple": {
+    "fr": { "label": "Futur", "name": "Futur", "mood": "Indicatif" },
+    "es": { "label": "Futuro", "name": "Indicativo futuro", "mood": "Indicativo" }
+  },
+  "conditional-present": {
+    "fr": { "label": "Conditionnel présent", "name": "Présent", "mood": "Conditionnel" },
+    "es": {
+      "label": "Condicional simple",
+      "name": "Condicional Condicional",
+      "mood": "Condicional"
+    }
   }
 }
