@@ -2,3 +2,4 @@ fastapi
 verbecc
 uvicorn
 flask
+mlconjug3
