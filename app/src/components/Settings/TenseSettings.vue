@@ -45,10 +45,8 @@ import { ref, computed } from 'vue'
 
 import tenses from '@/assets/data/tenses.json'
 import { useTensesStore } from '/store/tenses'
-import { useSessionStore } from '/store/session'
 
 let tenseStore = ref(useTensesStore())
-let sessionStore = ref(useSessionStore())
 
 const groupedTenses = computed(() => {
   const groups = {}
