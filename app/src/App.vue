@@ -67,7 +67,7 @@
             >
             <input
               ref="inputFields"
-              class="bg-transparent placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
+              class="bg-transparent w-full placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
               :disabled="isCorrect?.[index]?.isTotallyCorrect"
               v-model="userResponses[index]"
               type="text"
