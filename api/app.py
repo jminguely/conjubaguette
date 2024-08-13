@@ -55,4 +55,8 @@ def test():
 # Ensure the ASGI app is exposed
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(asgi_app, host="0.0.0.0", port=8000)
+    import os
+    ip = os.getenv('IP', '::')
+    port = int(os.getenv('PORT', 8115))
+
+    uvicorn.run(asgi_app, host=ip, port=port, lifespan="off")
