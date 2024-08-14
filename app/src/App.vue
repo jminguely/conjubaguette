@@ -276,7 +276,7 @@ onMounted(() => {
 
   &::after {
     @apply absolute text-white bg-black px-2 pt-1 pb-0.5 rounded-b-xl -bottom-0 left-2/4 -translate-x-2/4 opacity-0 transition-all duration-200 ease-in-out;
-    content: '✔';
+    content: '✓';
     z-index: 1;
   }
 
