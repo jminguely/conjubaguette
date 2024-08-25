@@ -14,8 +14,8 @@ export default defineConfig({
   server: {
     proxy: {
       '/conjugate': {
-        // target: 'http://127.0.0.1:8000/conjugate/',
-        target: 'https://api.verbolo.co/conjugate/',
+        target: 'http://127.0.0.1:8000/conjugate/',
+        //target: 'https://api.verbolo.co/conjugate/',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/conjugate/, '')
       }

@@ -7,7 +7,7 @@ export const useTensesStore = defineStore('checkedTenses', {
       ? JSON.parse(Cookies.get('checkedTensesNew'))
       : []
     if (checkedTenses.length === 0) {
-      checkedTenses = ['simple-present']
+      checkedTenses = ['present-tense']
       Cookies.set('checkedTensesNew', JSON.stringify(checkedTenses))
     }
     return {

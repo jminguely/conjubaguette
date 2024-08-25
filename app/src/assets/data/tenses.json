@@ -1,34 +1,86 @@
 {
-  "simple-present": {
-    "fr": { "label": "Présent", "name": "Présent", "mood": "Indicatif" },
-    "es": { "label": "Presente", "name": "Indicativo presente", "mood": "Indicativo" }
-  },
-  "past-simple": {
-    "fr": { "label": "Passé Simple", "name": "Passé Simple", "mood": "Indicatif" },
+  "present-tense": {
+    "fr": {
+      "label": "Présent de l'indicatif",
+      "name": "Présent",
+      "mood": "Indicatif",
+      "usage": "Actions habituelles, vérités générales, faits au moment de la parole"
+    },
     "es": {
-      "label": "Pretérito indefinido",
-      "name": "Indicativo pretérito perfecto simple",
-      "mood": "Indicativo"
+      "label": "Presente de indicativo",
+      "name": "Indicativo presente",
+      "mood": "Indicativo",
+      "usage": "Acciones habituales, verdades generales, hechos en el momento de hablar"
     }
   },
-  "past-progressive": {
-    "fr": { "label": "Imparfait", "name": "Imparfait", "mood": "Indicatif" },
+  "past-continuous-tense": {
+    "fr": {
+      "label": "Imparfait",
+      "name": "Imparfait",
+      "mood": "Indicatif",
+      "usage": "Habitudes passées, descriptions, actions en cours dans le passé"
+    },
     "es": {
       "label": "Pretérito imperfecto",
       "name": "Indicativo pretérito imperfecto",
-      "mood": "Indicativo"
+      "mood": "Indicativo",
+      "usage": "Hábitos pasados, descripciones, acciones en curso en el pasado"
     }
   },
-  "future-simple": {
-    "fr": { "label": "Futur", "name": "Futur", "mood": "Indicatif" },
-    "es": { "label": "Futuro", "name": "Indicativo futuro", "mood": "Indicativo" }
+  "simple-future-tense": {
+    "fr": {
+      "label": "Futur simple",
+      "name": "Futur",
+      "mood": "Indicatif",
+      "usage": "Actions qui se produiront dans le futur"
+    },
+    "es": {
+      "label": "Futuro simple",
+      "name": "Indicativo futuro",
+      "mood": "Indicativo",
+      "usage": "Acciones que ocurrirán en el futuro"
+    }
   },
-  "conditional-present": {
-    "fr": { "label": "Conditionnel présent", "name": "Présent", "mood": "Conditionnel" },
+  "simple-past": {
+    "fr": {
+      "label": "Passé simple",
+      "name": "Passé Simple",
+      "mood": "Indicatif",
+      "usage": "Actions terminées dans le passé, récit au passé"
+    },
+    "es": {
+      "label": "Pretérito perfecto simple",
+      "name": "Indicativo pretérito perfecto simple",
+      "mood": "Indicativo",
+      "usage": "Acciones terminadas en el pasado, relato en el pasado"
+    }
+  },
+  "conditional-present-tense": {
+    "fr": {
+      "label": "Conditionnel présent",
+      "name": "Présent",
+      "mood": "Conditionnel",
+      "usage": "Actions hypothétiques, conseils, politesse"
+    },
     "es": {
       "label": "Condicional simple",
       "name": "Condicional Condicional",
-      "mood": "Condicional"
+      "mood": "Condicional",
+      "usage": "Acciones hipotéticas, consejos, cortesía"
+    }
+  },
+  "present-subjunctive-mood": {
+    "fr": {
+      "label": "Subjonctif présent",
+      "name": "Présent",
+      "mood": "Subjonctif",
+      "usage": "Après certaines conjonctions, pour exprimer des doutes, des émotions, des volontés..."
+    },
+    "es": {
+      "label": "Subjuntivo presente",
+      "name": "Subjuntivo presente",
+      "mood": "Subjuntivo",
+      "usage": "Después de ciertas conjunciones, para expresar dudas, emociones, voluntades..."
     }
   }
 }

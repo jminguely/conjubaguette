@@ -36,12 +36,18 @@ def conjugate(lang, verb):
 
 @app.get('/test')
 def test():
-    conjugator = Conjugator(language="es", model=None)
-    conjugated_verb = conjugator.conjugate("comer", subject='pronoun')
+    conjugator = Conjugator(language="fr", model=None)
+    conjugated_verb = conjugator.conjugate("manger", subject='pronoun')
 
     infinitive = conjugated_verb.verb_info.infinitive
     template = conjugated_verb.verb_info.template
     root = conjugated_verb.verb_info.root
+
+    passe_compose = conjugated_verb.conjug_info.get('Indicatif')
+
+    print("yé")
+    print(passe_compose)
+
 
     return jsonify({
       "verb": {
@@ -49,7 +55,7 @@ def test():
         "template": template,
         "root": root,
       },
-      "conjugation": conjugated_verb.conjug_info
+      "conjugation": conjugated_verb.iterate()
     })
 
 # Ensure the ASGI app is exposed
