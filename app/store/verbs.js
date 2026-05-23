@@ -1,12 +1,16 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import availableVerbs from '../src/assets/data/verbs.json'
+import { getCookieJson } from './storage'
 
 export const useVerbsStore = defineStore('checkedVerbs', {
   state: () => {
-    let checkedVerbs = Cookies.get('checkedVerbsNew')
-      ? JSON.parse(Cookies.get('checkedVerbsNew'))
-      : []
+    let checkedVerbs = getCookieJson('checkedVerbsNew', [])
+    checkedVerbs = Array.isArray(checkedVerbs) ? checkedVerbs : []
+
+    checkedVerbs = checkedVerbs.filter((checkedVerb) =>
+      availableVerbs.some((verb) => JSON.stringify(verb) === JSON.stringify(checkedVerb))
+    )
 
     if (checkedVerbs.length === 0) {
       checkedVerbs = availableVerbs.map((verb) => verb)

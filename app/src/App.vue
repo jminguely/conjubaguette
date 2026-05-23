@@ -13,6 +13,9 @@
         ></div>
       </div>
       <ModalBox :showModal="showModal" v-model:showModal="showModal" />
+      <p v-if="errorMessage" class="bg-white text-pink-dark font-semibold rounded-lg p-4 mb-5">
+        {{ errorMessage }}
+      </p>
       <div class="flex gap-5 mb-5">
         <div class="text-left w-1/2">
           <h2>
@@ -39,11 +42,13 @@
       </div>
       <div class="inputsContainer">
         <div
-          v-for="(tense, index) in tenseStore.checkedTenses"
+          v-for="(tense, index) in exerciseTenses"
           :key="index"
           class="mb-5 inputVerbContainer"
           :class="
-            (isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) && 'bravo'
+            exerciseAvailability?.[index] &&
+            (isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) &&
+            'bravo'
           "
         >
           <label class="label" :for="'answer' + index">{{
@@ -53,20 +58,31 @@
             class="cartoon-input flex gap-1.5 transition-colors duration-200 ease-in-out"
             :class="{
               [isVerbLoading ? 'text-transparent' : 'text-black']: true,
-              'bg-green-dark': isCorrect?.[index]?.isTotallyCorrect,
-              'bg-orange': isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect,
-              'bg-pink': !isCorrect?.[index]?.isCorrect && !isCorrect?.[index]?.isTotallyCorrect
+              'bg-gray-300': !exerciseAvailability?.[index],
+              'bg-green-dark': exerciseAvailability?.[index] && isCorrect?.[index]?.isTotallyCorrect,
+              'bg-orange':
+                exerciseAvailability?.[index] &&
+                isCorrect?.[index]?.isCorrect &&
+                !isCorrect?.[index]?.isTotallyCorrect,
+              'bg-pink':
+                exerciseAvailability?.[index] &&
+                !isCorrect?.[index]?.isCorrect &&
+                !isCorrect?.[index]?.isTotallyCorrect
             }"
           >
             <span
               class="transition-colors duration-200 ease-in-out"
-              :class="isCorrect?.[index]?.isCorrect ? 'opacity-100' : 'opacity-50'"
-              >{{ subjects[sessionStore.languageSetting][selectedPerson] }}</span
+              :class="[
+                !exerciseAvailability?.[index] ? 'line-through opacity-70' : '',
+                isCorrect?.[index]?.isCorrect ? 'opacity-100' : 'opacity-50'
+              ]"
+              >{{ getDisplaySubject(tense, subjects[sessionStore.languageSetting][selectedPerson]) }}</span
             >
             <input
               ref="inputFields"
               class="bg-transparent w-full placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
-              :disabled="isCorrect?.[index]?.isTotallyCorrect"
+              :disabled="isCorrect?.[index]?.isTotallyCorrect || !exerciseAvailability?.[index]"
+              :placeholder="''"
               v-model="userResponses[index]"
               type="text"
               :id="'answer' + index"
@@ -78,7 +94,7 @@
       <div class="py-2">
         <TenseDisplay
           :fullVerb="fullVerb"
-          :availableTenses="tenseStore.checkedTenses"
+          :availableTenses="exerciseTenses"
           :selectedPerson="subjects[sessionStore.languageSetting][selectedPerson]"
         />
       </div>
@@ -102,6 +118,9 @@ import { useTensesStore } from '/store/tenses'
 import { useVerbsStore } from '/store/verbs'
 import { useSessionStore } from '/store/session'
 import ModalBox from './components/ModalBox.vue'
+import { compareAnswer, getConjugationAnswer } from './lib/exercise'
+import { getAllowedPersonIndices } from './lib/exerciseModes'
+import { filterVerbsByDifficulty } from './lib/verbDifficulty'
 
 const tenseStore = useTensesStore()
 const verbsStore = useVerbsStore()
@@ -115,24 +134,38 @@ const showModal = ref(undefined)
 const inputFields = ref(null)
 const userResponses = ref([])
 const correctAnswers = ref([])
+const exerciseAvailability = ref([])
 const isVerbLoading = ref(true)
 let verb = ref('')
 const fullVerb = ref({})
+const exerciseTenses = ref([])
+const errorMessage = ref('')
 
-const removeAccents = (str) => {
-  return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') : ''
+const eligibleVerbs = computed(() =>
+  filterVerbsByDifficulty(verbsStore.checkedVerbs, sessionStore.difficultySetting)
+)
+
+const allowedPersonIndices = computed(() => getAllowedPersonIndices(sessionStore.personSetting))
+
+const isImperativeFrenchTense = (tenseKey) => {
+  const tense = tenses?.[tenseKey]?.[sessionStore.languageSetting]
+  if (!tense) return false
+  return sessionStore.languageSetting === 'fr' && tense.mood === 'Imperatif'
 }
+
+const getDisplaySubject = (tenseKey, subject) =>
+  isImperativeFrenchTense(tenseKey) ? `(${subject})` : subject
 
 const isCorrect = computed(() => {
   if (isVerbLoading.value || !userResponses.value || !correctAnswers.value) {
     return []
   }
 
-  const results = userResponses.value.map((response, index) => {
-    const isTotallyCorrect = response === correctAnswers.value[index]
-    const isCorrect = removeAccents(response) === removeAccents(correctAnswers.value[index])
-    return { isCorrect, isTotallyCorrect }
-  })
+  const results = userResponses.value.map((response, index) =>
+    exerciseAvailability.value[index]
+      ? compareAnswer(response, correctAnswers.value[index])
+      : { isCorrect: true, isTotallyCorrect: true, isUnavailable: true }
+  )
 
   return results
 })
@@ -144,14 +177,8 @@ watch(
   () => {
     if (isExerciseFinished || isCorrect.value.length === 0) return
     // Return true if all answers are correct
-    const areAllAnswersCorrect = isCorrect.value.reduce(
-      (acc, result) => {
-        acc.value = acc.value && result.isCorrect
-        return acc
-      },
-      { value: true }
-    )
-    if (areAllAnswersCorrect.value) {
+    const areAllAnswersCorrect = isCorrect.value.every((result) => result.isCorrect)
+    if (areAllAnswersCorrect) {
       sessionStore.incrementCounter()
       isExerciseFinished = true
     }
@@ -174,6 +201,8 @@ const prepareVerb = async () => {
   isExerciseFinished = false
   showVerb.value = false
   showFullVerb.value = false
+  errorMessage.value = ''
+  exerciseAvailability.value = []
 
   if (!verb.value) return
 
@@ -182,28 +211,60 @@ const prepareVerb = async () => {
     conjugateTenses[tenseKey] = tenses[tenseKey][sessionStore.languageSetting]
   })
 
-  const response = await axios.post(
-    `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`,
-    {
-      tenses: conjugateTenses
+  try {
+    const response = await axios.post(
+      `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`,
+      {
+        tenses: conjugateTenses
+      }
+    )
+    fullVerb.value = response.data
+    exerciseTenses.value = [...tenseStore.checkedTenses]
+
+    const playablePersonIndices = allowedPersonIndices.value.filter((personIndex) =>
+      exerciseTenses.value.some((tense) =>
+        getConjugationAnswer(
+          fullVerb.value,
+          tense,
+          sessionStore.languageSetting,
+          subjects[sessionStore.languageSetting][personIndex]
+        )
+      )
+    )
+
+    const personPool =
+      playablePersonIndices.length > 0 ? playablePersonIndices : allowedPersonIndices.value
+    selectedPerson.value = personPool[Math.floor(Math.random() * personPool.length)]
+
+    const selectedSubject = subjects[sessionStore.languageSetting][selectedPerson.value]
+    exerciseAvailability.value = exerciseTenses.value.map((tense) =>
+      Boolean(
+        getConjugationAnswer(fullVerb.value, tense, sessionStore.languageSetting, selectedSubject)
+      )
+    )
+
+    if (exerciseAvailability.value.every((isAvailable) => !isAvailable)) {
+      throw new Error(
+        'No form is available for the selected person mode with this verb and tense selection.'
+      )
     }
-  )
-  fullVerb.value = response.data
 
-  selectedPerson.value = Math.floor(Math.random() * 6)
+    correctAnswers.value = exerciseTenses.value.map((tense) =>
+      getConjugationAnswer(fullVerb.value, tense, sessionStore.languageSetting, selectedSubject)
+    )
 
-  correctAnswers.value = tenseStore.checkedTenses.map(
-    (tense) =>
-      fullVerb.value?.conjugation[tense][
-        subjects[sessionStore.languageSetting][selectedPerson.value]
-      ]
-  )
-
-  userResponses.value = tenseStore.checkedTenses.map(() => {
-    return ''
-  })
-
-  isVerbLoading.value = false
+    userResponses.value = exerciseTenses.value.map(() => '')
+  } catch (error) {
+    fullVerb.value = {}
+    exerciseTenses.value = []
+    userResponses.value = []
+    correctAnswers.value = []
+    exerciseAvailability.value = []
+    errorMessage.value =
+      error.response?.data?.error || error.message || 'Unable to load this exercise.'
+  } finally {
+    isVerbLoading.value = false
+  }
 }
 
 watch(
@@ -241,8 +302,22 @@ function getRandomItemNotLast(verbs, lastVerb) {
 
 const shuffle = () => {
   isVerbLoading.value = true
+  errorMessage.value = ''
+  exerciseAvailability.value = []
+  if (verbsStore.checkedVerbs.length === 0) {
+    verb.value = ''
+    fullVerb.value = {}
+    exerciseTenses.value = []
+    userResponses.value = []
+    correctAnswers.value = []
+    errorMessage.value = 'Select at least one verb to start practicing.'
+    isVerbLoading.value = false
+    if (showModal.value) showModal.value = undefined
+    return
+  }
+  const verbPool = eligibleVerbs.value.length > 0 ? eligibleVerbs.value : verbsStore.checkedVerbs
   let oldVerb = verb.value
-  verb.value = getRandomItemNotLast(verbsStore.checkedVerbs, verb.value)
+  verb.value = getRandomItemNotLast(verbPool, verb.value)
   if (verb.value === oldVerb) {
     prepareVerb()
   }

@@ -1,23 +1,26 @@
 import { fileURLToPath, URL } from 'node:url'
 
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [vue()],
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
-  },
-  server: {
-    proxy: {
-      '/conjugate': {
-        // target: 'http://127.0.0.1:8000/conjugate/',
-        target: 'https://api.verbolo.co/conjugate/',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/conjugate/, '')
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const apiTarget = env.VITE_API_PROXY_TARGET || 'http://127.0.0.1:8115'
+
+  return {
+    plugins: [vue()],
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url))
+      }
+    },
+    server: {
+      proxy: {
+        '/conjugate': {
+          target: apiTarget,
+          changeOrigin: true
+        }
       }
     }
   }

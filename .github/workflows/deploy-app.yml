@@ -35,10 +35,13 @@ jobs:
           cache-dependency-path: "./app/package-lock.json"
 
       - name: Install dependencies 👨🏻‍💻
-        run: npm install
+        run: npm ci
 
       - name: Run linter 👀
         run: npm run lint
+
+      - name: Run tests 🧪
+        run: npm run test:unit -- --run
 
       - name: Run build 👷🏻
         run: npm run build

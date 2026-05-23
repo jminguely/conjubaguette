@@ -1,11 +1,14 @@
 import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
+import tenses from '../src/assets/data/tenses.json'
+import { getCookieJson } from './storage'
 
 export const useTensesStore = defineStore('checkedTenses', {
   state: () => {
-    let checkedTenses = Cookies.get('checkedTensesNew')
-      ? JSON.parse(Cookies.get('checkedTensesNew'))
-      : []
+    let checkedTenses = getCookieJson('checkedTensesNew', [])
+    checkedTenses = Array.isArray(checkedTenses) ? checkedTenses : []
+    checkedTenses = checkedTenses.filter((tense) => tenses[tense])
+
     if (checkedTenses.length === 0) {
       checkedTenses = ['present-tense']
       Cookies.set('checkedTensesNew', JSON.stringify(checkedTenses))

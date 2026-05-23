@@ -18,7 +18,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node: [18]
+        python: ["3.12"]
 
     steps:
       - name: Checkout 🛎
@@ -27,9 +27,15 @@ jobs:
           ref: main
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.9
+          python-version: ${{ matrix.python }}
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests 🧪
+        run: pytest
 
       - name: 🚀 Ship the whole thin
         id: deploy

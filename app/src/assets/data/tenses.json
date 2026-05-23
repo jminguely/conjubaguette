@@ -82,5 +82,19 @@
       "mood": "Subjuntivo",
       "usage": "Después de ciertas conjunciones, para expresar dudas, emociones, voluntades..."
     }
+  },
+  "imperative-present": {
+    "fr": {
+      "label": "Impératif présent",
+      "name": "Imperatif Présent",
+      "mood": "Imperatif",
+      "usage": "Ordres, conseils, interdictions et instructions"
+    },
+    "es": {
+      "label": "Imperativo",
+      "name": "Imperativo Afirmativo",
+      "mood": "Imperativo",
+      "usage": "Órdenes, consejos, prohibiciones e instrucciones"
+    }
   }
 }

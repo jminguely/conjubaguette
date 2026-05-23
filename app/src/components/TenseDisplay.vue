@@ -19,10 +19,25 @@
               <li
                 v-if="fullVerb?.conjugation[keyTense]"
                 class="p-1 flex gap-1"
-                :class="selectedPerson === keyPerson && 'bg-green/30'"
+                :class="[
+                  selectedPerson === keyPerson && 'bg-green/30',
+                  !isAvailable(keyTense, keyPerson) && 'opacity-40 grayscale'
+                ]"
               >
-                <span>{{ keyPerson }} </span>
-                <span v-html="highlightStem(fullVerb?.conjugation[keyTense][keyPerson])"></span>
+                <span :class="!isAvailable(keyTense, keyPerson) ? 'line-through' : ''">{{ getDisplaySubject(keyTense, keyPerson) }} </span>
+                <span>
+                  <template
+                    v-for="(part, index) in getHighlightedParts(
+                      getDisplayedConjugation(keyTense, keyPerson)
+                    )"
+                    :key="`${keyTense}-${keyPerson}-${index}`"
+                  >
+                    <span v-if="part.highlight" class="text-red-500 font-bold">{{
+                      part.text
+                    }}</span>
+                    <span v-else>{{ part.text }}</span>
+                  </template>
+                </span>
               </li>
             </template>
           </ul>
@@ -35,6 +50,7 @@
 <script setup>
 import tenses from '@/assets/data/tenses.json'
 import subjects from '@/assets/data/subjects.json'
+import { getConjugationAnswer, getSubjectApiKey } from '@/lib/exercise'
 
 import { useSessionStore } from '/store/session'
 const sessionStore = useSessionStore()
@@ -49,13 +65,36 @@ const props = defineProps({
   selectedPerson: String
 })
 
-const highlightStem = (person) => {
+const getDisplayedConjugation = (tense, subject) =>
+  getConjugationAnswer(props.fullVerb, tense, sessionStore.languageSetting, subject)
+
+const isAvailable = (tense, subject) => {
+  const available = props.fullVerb?.availability?.[tense] || []
+  return (
+    available.includes(subject) ||
+    available.includes(getSubjectApiKey(sessionStore.languageSetting, subject))
+  )
+}
+
+const isImperativeFrenchTense = (tenseKey) => {
+  const tense = tenses?.[tenseKey]?.[sessionStore.languageSetting]
+  if (!tense) return false
+  return sessionStore.languageSetting === 'fr' && tense.mood === 'Imperatif'
+}
+
+const getDisplaySubject = (tenseKey, subject) =>
+  isImperativeFrenchTense(tenseKey) ? `(${subject})` : subject
+
+const getHighlightedParts = (person) => {
   if (props.fullVerb && props.fullVerb.verb) {
     const root = props.fullVerb.verb.root
-    return person.replace(
-      new RegExp(`^${root}`, 'i'),
-      `<span class="text-red-500 font-bold">${root}</span>`
-    )
+    if (person?.toLowerCase().startsWith(root.toLowerCase())) {
+      return [
+        { text: person.slice(0, root.length), highlight: true },
+        { text: person.slice(root.length), highlight: false }
+      ]
+    }
   }
+  return [{ text: person || '', highlight: false }]
 }
 </script>

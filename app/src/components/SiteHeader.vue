@@ -3,6 +3,7 @@
     <div class="container max-w-7xl mx-auto flex justify-between items-center px-5">
       <button
         class="text-xl md:text-3xl hover:text-pink-dark"
+        aria-label="Open general settings"
         @click="$emit('toggle-modal', 'GeneralSettings')"
       >
         <CustomIcon name="settings" class="w-7 h-7 md:w-9 md:h-9 m-auto" />
@@ -10,6 +11,7 @@
       <h1 class="logo">VerboLoco!</h1>
       <button
         class="text-xl md:text-3xl hover:text-pink-dark"
+        aria-label="Open verb settings"
         @click="$emit('toggle-modal', 'VerbsSettings')"
       >
         <CustomIcon name="verbs" class="w-8 h-8 md:w-10 md:h-10 m-auto" />
