@@ -12,10 +12,17 @@ app = Flask(__name__)
 asgi_app = WsgiToAsgi(app)
 
 SUPPORTED_LANGUAGES = {"fr", "es"}
-VERB_DIFFICULTY_PATH = Path(__file__).resolve().parents[1] / "app" / "src" / "assets" / "data" / "verbDifficulty.json"
+VERB_DIFFICULTY_PATHS = (
+    Path(__file__).resolve().parent / "verbDifficulty.json",
+    Path(__file__).resolve().parents[1] / "app" / "src" / "assets" / "data" / "verbDifficulty.json",
+)
 
-with VERB_DIFFICULTY_PATH.open(encoding="utf-8") as difficulty_file:
-    VERB_DIFFICULTY = json.load(difficulty_file)
+VERB_DIFFICULTY = {"hard": [], "medium": []}
+for difficulty_path in VERB_DIFFICULTY_PATHS:
+    if difficulty_path.exists():
+        with difficulty_path.open(encoding="utf-8") as difficulty_file:
+            VERB_DIFFICULTY = json.load(difficulty_file)
+        break
 
 
 def error_response(message, status_code, details=None):

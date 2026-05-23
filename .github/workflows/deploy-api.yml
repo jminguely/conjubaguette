@@ -44,7 +44,7 @@ jobs:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
         with:
           flags: "-auvzrl --delete"
-          options: ""
+          options: "--exclude venv --exclude .venv --exclude __pycache__"
           ssh_options: ""
           src: "./api/*"
           dest: ${{vars.DEPLOY_DEST}}/api
