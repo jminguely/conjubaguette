@@ -130,6 +130,20 @@ def test_health(client):
     assert response.get_json() == {"status": "ok"}
 
 
+def test_conjugate_preflight_allows_frontend_origin(client):
+    response = client.options(
+        "/conjugate/es/sentarse",
+        headers={
+            "Origin": "https://verbo.minguely.ch",
+            "Access-Control-Request-Method": "POST",
+            "Access-Control-Request-Headers": "content-type",
+        },
+    )
+
+    assert response.status_code == 200
+    assert response.headers.get("Access-Control-Allow-Origin") == "https://verbo.minguely.ch"
+
+
 def test_conjugate_returns_requested_tense(client):
     response = client.post(
         "/conjugate/fr/manger",

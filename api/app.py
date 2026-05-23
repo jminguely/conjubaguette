@@ -1,11 +1,29 @@
 from functools import lru_cache
 import json
+import os
 from pathlib import Path
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from asgiref.wsgi import WsgiToAsgi
 
 app = Flask(__name__)
+
+ALLOWED_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv(
+        "ALLOWED_ORIGINS",
+        "https://verbo.minguely.ch,http://localhost:5173,http://127.0.0.1:5173",
+    ).split(",")
+    if origin.strip()
+]
+
+CORS(
+    app,
+    resources={r"/conjugate/*": {"origins": ALLOWED_ORIGINS}, r"/health": {"origins": "*"}},
+    methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type"],
+)
 
 # Wrap the Flask app with WsgiToAsgi
 asgi_app = WsgiToAsgi(app)
