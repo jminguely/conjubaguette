@@ -4,7 +4,6 @@ from pathlib import Path
 
 from flask import Flask, request, jsonify
 from asgiref.wsgi import WsgiToAsgi
-from mlconjug3 import Conjugator
 
 app = Flask(__name__)
 
@@ -34,6 +33,11 @@ def error_response(message, status_code, details=None):
 
 @lru_cache(maxsize=len(SUPPORTED_LANGUAGES))
 def get_conjugator(lang):
+    try:
+        from mlconjug3 import Conjugator
+    except Exception as exc:
+        raise RuntimeError(f"mlconjug3 import failed: {exc}") from exc
+
     return Conjugator(language=lang, model=None)
 
 
@@ -179,6 +183,12 @@ def conjugate(lang, verb):
 
     try:
         conjugated_verb = get_conjugator(lang).conjugate(verb)
+    except RuntimeError as exc:
+        return error_response(
+            "Conjugation service unavailable",
+            503,
+            {"reason": str(exc)},
+        )
     except Exception as exc:
         return error_response(
             "Unable to conjugate verb",
