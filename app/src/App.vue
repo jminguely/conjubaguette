@@ -59,7 +59,8 @@
             :class="{
               [isVerbLoading ? 'text-transparent' : 'text-black']: true,
               'bg-gray-300': !exerciseAvailability?.[index],
-              'bg-green-dark': exerciseAvailability?.[index] && isCorrect?.[index]?.isTotallyCorrect,
+              'bg-green-dark':
+                exerciseAvailability?.[index] && isCorrect?.[index]?.isTotallyCorrect,
               'bg-orange':
                 exerciseAvailability?.[index] &&
                 isCorrect?.[index]?.isCorrect &&
@@ -76,7 +77,9 @@
                 !exerciseAvailability?.[index] ? 'line-through opacity-70' : '',
                 isCorrect?.[index]?.isCorrect ? 'opacity-100' : 'opacity-50'
               ]"
-              >{{ getDisplaySubject(tense, subjects[sessionStore.languageSetting][selectedPerson]) }}</span
+              >{{
+                getDisplaySubject(tense, subjects[sessionStore.languageSetting][selectedPerson])
+              }}</span
             >
             <input
               ref="inputFields"
@@ -121,6 +124,10 @@ import ModalBox from './components/ModalBox.vue'
 import { compareAnswer, getConjugationAnswer } from './lib/exercise'
 import { getAllowedPersonIndices } from './lib/exerciseModes'
 import { filterVerbsByDifficulty } from './lib/verbDifficulty'
+
+const apiClient = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL || ''
+})
 
 const tenseStore = useTensesStore()
 const verbsStore = useVerbsStore()
@@ -212,7 +219,7 @@ const prepareVerb = async () => {
   })
 
   try {
-    const response = await axios.post(
+    const response = await apiClient.post(
       `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`,
       {
         tenses: conjugateTenses
