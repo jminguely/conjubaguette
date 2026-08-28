@@ -1,38 +1,38 @@
 <template>
-  <div class="flex flex-col">
-    <button class="mx-auto" @click="showFullVerb = !showFullVerb">
-      <span class="underline">Solution</span> {{ !showFullVerb ? '↓' : '↑' }}
+  <div class="flex flex-col mt-4">
+    <button class="mx-auto cartoon-button bg-white text-black text-lg py-2 px-6" @click="showFullVerb = !showFullVerb">
+      <span>Solution</span> <span class="font-black">{{ !showFullVerb ? '↓' : '↑' }}</span>
     </button>
 
     <div
-      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap pt-3"
+      class="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 flex-wrap pt-6"
       v-if="showFullVerb"
     >
       <template v-for="keyTense in availableTenses" :key="keyTense">
-        <div class="grow rounded-lg p-5 bg-white text-gray-800 noise">
-          <h3 class="font-bold mb-1 p-1">
+        <div class="grow cartoon-box bg-white text-black noise">
+          <h3 class="font-bold text-xl mb-3 border-b-2 border-black/10 pb-2">
             {{ tenses[keyTense][sessionStore.languageSetting].label }}
           </h3>
 
-          <ul class="flex flex-col items-start">
+          <ul class="flex flex-col items-start gap-1">
             <template v-for="keyPerson in subjects[sessionStore.languageSetting]" :key="keyPerson">
               <li
                 v-if="fullVerb?.conjugation[keyTense]"
-                class="p-1 flex gap-1"
+                class="p-1 px-2 flex gap-2 rounded-md w-full"
                 :class="[
-                  selectedPerson === keyPerson && 'bg-green/30',
+                  selectedPerson === keyPerson && 'bg-orange/40 font-bold',
                   !isAvailable(keyTense, keyPerson) && 'opacity-40 grayscale'
                 ]"
               >
-                <span :class="!isAvailable(keyTense, keyPerson) ? 'line-through' : ''">{{ getDisplaySubject(keyTense, keyPerson) }} </span>
-                <span>
+                <span class="w-1/3 text-right text-black/60" :class="!isAvailable(keyTense, keyPerson) ? 'line-through' : ''">{{ getDisplaySubject(keyTense, keyPerson) }}</span>
+                <span class="w-2/3">
                   <template
                     v-for="(part, index) in getHighlightedParts(
                       getDisplayedConjugation(keyTense, keyPerson)
                     )"
                     :key="`${keyTense}-${keyPerson}-${index}`"
                   >
-                    <span v-if="part.highlight" class="text-red-500 font-bold">{{
+                    <span v-if="part.highlight" class="text-pink font-bold">{{
                       part.text
                     }}</span>
                     <span v-else>{{ part.text }}</span>

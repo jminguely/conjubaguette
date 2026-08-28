@@ -7,6 +7,9 @@ describe('getVerbDifficulty', () => {
     expect(getVerbDifficulty({ es: 'ser', fr: 'être' })).toBe('hard')
     expect(getVerbDifficulty({ es: 'pagar', fr: 'payer' })).toBe('medium')
     expect(getVerbDifficulty({ es: 'habitar', fr: 'habiter' })).toBe('easy')
+    expect(getVerbDifficulty({ es: 'lavarse', fr: 'se laver' })).toBe('medium')
+    expect(getVerbDifficulty({ es: 'meterse', fr: 'se mettre' })).toBe('medium')
+    expect(getVerbDifficulty({ es: 'reunirse', fr: 'se réunir' })).toBe('medium')
   })
 })
 

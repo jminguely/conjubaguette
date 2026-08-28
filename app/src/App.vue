@@ -2,26 +2,28 @@
   <div class="flex flex-col h-svh">
     <SiteHeader @toggle-modal="handleToggleModal" />
 
-    <main class="grow px-5 container w-full max-w-7xl mx-auto relative">
-      <h2 class="pt-3">Daily goal: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
-      <div class="w-full bg-white rounded-full h-2.5 mb-5">
+    <main class="grow px-5 container w-full max-w-7xl mx-auto relative mt-4">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="font-bold text-lg text-black/70">Daily goal: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
+      </div>
+      <div class="w-full bg-white rounded-full h-4 mb-8 border-2 border-black overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
         <div
-          class="bg-pink h-2.5 rounded-full transition-all duration-1000 ease-in-out"
+          class="bg-pink h-full transition-all duration-1000 ease-in-out border-r-2 border-black"
           :style="{
             width: `${(100 / sessionStore.dailyGoal) * Math.min(sessionStore.dailyGoal, sessionStore.counter)}%`
           }"
         ></div>
       </div>
       <ModalBox :showModal="showModal" v-model:showModal="showModal" />
-      <p v-if="errorMessage" class="bg-white text-pink-dark font-semibold rounded-lg p-4 mb-5">
+      <p v-if="errorMessage" class="bg-white text-pink-dark font-semibold rounded-lg p-4 mb-5 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)]">
         {{ errorMessage }}
       </p>
-      <div class="flex gap-5 mb-5">
+      <div class="flex gap-5 mb-8">
         <div class="text-left w-1/2">
-          <h2>
+          <h2 class="font-bold text-black/70 mb-1">
             {{ sessionStore.languageSetting === 'fr' ? 'Español' : 'Français' }}
           </h2>
-          <p class="text-xl font-bold">
+          <p class="text-3xl font-black text-black">
             {{
               sessionStore.languageSetting === 'fr'
                 ? verb['es_label']
@@ -34,26 +36,28 @@
           </p>
         </div>
         <div class="text-left w-1/2">
-          <h2>{{ sessionStore.languageSetting === 'fr' ? 'Français' : 'Español' }}</h2>
-          <button class="text-xl font-bold underline" @click="showVerb = !showVerb">
+          <h2 class="font-bold text-black/70 mb-1">{{ sessionStore.languageSetting === 'fr' ? 'Français' : 'Español' }}</h2>
+          <button class="text-3xl font-black text-black underline decoration-4 decoration-pink underline-offset-4 hover:text-pink transition-colors" @click="showVerb = !showVerb">
             {{ showVerb ? verb[sessionStore.languageSetting] : '???' }}
           </button>
         </div>
       </div>
-      <div class="inputsContainer">
+      <div class="inputsContainer flex flex-col gap-6">
         <div
           v-for="(tense, index) in exerciseTenses"
           :key="index"
-          class="mb-5 inputVerbContainer"
+          class="mb-2 relative"
           :class="
             exerciseAvailability?.[index] &&
             (isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) &&
             'bravo'
           "
         >
-          <label class="label" :for="'answer' + index">{{
-            tenses[tense][sessionStore.languageSetting].label
-          }}</label>
+          <div class="flex justify-center -mb-3 relative z-10">
+            <label class="bg-black text-white text-sm font-bold py-1 px-4 rounded-full shadow-md border-2 border-black" :for="'answer' + index">{{
+              tenses[tense][sessionStore.languageSetting].label
+            }}</label>
+          </div>
           <div
             class="cartoon-input flex gap-1.5 transition-colors duration-200 ease-in-out"
             :class="{

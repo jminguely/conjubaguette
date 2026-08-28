@@ -193,14 +193,117 @@ def validate_conjugation_request(lang):
     return tenses, None
 
 
+def adjust_pronominal_forms(forms, lang, original_verb, mood, name):
+    if not forms or not isinstance(forms, dict):
+        return forms
+
+    # Determine if original_verb is pronominal
+    is_pronominal = False
+    if lang == "es" and original_verb.endswith("se"):
+        is_pronominal = True
+    elif lang == "fr" and (original_verb.startswith("se ") or original_verb.startswith("s'") or original_verb.startswith("s’")):
+        is_pronominal = True
+
+    if not is_pronominal:
+        return forms
+
+    adjusted = {}
+    for person, form in forms.items():
+        if not form:
+            adjusted[person] = form
+            continue
+
+        if lang == "es":
+            # Spanish reflexive pronouns
+            pronouns = {
+                "1s": "me",
+                "2s": "te",
+                "3s": "se",
+                "1p": "nos",
+                "2p": "os",
+                "3p": "se"
+            }
+            pronoun = pronouns.get(person)
+            if not pronoun:
+                adjusted[person] = form
+                continue
+
+            # Imperative mood check
+            if mood == "Imperativo" and name.startswith("Imperativo"):
+                # Pronoun is attached to the end
+                # Drop final 's' for 1p (e.g. lavamos -> lavámonos)
+                if person == "1p" and form.endswith("s"):
+                    base_form = form[:-1]
+                # Drop final 'd' for 2p (e.g. lavad -> lavaos)
+                elif person == "2p" and form.endswith("d"):
+                    base_form = form[:-1]
+                else:
+                    base_form = form
+
+                adjusted[person] = f"{base_form}{pronoun}"
+            else:
+                # Indicative/Subjuntivo/Condicional: pronoun is prepositioned separate
+                adjusted[person] = f"{pronoun} {form}"
+
+        elif lang == "fr":
+            # French reflexive pronouns
+            if mood == "Imperatif" and name == "Imperatif Présent":
+                pronouns = {
+                    "2s": "toi",
+                    "1p": "nous",
+                    "2p": "vous"
+                }
+                pronoun = pronouns.get(person)
+                if pronoun:
+                    adjusted[person] = f"{form}-{pronoun}"
+                else:
+                    adjusted[person] = form
+            else:
+                # Check contraction if it starts with vowel or silent h
+                is_vowel = form and form[0].lower() in "aeiouyéèàùâêîôûëïüÿh"
+                if person == "1s":
+                    adjusted[person] = f"m'{form}" if is_vowel else f"me {form}"
+                elif person == "2s":
+                    adjusted[person] = f"t'{form}" if is_vowel else f"te {form}"
+                elif person == "3s":
+                    adjusted[person] = f"s'{form}" if is_vowel else f"se {form}"
+                elif person == "1p":
+                    adjusted[person] = f"nous {form}"
+                elif person == "2p":
+                    adjusted[person] = f"vous {form}"
+                elif person == "3p":
+                    adjusted[person] = f"s'{form}" if is_vowel else f"se {form}"
+                else:
+                    adjusted[person] = form
+
+    return adjusted
+
+
 @app.post('/conjugate/<lang>/<verb>')
 def conjugate(lang, verb):
     tenses, validation_error = validate_conjugation_request(lang)
     if validation_error:
         return validation_error
 
+    # Strip pronominal prefix/suffix for conjugation query
+    conjugate_verb_query = verb
+    is_pronominal = False
+    if lang == "es" and verb.endswith("se") and len(verb) > 2:
+        conjugate_verb_query = verb[:-2]
+        is_pronominal = True
+    elif lang == "fr" and len(verb) > 3:
+        if verb.startswith("se "):
+            conjugate_verb_query = verb[3:]
+            is_pronominal = True
+        elif verb.startswith("s'"):
+            conjugate_verb_query = verb[2:]
+            is_pronominal = True
+        elif verb.startswith("s’"):
+            conjugate_verb_query = verb[2:]
+            is_pronominal = True
+
     try:
-        conjugated_verb = get_conjugator(lang).conjugate(verb)
+        conjugated_verb = get_conjugator(lang).conjugate(conjugate_verb_query)
     except RuntimeError as exc:
         return error_response(
             "Conjugation service unavailable",
@@ -220,10 +323,10 @@ def conjugate(lang, verb):
 
     response = {
         "verb": {
-            "infinitive": infinitive,
+            "infinitive": verb,  # Keep the original requested verb (e.g. vestirse)
             "template": template,
             "root": root,
-            "difficulty": get_verb_difficulty(lang, infinitive),
+            "difficulty": get_verb_difficulty(lang, verb),
         },
         "conjugation": {},
         "availability": {}
@@ -233,9 +336,11 @@ def conjugate(lang, verb):
     for tense_key, tense_value in tenses.items():
         mood = tense_value["mood"]
         name = tense_value["name"]
-        available_forms = get_conjugation_forms(conjugated_verb, lang, infinitive, mood, name)
+        available_forms = get_conjugation_forms(conjugated_verb, lang, conjugate_verb_query, mood, name)
 
         if available_forms:
+            if is_pronominal:
+                available_forms = adjust_pronominal_forms(available_forms, lang, verb, mood, name)
             response["conjugation"][tense_key] = available_forms
             response["availability"][tense_key] = sorted(available_forms.keys())
         else:

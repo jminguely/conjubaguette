@@ -29,6 +29,23 @@ export const useVerbsStore = defineStore('checkedVerbs', {
       this.checkedVerbs = []
       Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
     },
+    checkVerbs(verbsArray) {
+      const newChecked = [...this.checkedVerbs]
+      verbsArray.forEach((verb) => {
+        if (!newChecked.some((v) => JSON.stringify(v) === JSON.stringify(verb))) {
+          newChecked.push(verb)
+        }
+      })
+      this.checkedVerbs = newChecked
+      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+    },
+    uncheckVerbs(verbsArray) {
+      this.checkedVerbs = this.checkedVerbs.filter(
+        (checkedVerb) =>
+          !verbsArray.some((verb) => JSON.stringify(verb) === JSON.stringify(checkedVerb))
+      )
+      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+    },
     toggleVerb(verb) {
       const verbObject = JSON.parse(verb)
       const index = this.checkedVerbs.findIndex(

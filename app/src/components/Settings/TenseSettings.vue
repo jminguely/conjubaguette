@@ -1,39 +1,32 @@
 <template>
-  <div class="flex flex-col py-8">
-    <div class="overflow-x-auto">
-      <div class="align-middle inline-block min-w-full sm:px-2 lg:px-4">
-        <h3 class="font-bold text-lg">Tenses</h3>
-        <div class="overflow-hidden mb-5">
-          <div v-for="(tenses, mood) in groupedTenses" :key="mood">
-            <h4 class="font-bold text-md">{{ mood }}</h4>
-            <table class="min-w-full divide-y divide-black border-2 mb-4">
-              <thead class="bg-black text-white">
-                <tr>
-                  <th class="text-left px-2 py-2 equal-width" scope="col">FR</th>
-                  <th class="text-left px-2 py-2 equal-width" scope="col">ES</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(tense, tenseKey) in tenses" :key="tenseKey">
-                  <td class="px-2 py-1">{{ tense['fr'].label }}</td>
-                  <td class="px-2 py-1">{{ tense['es'].label }}</td>
-                  <td class="px-2 py-1 flex">
-                    <label class="switch ml-auto">
-                      <input
-                        type="checkbox"
-                        :id="tenseKey"
-                        :value="tenseKey"
-                        :checked="tenseStore.checkedTenses.includes(tenseKey)"
-                        @change="checkTense($event)"
-                      />
-                      <span class="slider round"></span>
-                    </label>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+  <div class="flex flex-col py-2">
+    <div>
+      <div v-for="(tenses, mood) in groupedTenses" :key="mood" class="mb-8">
+        <h4 class="font-bold text-2xl mb-4 text-orange">{{ mood }}</h4>
+        <div class="flex flex-col gap-3">
+          <label
+            v-for="(tense, tenseKey) in tenses"
+            :key="tenseKey"
+            class="flex items-center justify-between cartoon-button bg-white text-black !p-3"
+            :class="tenseStore.checkedTenses.includes(tenseKey) ? 'border-orange bg-orange/10' : ''"
+          >
+            <div class="flex flex-col flex-1">
+              <span class="font-bold border-b-2 border-black/10 pb-1 mb-1">{{
+                tense['fr'].label
+              }}</span>
+              <span class="font-bold text-black/60">{{ tense['es'].label }}</span>
+            </div>
+            <div class="ml-4">
+              <input
+                type="checkbox"
+                class="w-6 h-6 accent-orange rounded cursor-pointer"
+                :id="tenseKey"
+                :value="tenseKey"
+                :checked="tenseStore.checkedTenses.includes(tenseKey)"
+                @change="checkTense($event)"
+              />
+            </div>
+          </label>
         </div>
       </div>
     </div>

@@ -55,7 +55,10 @@
     { "es": "caminar", "fr": "marcher" },
     { "es": "sentarse", "fr": "s’asseoir" },
     { "es": "enviar", "fr": "envoyer" },
-    { "es": "firmar", "fr": "signer" }
+    { "es": "firmar", "fr": "signer" },
+    { "es": "lavarse", "fr": "se laver" },
+    { "es": "meterse", "fr": "se mettre" },
+    { "es": "reunirse", "fr": "se réunir" }
   ],
   "hard": [
     { "es": "ser", "fr": "être" },

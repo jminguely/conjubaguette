@@ -5,32 +5,43 @@
       showModal != undefined ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
     "
   >
-    <div class="modal-content">
-      <div class="-m-6 flex border-b-2 mb-1">
+    <div
+      class="modal-content cartoon-box bg-white flex flex-col items-center max-w-2xl mx-auto my-auto relative max-h-[90vh]"
+    >
+      <button
+        class="absolute -top-4 -right-4 cartoon-button bg-pink text-white w-12 h-12 flex items-center justify-center rounded-full !p-0 z-50 text-2xl font-bold"
+        @click="$emit('update:showModal', undefined)"
+      >
+        ✕
+      </button>
+
+      <div class="flex flex-wrap gap-2 w-full mb-6 justify-center">
         <button
-          class="grow py-3"
-          :class="showModal === 'GeneralSettings' && 'bg-pink font-semibold'"
+          class="cartoon-button text-lg !py-2 !px-4"
+          :class="showModal === 'GeneralSettings' ? 'bg-pink text-white' : 'bg-gray-200'"
           @click="$emit('update:showModal', 'GeneralSettings')"
         >
           General
         </button>
         <button
-          :class="showModal === 'TenseSettings' && 'bg-pink font-semibold'"
-          class="grow py-3 border-l-2"
+          class="cartoon-button text-lg !py-2 !px-4"
+          :class="showModal === 'TenseSettings' ? 'bg-orange text-white' : 'bg-gray-200'"
           @click="$emit('update:showModal', 'TenseSettings')"
         >
           Tenses
         </button>
         <button
-          :class="showModal === 'VerbsSettings' && 'bg-pink font-semibold'"
-          class="grow py-3 border-l-2"
+          class="cartoon-button text-lg !py-2 !px-4"
+          :class="showModal === 'VerbsSettings' ? 'bg-green text-black' : 'bg-gray-200'"
           @click="$emit('update:showModal', 'VerbsSettings')"
         >
           Verbs
         </button>
       </div>
 
-      <component :is="showModal" />
+      <div class="w-full overflow-y-auto pr-2">
+        <component :is="showModal" />
+      </div>
     </div>
   </div>
 </template>
@@ -50,10 +61,10 @@ export default {
 
 <style scoped lang="postcss">
 .modal-container {
-  @apply absolute min-h-full w-full z-40 inset-0 flex bg-yellow/50 backdrop-blur-md transition-opacity duration-300 p-5;
+  @apply fixed min-h-screen w-full z-40 inset-0 flex bg-black/40 backdrop-blur-sm transition-opacity duration-300 p-5;
 }
 
 .modal-content {
-  @apply w-full h-full overflow-y-auto bg-white text-black p-6 rounded shadow-lg overscroll-none;
+  @apply w-full;
 }
 </style>

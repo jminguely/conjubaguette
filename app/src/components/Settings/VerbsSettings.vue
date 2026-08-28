@@ -1,48 +1,88 @@
 <template>
-  <div class="flex flex-col py-8">
-    <div class="overflow-x-auto">
-      <div class="align-middle inline-block min-w-full sm:px-2 lg:px-4">
-        <h3 class="font-bold text-lg">Verbs</h3>
-        <div class="flex gap-5 mt-2 mb-4">
-          <button @click="uncheckAll" class="btn">Uncheck All</button>
-          <button @click="checkAll" class="btn">Check All</button>
-        </div>
-        <div class="overflow-hidden mb-5">
-          <table class="min-w-full divide-y divide-black border-2">
-            <thead class="bg-black text-white">
-              <tr>
-                <th class="text-left px-2 py-2 equal-width" scope="col">French</th>
-                <th class="text-left px-2 py-2 equal-width" scope="col">Spanish</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody class="">
-              <tr v-for="(verb, index) in availableVerbs" :key="index">
-                <td class="px-2 py-1">
-                  {{ verb.fr_label ? verb.fr_label : verb.fr }}
-                </td>
-                <td class="px-2 py-1">
-                  {{ verb.es_label ? verb.es_label : verb.es }}
-                </td>
+  <div class="flex flex-col py-2">
+    <div>
+      <div class="flex gap-3 mb-6 justify-center">
+        <button @click="uncheckAll" class="cartoon-button text-base bg-white w-1/2">
+          Uncheck All
+        </button>
+        <button @click="checkAll" class="cartoon-button text-base bg-green-dark w-1/2">
+          Check All
+        </button>
+      </div>
 
-                <td class="px-2 py-1 flex">
-                  <label class="switch ml-auto">
-                    <input
-                      type="checkbox"
-                      :value="JSON.stringify(verb)"
-                      :checked="
-                        verbsStore.checkedVerbs.some(
-                          (v) => JSON.stringify(v) === JSON.stringify(verb)
-                        )
-                      "
-                      @change="toggleVerb($event)"
-                    />
-                    <span class="slider round"></span>
-                  </label>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="flex flex-col gap-6">
+        <div
+          v-for="level in ['easy', 'medium', 'hard']"
+          :key="level"
+          class="border-2 border-black rounded-xl p-4 bg-gray-50/50 shadow-[4px_4px_0_rgba(0,0,0,1)]"
+        >
+          <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-black/10">
+            <div class="flex items-center gap-2">
+              <span
+                class="w-3.5 h-3.5 rounded-full border border-black"
+                :class="{
+                  'bg-green-dark': level === 'easy',
+                  'bg-orange': level === 'medium',
+                  'bg-pink': level === 'hard'
+                }"
+              ></span>
+              <h3 class="font-black text-lg uppercase text-black">
+                {{ getLevelLabel(level) }}
+              </h3>
+            </div>
+            <div class="flex gap-2">
+              <button
+                @click="uncheckLevel(level)"
+                class="px-3 py-1 text-xs font-bold bg-white border-2 border-black rounded shadow-[2px_2px_0_rgba(0,0,0,1)] hover:bg-black/5 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_rgba(0,0,0,1)] transition-all"
+              >
+                Uncheck
+              </button>
+              <button
+                @click="checkLevel(level)"
+                class="px-3 py-1 text-xs font-bold text-white border-2 border-black rounded shadow-[2px_2px_0_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_rgba(0,0,0,1)] transition-all"
+                :class="{
+                  'bg-green-dark': level === 'easy',
+                  'bg-orange': level === 'medium',
+                  'bg-pink': level === 'hard'
+                }"
+              >
+                Check
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
+            <label
+              v-for="(verb, index) in getVerbsByLevel(level)"
+              :key="index"
+              class="flex items-center justify-between cartoon-button bg-white text-black !p-3 cursor-pointer hover:bg-black/5"
+              :class="
+                verbsStore.checkedVerbs.some((v) => JSON.stringify(v) === JSON.stringify(verb))
+                  ? 'border-green-dark bg-green-dark/10'
+                  : ''
+              "
+            >
+              <div class="flex flex-col flex-1 text-left">
+                <span class="font-bold border-b-2 border-black/10 pb-1 mb-1">{{
+                  verb.fr_label ? verb.fr_label : verb.fr
+                }}</span>
+                <span class="font-bold text-black/60">{{
+                  verb.es_label ? verb.es_label : verb.es
+                }}</span>
+              </div>
+              <div class="ml-4 flex items-center">
+                <input
+                  type="checkbox"
+                  class="w-6 h-6 accent-green-dark rounded cursor-pointer"
+                  :value="JSON.stringify(verb)"
+                  :checked="
+                    verbsStore.checkedVerbs.some((v) => JSON.stringify(v) === JSON.stringify(verb))
+                  "
+                  @change="toggleVerb($event)"
+                />
+              </div>
+            </label>
+          </div>
         </div>
       </div>
     </div>
@@ -52,6 +92,7 @@
 <script setup>
 import { ref } from 'vue'
 import availableVerbs from '@/assets/data/verbs.json'
+import { getVerbDifficulty } from '@/lib/verbDifficulty'
 
 import { useVerbsStore } from '/store/verbs'
 
@@ -69,6 +110,27 @@ function toggleVerb(e) {
   if (verbsStore.value) {
     verbsStore.value.toggleVerb(e.target.value)
   }
+}
+
+function getLevelLabel(level) {
+  if (level === 'easy') return 'Facile (Easy)'
+  if (level === 'medium') return 'Moyen (Medium)'
+  if (level === 'hard') return 'Difficile (Hard)'
+  return level
+}
+
+function getVerbsByLevel(level) {
+  return availableVerbs.filter((verb) => getVerbDifficulty(verb) === level)
+}
+
+function checkLevel(level) {
+  const verbs = getVerbsByLevel(level)
+  verbsStore.value.checkVerbs(verbs)
+}
+
+function uncheckLevel(level) {
+  const verbs = getVerbsByLevel(level)
+  verbsStore.value.uncheckVerbs(verbs)
 }
 </script>
 
@@ -118,5 +180,20 @@ input:checked + .slider:before {
 
 .equal-width {
   width: 33.33%;
+}
+
+/* Custom scrollbar styles for cartoon theme */
+div::-webkit-scrollbar {
+  width: 6px;
+}
+div::-webkit-scrollbar-track {
+  background: transparent;
+}
+div::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 3px;
+}
+div::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
 }
 </style>

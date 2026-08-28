@@ -2,6 +2,9 @@ import pytest
 
 from app import app, get_conjugator
 
+_ORIGINAL_GET_CONJUGATOR = get_conjugator
+
+
 
 class FakeVerbInfo:
     infinitive = "manger"
@@ -261,3 +264,35 @@ def test_conjugate_builds_french_imperative_fallback_when_library_returns_empty_
     assert imperative["2s"] == "travaille"
     assert imperative["1p"] == "travaillons"
     assert imperative["2p"] == "travaillez"
+
+
+def test_conjugate_pronominal_spanish_real(client, monkeypatch):
+    _ORIGINAL_GET_CONJUGATOR.cache_clear()
+    monkeypatch.setattr("app.get_conjugator", _ORIGINAL_GET_CONJUGATOR)
+
+    response = client.post(
+        "/conjugate/es/vestirse",
+        json={"tenses": {"present-tense": {"mood": "Indicativo", "name": "Indicativo presente"}}},
+    )
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["verb"]["infinitive"] == "vestirse"
+    assert data["verb"]["difficulty"] == "medium"
+    assert data["conjugation"]["present-tense"]["1s"] == "me visto"
+    assert data["conjugation"]["present-tense"]["1p"] == "nos vestimos"
+
+
+def test_conjugate_pronominal_french_real(client, monkeypatch):
+    _ORIGINAL_GET_CONJUGATOR.cache_clear()
+    monkeypatch.setattr("app.get_conjugator", _ORIGINAL_GET_CONJUGATOR)
+
+    response = client.post(
+        "/conjugate/fr/se laver",
+        json={"tenses": {"present-tense": {"mood": "Indicatif", "name": "Présent"}}},
+    )
+    assert response.status_code == 200
+    data = response.get_json()
+    assert data["verb"]["infinitive"] == "se laver"
+    assert data["verb"]["difficulty"] == "medium"
+    assert data["conjugation"]["present-tense"]["1s"] == "me lave"
+    assert data["conjugation"]["present-tense"]["1p"] == "nous lavons"
