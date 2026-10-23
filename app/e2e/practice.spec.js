@@ -134,7 +134,7 @@ test('study language translates the interface and reverses bilingual labels', as
   ).toHaveText('Imparfait')
   await page.getByRole('button', { name: 'Verbes', exact: true }).click()
   await expect(page.locator('.selection-row').first().locator('span').first()).toContainText('être')
-  await expect(page.getByRole('status')).toContainText('199')
+  await expect(page.getByRole('dialog').getByRole('status')).toContainText('199')
   await page.getByRole('button', { name: 'Général', exact: true }).click()
   await page.locator('#languageSetting').selectOption('es')
   await page.getByRole('button', { name: 'Verbos', exact: true }).click()
