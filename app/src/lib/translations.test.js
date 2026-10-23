@@ -15,6 +15,8 @@ describe('bilingual interface and catalogue', () => {
   it('formats localized counters and error messages', () => {
     expect(translate('fr', 'selected', { count: 3, total: 199 })).toBe('3 sur 199 sélectionnés')
     expect(translate('es', 'selected', { count: 3, total: 199 })).toBe('3 de 199 seleccionados')
+    expect(translate('es', 'found', { count: 1 })).toBe('1 resultado')
+    expect(translate('fr', 'found', { count: 1 })).toBe('1 résultat')
     expect(translate('es', 'loadError')).not.toContain('Unable')
   })
   it('contains the original 99 plus 100 distinct new Spanish verbs', () => {

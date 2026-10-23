@@ -1,5 +1,7 @@
 export const messages = {
   fr: {
+    foundOne: '{count} résultat',
+    selectedOne: '{count} sur {total} sélectionné',
     settings: 'Réglages',
     myVerbs: 'Mes verbes',
     openSettings: 'Ouvrir les réglages',
@@ -68,6 +70,8 @@ export const messages = {
     description: 'Pratiquez la conjugaison française et espagnole à votre rythme.'
   },
   es: {
+    foundOne: '{count} resultado',
+    selectedOne: '{count} de {total} seleccionado',
     settings: 'Ajustes',
     myVerbs: 'Mis verbos',
     openSettings: 'Abrir los ajustes',
@@ -138,6 +142,7 @@ export const messages = {
 }
 
 export function translate(language, key, values = {}) {
-  const message = messages[language]?.[key] ?? messages.es[key] ?? key
+  const localizedKey = values.count === 1 && messages[language]?.[key + 'One'] ? key + 'One' : key
+  const message = messages[language]?.[localizedKey] ?? messages.es[localizedKey] ?? localizedKey
   return message.replace(/\{(\w+)\}/g, (_, name) => String(values[name] ?? ''))
 }

@@ -33,7 +33,7 @@
         {{ t('selected', { count: verbsStore.checkedVerbs.length, total: availableVerbs.length })
         }}<span v-if="search.trim()"> · {{ t('found', { count: visibleVerbs.length }) }}</span>
       </p>
-      <div class="flex gap-2">
+      <div class="flex flex-wrap gap-2">
         <button
           class="small-button"
           :disabled="!visibleVerbs.length"
