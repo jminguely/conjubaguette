@@ -4,7 +4,7 @@ import { compareAnswer, getConjugationAnswer, getSubjectApiKey, normalizeAnswer 
 
 describe('normalizeAnswer', () => {
   it('normalizes accents, case, apostrophes, and whitespace', () => {
-    expect(normalizeAnswer("  J’ÉTAIS   ")).toBe("j'etais")
+    expect(normalizeAnswer('  J’ÉTAIS   ')).toBe("j'etais")
   })
 })
 

@@ -1,373 +1,156 @@
 <template>
-  <div class="flex flex-col h-svh">
+  <div class="app-shell flex flex-col">
     <SiteHeader @toggle-modal="handleToggleModal" />
-
-    <main class="grow px-5 container w-full max-w-7xl mx-auto relative mt-4">
-      <div class="flex items-center justify-between mb-2">
-        <h2 class="font-bold text-lg text-black/70">Daily goal: {{ sessionStore.counter }}/{{ sessionStore.dailyGoal }}</h2>
-      </div>
-      <div class="w-full bg-white rounded-full h-4 mb-8 border-2 border-black overflow-hidden shadow-[inset_0_2px_4px_rgba(0,0,0,0.1)]">
+    <main class="practice-main">
+      <div class="goal-card">
+        <span>{{ t('dailyPractice') }}</span>
         <div
-          class="bg-pink h-full transition-all duration-1000 ease-in-out border-r-2 border-black"
-          :style="{
-            width: `${(100 / sessionStore.dailyGoal) * Math.min(sessionStore.dailyGoal, sessionStore.counter)}%`
-          }"
-        ></div>
-      </div>
-      <ModalBox :showModal="showModal" v-model:showModal="showModal" />
-      <p v-if="errorMessage" class="bg-white text-pink-dark font-semibold rounded-lg p-4 mb-5 border-2 border-black shadow-[4px_4px_0_rgba(0,0,0,1)]">
-        {{ errorMessage }}
-      </p>
-      <div class="flex gap-5 mb-8">
-        <div class="text-left w-1/2">
-          <h2 class="font-bold text-black/70 mb-1">
-            {{ sessionStore.languageSetting === 'fr' ? 'Español' : 'Français' }}
-          </h2>
-          <p class="text-3xl font-black text-black">
-            {{
-              sessionStore.languageSetting === 'fr'
-                ? verb['es_label']
-                  ? verb['es_label']
-                  : verb['es']
-                : verb['fr_label']
-                  ? verb['fr_label']
-                  : verb['fr']
-            }}
-          </p>
-        </div>
-        <div class="text-left w-1/2">
-          <h2 class="font-bold text-black/70 mb-1">{{ sessionStore.languageSetting === 'fr' ? 'Français' : 'Español' }}</h2>
-          <button class="text-3xl font-black text-black underline decoration-4 decoration-pink underline-offset-4 hover:text-pink transition-colors" @click="showVerb = !showVerb">
-            {{ showVerb ? verb[sessionStore.languageSetting] : '???' }}
-          </button>
-        </div>
-      </div>
-      <div class="inputsContainer flex flex-col gap-6">
-        <div
-          v-for="(tense, index) in exerciseTenses"
-          :key="index"
-          class="mb-2 relative"
-          :class="
-            exerciseAvailability?.[index] &&
-            (isCorrect?.[index]?.isCorrect || isCorrect?.[index]?.isTotallyCorrect) &&
-            'bravo'
-          "
+          class="goal-track"
+          role="progressbar"
+          :aria-label="t('goal')"
+          :aria-valuenow="Math.min(sessionStore.counter, sessionStore.dailyGoal)"
+          :aria-valuemax="sessionStore.dailyGoal"
+          aria-valuemin="0"
         >
-          <div class="flex justify-center -mb-3 relative z-10">
-            <label class="bg-black text-white text-sm font-bold py-1 px-4 rounded-full shadow-md border-2 border-black" :for="'answer' + index">{{
-              tenses[tense][sessionStore.languageSetting].label
-            }}</label>
-          </div>
           <div
-            class="cartoon-input flex gap-1.5 transition-colors duration-200 ease-in-out"
-            :class="{
-              [isVerbLoading ? 'text-transparent' : 'text-black']: true,
-              'bg-gray-300': !exerciseAvailability?.[index],
-              'bg-green-dark':
-                exerciseAvailability?.[index] && isCorrect?.[index]?.isTotallyCorrect,
-              'bg-orange':
-                exerciseAvailability?.[index] &&
-                isCorrect?.[index]?.isCorrect &&
-                !isCorrect?.[index]?.isTotallyCorrect,
-              'bg-pink':
-                exerciseAvailability?.[index] &&
-                !isCorrect?.[index]?.isCorrect &&
-                !isCorrect?.[index]?.isTotallyCorrect
+            class="goal-fill"
+            :style="{
+              width: `${Math.min(100, (sessionStore.counter / sessionStore.dailyGoal) * 100)}%`
             }"
-          >
-            <span
-              class="transition-colors duration-200 ease-in-out"
-              :class="[
-                !exerciseAvailability?.[index] ? 'line-through opacity-70' : '',
-                isCorrect?.[index]?.isCorrect ? 'opacity-100' : 'opacity-50'
-              ]"
-              >{{
-                getDisplaySubject(tense, subjects[sessionStore.languageSetting][selectedPerson])
-              }}</span
-            >
-            <input
-              ref="inputFields"
-              class="bg-transparent w-full placeholder:text-white outline-none disabled:opacity-100 transition-colors duration-200 ease-in-out"
-              :disabled="isCorrect?.[index]?.isTotallyCorrect || !exerciseAvailability?.[index]"
-              :placeholder="''"
-              v-model="userResponses[index]"
-              type="text"
-              :id="'answer' + index"
-            />
-          </div>
+          ></div>
         </div>
+        <span>{{
+          t('dailyProgress', { count: sessionStore.counter, total: sessionStore.dailyGoal })
+        }}</span>
       </div>
-
-      <div class="py-2">
-        <TenseDisplay
-          :fullVerb="fullVerb"
-          :availableTenses="exerciseTenses"
-          :selectedPerson="subjects[sessionStore.languageSetting][selectedPerson]"
-        />
-      </div>
+      <ModalBox v-model:showModal="showModal" />
+      <section class="practice-card" :aria-busy="isVerbLoading">
+        <p class="eyebrow">{{ t('tagline') }}</p>
+        <p v-if="errorMessage" class="state-message mt-5" role="alert">
+          {{ errorMessage }}
+          <button class="underline ml-2" @click="shuffle">{{ t('retry') }}</button>
+        </p>
+        <p v-if="isVerbLoading" class="py-8 text-black/60" role="status">
+          {{ t('loading') }}
+        </p>
+        <template v-else-if="verb && !errorMessage">
+          <div class="prompt-grid">
+            <div :lang="language">
+              <h2 class="text-sm text-black/60">{{ t(language) }}</h2>
+              <button
+                class="prompt-word reveal-button"
+                :aria-expanded="showVerb"
+                @click="showVerb = !showVerb"
+              >
+                {{ showVerb ? verb[language + '_label'] || verb[language] : t('reveal') }}
+              </button>
+            </div>
+            <div :lang="secondaryLanguage">
+              <h2 class="text-sm text-black/60">{{ t(secondaryLanguage) }}</h2>
+              <p class="prompt-word">
+                {{ verb[secondaryLanguage + '_label'] || verb[secondaryLanguage] }}
+              </p>
+            </div>
+          </div>
+          <div class="exercise-list">
+            <div v-for="(tense, index) in exerciseTenses" :key="tense">
+              <label class="answer-label" :for="'answer' + index"
+                >{{ tenses[tense][sessionStore.languageSetting].label
+                }}<span
+                  class="block text-xs font-normal text-black/60 mt-1"
+                  :lang="secondaryLanguage"
+                  >{{ tenses[tense][secondaryLanguage].label }}</span
+                ></label
+              >
+              <div
+                class="answer-field"
+                :class="{
+                  correct: exerciseAvailability[index] && isCorrect[index]?.isTotallyCorrect,
+                  almost:
+                    exerciseAvailability[index] &&
+                    isCorrect[index]?.isCorrect &&
+                    !isCorrect[index]?.isTotallyCorrect,
+                  unavailable: !exerciseAvailability[index]
+                }"
+              >
+                <span class="answer-subject">{{
+                  getDisplaySubject(tense, subjects[sessionStore.languageSetting][selectedPerson])
+                }}</span>
+                <input
+                  :id="'answer' + index"
+                  v-model="userResponses[index]"
+                  :disabled="!exerciseAvailability[index] || isCorrect[index]?.isTotallyCorrect"
+                  :aria-describedby="'feedback' + index"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  :spellcheck="false"
+                  type="text"
+                  :lang="sessionStore.languageSetting"
+                />
+                <span
+                  v-if="exerciseAvailability[index] && isCorrect[index]?.isCorrect"
+                  aria-hidden="true"
+                  >✓</span
+                >
+              </div>
+              <p :id="'feedback' + index" class="answer-feedback" aria-live="polite">
+                {{
+                  !exerciseAvailability[index]
+                    ? t('unavailable')
+                    : isCorrect[index]?.isTotallyCorrect
+                      ? t('perfect')
+                      : isCorrect[index]?.isCorrect
+                        ? t('almost')
+                        : t('typeAnswer')
+                }}
+              </p>
+            </div>
+          </div>
+          <TenseDisplay
+            :fullVerb="fullVerb"
+            :availableTenses="exerciseTenses"
+            :selectedPerson="subjects[sessionStore.languageSetting][selectedPerson]"
+          />
+        </template>
+      </section>
     </main>
-    <SiteFooter :shuffle="shuffle" />
+    <SiteFooter :loading="isVerbLoading" @next="shuffle" />
   </div>
 </template>
-
 <script setup>
+import { watchEffect } from 'vue'
+import { useUiLanguage } from '@/composables/useUiLanguage'
+const { t, language, secondaryLanguage } = useUiLanguage()
+watchEffect(() => {
+  document.documentElement.lang = language.value
+  document.querySelector('meta[name="description"]')?.setAttribute('content', t('description'))
+  document
+    .querySelector('meta[property="og:description"]')
+    ?.setAttribute('content', t('description'))
+})
 import tenses from './assets/data/tenses.json'
 import subjects from './assets/data/subjects.json'
-
 import SiteHeader from './components/SiteHeader.vue'
 import SiteFooter from './components/SiteFooter.vue'
-import TenseDisplay from './components/TenseDisplay.vue'
-
-import { ref, onMounted, watch, watchEffect, computed } from 'vue'
-import axios from 'axios'
-
-import { useTensesStore } from '/store/tenses'
-import { useVerbsStore } from '/store/verbs'
-import { useSessionStore } from '/store/session'
 import ModalBox from './components/ModalBox.vue'
-import { compareAnswer, getConjugationAnswer } from './lib/exercise'
-import { getAllowedPersonIndices } from './lib/exerciseModes'
-import { filterVerbsByDifficulty } from './lib/verbDifficulty'
-
-const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || ''
-})
-
-const tenseStore = useTensesStore()
-const verbsStore = useVerbsStore()
-const sessionStore = useSessionStore()
-
-const selectedPerson = ref(0)
-
-const showVerb = ref(false)
-const showFullVerb = ref(false)
-const showModal = ref(undefined)
-const inputFields = ref(null)
-const userResponses = ref([])
-const correctAnswers = ref([])
-const exerciseAvailability = ref([])
-const isVerbLoading = ref(true)
-let verb = ref('')
-const fullVerb = ref({})
-const exerciseTenses = ref([])
-const errorMessage = ref('')
-
-const eligibleVerbs = computed(() =>
-  filterVerbsByDifficulty(verbsStore.checkedVerbs, sessionStore.difficultySetting)
-)
-
-const allowedPersonIndices = computed(() => getAllowedPersonIndices(sessionStore.personSetting))
-
-const isImperativeFrenchTense = (tenseKey) => {
-  const tense = tenses?.[tenseKey]?.[sessionStore.languageSetting]
-  if (!tense) return false
-  return sessionStore.languageSetting === 'fr' && tense.mood === 'Imperatif'
-}
-
-const getDisplaySubject = (tenseKey, subject) =>
-  isImperativeFrenchTense(tenseKey) ? `(${subject})` : subject
-
-const isCorrect = computed(() => {
-  if (isVerbLoading.value || !userResponses.value || !correctAnswers.value) {
-    return []
-  }
-
-  const results = userResponses.value.map((response, index) =>
-    exerciseAvailability.value[index]
-      ? compareAnswer(response, correctAnswers.value[index])
-      : { isCorrect: true, isTotallyCorrect: true, isUnavailable: true }
-  )
-
-  return results
-})
-
-let isExerciseFinished = false
-
-watch(
-  isCorrect,
-  () => {
-    if (isExerciseFinished || isCorrect.value.length === 0) return
-    // Return true if all answers are correct
-    const areAllAnswersCorrect = isCorrect.value.every((result) => result.isCorrect)
-    if (areAllAnswersCorrect) {
-      sessionStore.incrementCounter()
-      isExerciseFinished = true
-    }
-  },
-  { immediate: true }
-)
-
-watchEffect(() => {
-  if (inputFields?.value?.length > 0) {
-    inputFields.value.forEach((input) => {
-      input.setAttribute('autocomplete', 'off')
-      input.setAttribute('autocorrect', 'off')
-      input.setAttribute('autocapitalize', 'off')
-      input.setAttribute('spellcheck', 'false')
-    })
-  }
-})
-
-const prepareVerb = async () => {
-  isExerciseFinished = false
-  showVerb.value = false
-  showFullVerb.value = false
-  errorMessage.value = ''
-  exerciseAvailability.value = []
-
-  if (!verb.value) return
-
-  const conjugateTenses = {}
-  tenseStore.checkedTenses.forEach((tenseKey) => {
-    conjugateTenses[tenseKey] = tenses[tenseKey][sessionStore.languageSetting]
-  })
-
-  try {
-    const response = await apiClient.post(
-      `/conjugate/${sessionStore.languageSetting}/${verb.value[sessionStore.languageSetting]}`,
-      {
-        tenses: conjugateTenses
-      }
-    )
-    fullVerb.value = response.data
-    exerciseTenses.value = [...tenseStore.checkedTenses]
-
-    const playablePersonIndices = allowedPersonIndices.value.filter((personIndex) =>
-      exerciseTenses.value.some((tense) =>
-        getConjugationAnswer(
-          fullVerb.value,
-          tense,
-          sessionStore.languageSetting,
-          subjects[sessionStore.languageSetting][personIndex]
-        )
-      )
-    )
-
-    const personPool =
-      playablePersonIndices.length > 0 ? playablePersonIndices : allowedPersonIndices.value
-    selectedPerson.value = personPool[Math.floor(Math.random() * personPool.length)]
-
-    const selectedSubject = subjects[sessionStore.languageSetting][selectedPerson.value]
-    exerciseAvailability.value = exerciseTenses.value.map((tense) =>
-      Boolean(
-        getConjugationAnswer(fullVerb.value, tense, sessionStore.languageSetting, selectedSubject)
-      )
-    )
-
-    if (exerciseAvailability.value.every((isAvailable) => !isAvailable)) {
-      throw new Error(
-        'No form is available for the selected person mode with this verb and tense selection.'
-      )
-    }
-
-    correctAnswers.value = exerciseTenses.value.map((tense) =>
-      getConjugationAnswer(fullVerb.value, tense, sessionStore.languageSetting, selectedSubject)
-    )
-
-    userResponses.value = exerciseTenses.value.map(() => '')
-  } catch (error) {
-    fullVerb.value = {}
-    exerciseTenses.value = []
-    userResponses.value = []
-    correctAnswers.value = []
-    exerciseAvailability.value = []
-    errorMessage.value =
-      error.response?.data?.error || error.message || 'Unable to load this exercise.'
-  } finally {
-    isVerbLoading.value = false
-  }
-}
-
-watch(
+import TenseDisplay from './components/TenseDisplay.vue'
+import { useExercise } from './composables/useExercise'
+const {
+  sessionStore,
   verb,
-  () => {
-    prepareVerb()
-  },
-  { immediate: true }
-)
-
-const handleToggleModal = (page) => {
-  if (page === showModal.value) {
-    showModal.value = undefined
-    shuffle()
-  } else {
-    showModal.value = page
-  }
-}
-
-const getRandomItem = (items) => items[Math.floor(Math.random() * items.length)]
-
-function getRandomItemNotLast(verbs, lastVerb) {
-  if (verbs.length === 0) {
-    return null
-  } else if (verbs.length === 1) {
-    return verbs[0]
-  } else {
-    let newVerb
-    do {
-      newVerb = getRandomItem(verbs)
-    } while (newVerb === lastVerb)
-    return newVerb
-  }
-}
-
-const shuffle = () => {
-  isVerbLoading.value = true
-  errorMessage.value = ''
-  exerciseAvailability.value = []
-  if (verbsStore.checkedVerbs.length === 0) {
-    verb.value = ''
-    fullVerb.value = {}
-    exerciseTenses.value = []
-    userResponses.value = []
-    correctAnswers.value = []
-    errorMessage.value = 'Select at least one verb to start practicing.'
-    isVerbLoading.value = false
-    if (showModal.value) showModal.value = undefined
-    return
-  }
-  const verbPool = eligibleVerbs.value.length > 0 ? eligibleVerbs.value : verbsStore.checkedVerbs
-  let oldVerb = verb.value
-  verb.value = getRandomItemNotLast(verbPool, verb.value)
-  if (verb.value === oldVerb) {
-    prepareVerb()
-  }
-  if (showModal.value) showModal.value = undefined
-}
-
-onMounted(() => {
-  shuffle()
-})
+  showVerb,
+  showModal,
+  userResponses,
+  exerciseAvailability,
+  isVerbLoading,
+  fullVerb,
+  exerciseTenses,
+  errorMessage,
+  selectedPerson,
+  isCorrect,
+  getDisplaySubject,
+  handleToggleModal,
+  shuffle
+} = useExercise()
 </script>
-
-<style lang="postcss" scoped>
-.inputVerbContainer {
-  position: relative;
-  margin-top: 2.5rem;
-  margin-bottom: 4rem;
-
-  &:last-of-type {
-    margin-bottom: 2rem;
-  }
-
-  input {
-    position: relative;
-    z-index: 2;
-  }
-
-  .label {
-    @apply absolute text-white bg-black text-xs px-2 py-1.5 rounded-t-xl -top-6 left-2/4 -translate-x-2/4;
-    z-index: 1;
-  }
-
-  &::after {
-    @apply absolute text-white bg-black px-2 pt-1 pb-0.5 rounded-b-xl -bottom-0 left-2/4 -translate-x-2/4 opacity-0 transition-all duration-200 ease-in-out;
-    content: '✓';
-    z-index: 1;
-  }
-
-  &.bravo::after {
-    @apply opacity-100 -bottom-6;
-  }
-}
-</style>

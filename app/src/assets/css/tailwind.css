@@ -1,79 +1,289 @@
-@import 'tailwindcss/base';
-@import 'tailwindcss/utilities';
-@import 'tailwindcss/components';
+@import 'tailwindcss';
+@config '../../../tailwind.config.js';
 
 :root {
-  --white: #fcfdd3;
-  --black: #1d092c;
+  --white: #fffdf5;
+  --black: #281b38;
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+  color: var(--black);
+  background: #fff9e9;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
-
 body {
-  @apply text-black h-full;
-  background-repeat: no-repeat;
-  font-family: 'Fredoka', sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  overscroll-behavior: none;
+  margin: 0;
+  min-width: 320px;
 }
-
-html {
-  @apply h-full bg-yellow;
-  background-image: url(/img/bg-site.jpg);
-  background-position: center center;
-  background-size: cover;
-  overscroll-behavior: none;
+button,
+input,
+select {
+  font: inherit;
 }
-
-.cartoon-input,
+button,
+a,
+input,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  touch-action: manipulation;
+}
+button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+:focus-visible {
+  outline: 3px solid #6b43bd;
+  outline-offset: 4px;
+}
 .cartoon-button,
-.cartoon-box,
-.cartoon-select {
-  border-radius: 2.5rem;
-  padding: 0.4rem 1.4rem 0.7rem;
-  font-weight: 600;
-  font-size: 1.5rem;
-  letter-spacing: 0.05em;
-  border: 0.3rem solid var(--black);
-  border-left-width: 0.3rem;
-  border-right-width: 0.3rem;
-  border-bottom-width: 0.4rem;
-  box-shadow:
-    inset 0 -0.3rem 0 #00000030,
-    inset 0 0.1rem 0 var(--white);
-
-  background-image: url(/img/noise-light.png);
-}
-
-.cartoon-button:active {
-  box-shadow:
-    inset 0 0 0 transparent,
-    inset 0 0.1rem 0 var(--white);
-  transform: translateY(0.1rem);
-}
-
-.cartoon-button {
-  cursor: pointer;
-  transition: all 0.1s ease-in-out;
-}
-
+.cartoon-input,
+.cartoon-select,
 .cartoon-box {
-  border-radius: 1.5rem;
-  padding: 1.5rem;
-  box-shadow: 0 0.4rem 0 var(--black);
+  border: 1.5px solid var(--black);
+  border-radius: 16px;
+  font-size: 1rem;
+  letter-spacing: 0;
 }
-
-.cartoon-select {
-  appearance: none;
-  background-color: var(--white);
+.cartoon-button {
+  padding: 0.75rem 1.25rem;
+  font-weight: 650;
+  box-shadow: 0 3px 0 var(--black);
   cursor: pointer;
-  padding-right: 2.5rem;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231d092c'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1.5em;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s,
+    background-color 0.15s;
+}
+.cartoon-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 0 var(--black);
+}
+.cartoon-button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 var(--black);
+}
+.cartoon-input,
+.cartoon-select {
+  padding: 0.85rem 1rem;
+  background: var(--white);
+}
+.cartoon-box {
+  padding: 1.4rem;
+  box-shadow: 0 5px 0 #281b3812;
+}
+.cartoon-select {
+  width: 100%;
+  min-height: 48px;
+}
+.noise {
+  background-image: none;
+}
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #72667c;
+}
+.app-shell {
+  min-height: 100svh;
+  background: radial-gradient(ellipse at 90% 0%, #ffdf6860, transparent 45%), #fff9e9;
+}
+.practice-main {
+  width: min(100% - 2.5rem, 920px);
+  margin: 2rem auto 0;
+  flex: 1;
+}
+.goal-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  font-size: 0.85rem;
+}
+.goal-track {
+  height: 8px;
+  flex: 1;
+  background: #e9e0ce;
+  border-radius: 9px;
+  overflow: hidden;
+}
+.goal-fill {
+  height: 100%;
+  background: #a43b66;
+  border-radius: inherit;
+  transition: width 0.3s;
+}
+.practice-card {
+  background: var(--white);
+  border: 1.5px solid #281b38;
+  border-radius: 24px;
+  padding: clamp(1.25rem, 4vw, 2.5rem);
+  box-shadow: 0 6px 0 #281b3810;
+}
+.prompt-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 0 2rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid #281b381c;
+}
+.prompt-word {
+  font-family: 'Fredoka', sans-serif;
+  font-size: clamp(1.8rem, 5vw, 2.7rem);
+  font-weight: 500;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+  margin-top: 0.4rem;
+}
+.reveal-button {
+  color: #9c315a;
+  text-align: left;
+  text-decoration: underline;
+  text-decoration-color: #ffb7cb;
+  text-underline-offset: 6px;
+}
+.exercise-list {
+  display: grid;
+  gap: 1.25rem;
+}
+.answer-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.answer-field {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.9rem 1rem;
+  background: #fff0f4;
+  border: 1.5px solid #d8b8c6;
+  border-radius: 14px;
+}
+.answer-field:focus-within {
+  border-color: #9c315a;
+  box-shadow: 0 0 0 3px #ff688f20;
+}
+.answer-field input {
+  min-width: 0;
+  width: 100%;
+  font-size: 1.2rem;
+  background: transparent;
+  outline: none;
+}
+.answer-subject {
+  color: #766374;
+  white-space: nowrap;
+  font-size: 1.1rem;
+}
+.answer-field.correct {
+  background: #dcf7e8;
+  border-color: #438660;
+}
+.answer-field.almost {
+  background: #fff0cd;
+  border-color: #af7b24;
+}
+.answer-field.unavailable {
+  background: #f0edf1;
+}
+.answer-feedback {
+  font-size: 0.8rem;
+  color: #6e5265;
+  margin-top: 0.4rem;
+}
+.state-message {
+  padding: 1.25rem;
+  background: #fff0d0;
+  border-radius: 14px;
+  margin-bottom: 1rem;
+}
+.selection-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #ded6df;
+  border-radius: 12px;
+  background: #fffefa;
+  cursor: pointer;
+}
+.selection-row:has(input:checked) {
+  background: #edf9ee;
+  border-color: #83b499;
+}
+.selection-row:hover {
+  border-color: #8c7a99;
+}
+.selection-row span {
+  display: block;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.selection-row .translation {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #776b7d;
+  margin-top: 0.15rem;
+}
+.selection-row input {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  accent-color: #328260;
+}
+.settings-section-title {
+  font-weight: 650;
+  font-size: 0.95rem;
+  margin: 1.4rem 0 0.75rem;
+}
+.small-button {
+  border: 1px solid #d6cadc;
+  background: #fffdf5;
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  font-size: 0.8rem;
+  min-height: 36px;
+}
+.small-button:hover {
+  background: #f0e7f3;
+}
+@media (max-width: 600px) {
+  .practice-main {
+    width: calc(100% - 2rem);
+    margin-top: 1.25rem;
+  }
+  .goal-card {
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.25rem;
+  }
+  .goal-track {
+    flex-basis: 100%;
+    order: 3;
+  }
+  .prompt-grid {
+    gap: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
 }
 
-.noise {
-  background-image: url(/img/noise-light.png);
+.reveal-button[aria-expanded='false'] {
+  font-family: 'Nunito Sans', system-ui, sans-serif;
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 600;
+  margin-top: 0.75rem;
 }

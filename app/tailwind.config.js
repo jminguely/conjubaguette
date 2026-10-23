@@ -4,8 +4,8 @@ export default {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
-      white: '#fcfdd3',
-      black: '#1d092c',
+      white: '#fffdf5',
+      black: '#281b38',
       yellow: {
         light: '#ffea00',
         DEFAULT: '#fcd607',
@@ -29,7 +29,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ['Fredoka', 'sans-serif']
+        sans: ['Nunito Sans', 'system-ui', 'sans-serif']
       }
     }
   },

@@ -1,101 +1,807 @@
 [
-  { "es": "ser", "fr": "être", "fr_label": "être" },
-  { "es": "estar", "fr": "être", "fr_label": "être (temporaire)" },
-  { "es": "tener", "fr": "avoir" },
-  { "es": "haber", "fr": "avoir", "fr_label": "avoir (auxiliaire)" },
-  { "es": "hacer", "fr": "faire" },
-  { "es": "poner", "fr": "mettre" },
-  { "es": "pagar", "fr": "payer" },
-  { "es": "salir", "fr": "sortir" },
-  { "es": "traer", "fr": "apporter" },
-  { "es": "ir", "fr": "aller" },
-  { "es": "venir", "fr": "venir" },
-  { "es": "decir", "fr": "dire" },
-  { "es": "poder", "fr": "pouvoir" },
-  { "es": "dar", "fr": "donner" },
-  { "es": "recibir", "fr": "recevoir" },
-  { "es": "ver", "fr": "voir" },
-  { "es": "mirar", "fr": "regarder" },
-  { "es": "volver", "fr": "revenir" },
-  { "es": "dormir", "fr": "dormir" },
-  { "es": "descansar", "fr": "se reposer" },
-  { "es": "comprar", "fr": "acheter" },
-  { "es": "vender", "fr": "vendre" },
-  { "es": "vivir", "fr": "vivre" },
-  { "es": "habitar", "fr": "habiter" },
-  { "es": "gustar", "fr": "plaire" },
-  { "es": "pedir", "fr": "demander" },
-  { "es": "seguir", "fr": "suivre" },
-  { "es": "leer", "fr": "lire" },
-  { "es": "creer", "fr": "croire" },
-  { "es": "crear", "fr": "créer" },
-  { "es": "esperar", "fr": "attendre" },
-  { "es": "saber", "fr": "savoir" },
-  { "es": "pensar", "fr": "penser" },
-  { "es": "conocer", "fr": "connaître" },
-  { "es": "escuchar", "fr": "écouter" },
-  { "es": "oír", "fr": "entendre" },
-  { "es": "entender", "fr": "comprendre" },
-  { "es": "comprender", "fr": "comprendre" },
-  { "es": "decidir", "fr": "décider" },
-  { "es": "sentir", "fr": "sentir" },
-  { "es": "querer", "fr": "vouloir" },
-  { "es": "amar", "fr": "aimer" },
-  { "es": "tomar", "fr": "prendre" },
-  { "es": "estudiar", "fr": "étudier" },
-  { "es": "aprender", "fr": "apprendre" },
-  { "es": "aceptar", "fr": "accepter" },
-  { "es": "limpiar", "fr": "nettoyer" },
-  { "es": "enseñar", "fr": "enseigner" },
-  { "es": "buscar", "fr": "chercher" },
-  { "es": "ayudar", "fr": "aider" },
-  { "es": "cambiar", "fr": "changer" },
-  { "es": "escribir", "fr": "écrire" },
-  { "es": "comer", "fr": "manger" },
-  { "es": "beber", "fr": "boire" },
-  { "es": "servir", "fr": "servir" },
-  { "es": "preparar", "fr": "préparer" },
-  { "es": "recoger", "fr": "récupérer" },
-  { "es": "viajar", "fr": "voyager" },
-  { "es": "trabajar", "fr": "travailler" },
-  { "es": "ganar", "fr": "gagner" },
-  { "es": "gastar", "fr": "dépenser" },
-  { "es": "permitir", "fr": "permettre" },
-  { "es": "preguntar", "fr": "questionner" },
-  { "es": "responder", "fr": "répondre" },
-  { "es": "usar", "fr": "utiliser" },
-  { "es": "intentar", "fr": "essayer" },
-  { "es": "hablar", "fr": "parler" },
-  { "es": "llamar", "fr": "appeler" },
-  { "es": "prestar", "fr": "prêter" },
-  { "es": "romper", "fr": "casser" },
-  { "es": "vestirse", "fr": "s’habiller" },
-  { "es": "apagar", "fr": "éteindre" },
-  { "es": "encender", "fr": "allumer" },
-  { "es": "lavar", "fr": "laver" },
-  { "es": "arreglar", "fr": "réparer" },
-  { "es": "despertar", "fr": "se réveiller" },
-  { "es": "cenar", "fr": "dîner" },
-  { "es": "contar", "fr": "compter" },
-  { "es": "cortar", "fr": "couper" },
-  { "es": "pegar", "fr": "coller" },
-  { "es": "bailar", "fr": "danser" },
-  { "es": "dibujar", "fr": "dessiner" },
-  { "es": "conducir", "fr": "conduire" },
-  { "es": "explicar", "fr": "expliquer" },
-  { "es": "encontrar", "fr": "trouver" },
-  { "es": "terminar", "fr": "finir" },
-  { "es": "olvidar", "fr": "oublier" },
-  { "es": "abrir", "fr": "ouvrir" },
-  { "es": "cerrar", "fr": "fermer" },
-  { "es": "organizar", "fr": "organiser" },
-  { "es": "jugar", "fr": "jouer" },
-  { "es": "correr", "fr": "courir" },
-  { "es": "caminar", "fr": "marcher" },
-  { "es": "sentarse", "fr": "s’asseoir" },
-  { "es": "enviar", "fr": "envoyer" },
-  { "es": "firmar", "fr": "signer" },
-  { "es": "lavarse", "fr": "se laver" },
-  { "es": "meterse", "fr": "se mettre" },
-  { "es": "reunirse", "fr": "se réunir" }
+  {
+    "es": "ser",
+    "fr": "être",
+    "fr_label": "être"
+  },
+  {
+    "es": "estar",
+    "fr": "être",
+    "fr_label": "être (temporaire)"
+  },
+  {
+    "es": "tener",
+    "fr": "avoir"
+  },
+  {
+    "es": "haber",
+    "fr": "avoir",
+    "fr_label": "avoir (auxiliaire)"
+  },
+  {
+    "es": "hacer",
+    "fr": "faire"
+  },
+  {
+    "es": "poner",
+    "fr": "mettre"
+  },
+  {
+    "es": "pagar",
+    "fr": "payer"
+  },
+  {
+    "es": "salir",
+    "fr": "sortir"
+  },
+  {
+    "es": "traer",
+    "fr": "apporter"
+  },
+  {
+    "es": "ir",
+    "fr": "aller"
+  },
+  {
+    "es": "venir",
+    "fr": "venir"
+  },
+  {
+    "es": "decir",
+    "fr": "dire"
+  },
+  {
+    "es": "poder",
+    "fr": "pouvoir"
+  },
+  {
+    "es": "dar",
+    "fr": "donner"
+  },
+  {
+    "es": "recibir",
+    "fr": "recevoir"
+  },
+  {
+    "es": "ver",
+    "fr": "voir"
+  },
+  {
+    "es": "mirar",
+    "fr": "regarder"
+  },
+  {
+    "es": "volver",
+    "fr": "revenir"
+  },
+  {
+    "es": "dormir",
+    "fr": "dormir"
+  },
+  {
+    "es": "descansar",
+    "fr": "se reposer"
+  },
+  {
+    "es": "comprar",
+    "fr": "acheter"
+  },
+  {
+    "es": "vender",
+    "fr": "vendre"
+  },
+  {
+    "es": "vivir",
+    "fr": "vivre"
+  },
+  {
+    "es": "habitar",
+    "fr": "habiter"
+  },
+  {
+    "es": "gustar",
+    "fr": "plaire"
+  },
+  {
+    "es": "pedir",
+    "fr": "demander"
+  },
+  {
+    "es": "seguir",
+    "fr": "suivre"
+  },
+  {
+    "es": "leer",
+    "fr": "lire"
+  },
+  {
+    "es": "creer",
+    "fr": "croire"
+  },
+  {
+    "es": "crear",
+    "fr": "créer"
+  },
+  {
+    "es": "esperar",
+    "fr": "attendre"
+  },
+  {
+    "es": "saber",
+    "fr": "savoir"
+  },
+  {
+    "es": "pensar",
+    "fr": "penser"
+  },
+  {
+    "es": "conocer",
+    "fr": "connaître"
+  },
+  {
+    "es": "escuchar",
+    "fr": "écouter"
+  },
+  {
+    "es": "oír",
+    "fr": "entendre"
+  },
+  {
+    "es": "entender",
+    "fr": "comprendre"
+  },
+  {
+    "es": "comprender",
+    "fr": "comprendre"
+  },
+  {
+    "es": "decidir",
+    "fr": "décider"
+  },
+  {
+    "es": "sentir",
+    "fr": "sentir"
+  },
+  {
+    "es": "querer",
+    "fr": "vouloir"
+  },
+  {
+    "es": "amar",
+    "fr": "aimer"
+  },
+  {
+    "es": "tomar",
+    "fr": "prendre"
+  },
+  {
+    "es": "estudiar",
+    "fr": "étudier"
+  },
+  {
+    "es": "aprender",
+    "fr": "apprendre"
+  },
+  {
+    "es": "aceptar",
+    "fr": "accepter"
+  },
+  {
+    "es": "limpiar",
+    "fr": "nettoyer"
+  },
+  {
+    "es": "enseñar",
+    "fr": "enseigner"
+  },
+  {
+    "es": "buscar",
+    "fr": "chercher"
+  },
+  {
+    "es": "ayudar",
+    "fr": "aider"
+  },
+  {
+    "es": "cambiar",
+    "fr": "changer"
+  },
+  {
+    "es": "escribir",
+    "fr": "écrire"
+  },
+  {
+    "es": "comer",
+    "fr": "manger"
+  },
+  {
+    "es": "beber",
+    "fr": "boire"
+  },
+  {
+    "es": "servir",
+    "fr": "servir"
+  },
+  {
+    "es": "preparar",
+    "fr": "préparer"
+  },
+  {
+    "es": "recoger",
+    "fr": "récupérer"
+  },
+  {
+    "es": "viajar",
+    "fr": "voyager"
+  },
+  {
+    "es": "trabajar",
+    "fr": "travailler"
+  },
+  {
+    "es": "ganar",
+    "fr": "gagner"
+  },
+  {
+    "es": "gastar",
+    "fr": "dépenser"
+  },
+  {
+    "es": "permitir",
+    "fr": "permettre"
+  },
+  {
+    "es": "preguntar",
+    "fr": "questionner"
+  },
+  {
+    "es": "responder",
+    "fr": "répondre"
+  },
+  {
+    "es": "usar",
+    "fr": "utiliser"
+  },
+  {
+    "es": "intentar",
+    "fr": "essayer"
+  },
+  {
+    "es": "hablar",
+    "fr": "parler"
+  },
+  {
+    "es": "llamar",
+    "fr": "appeler"
+  },
+  {
+    "es": "prestar",
+    "fr": "prêter"
+  },
+  {
+    "es": "romper",
+    "fr": "casser"
+  },
+  {
+    "es": "vestirse",
+    "fr": "s’habiller"
+  },
+  {
+    "es": "apagar",
+    "fr": "éteindre"
+  },
+  {
+    "es": "encender",
+    "fr": "allumer"
+  },
+  {
+    "es": "lavar",
+    "fr": "laver"
+  },
+  {
+    "es": "arreglar",
+    "fr": "réparer"
+  },
+  {
+    "es": "despertar",
+    "fr": "se réveiller"
+  },
+  {
+    "es": "cenar",
+    "fr": "dîner"
+  },
+  {
+    "es": "contar",
+    "fr": "compter"
+  },
+  {
+    "es": "cortar",
+    "fr": "couper"
+  },
+  {
+    "es": "pegar",
+    "fr": "coller"
+  },
+  {
+    "es": "bailar",
+    "fr": "danser"
+  },
+  {
+    "es": "dibujar",
+    "fr": "dessiner"
+  },
+  {
+    "es": "conducir",
+    "fr": "conduire"
+  },
+  {
+    "es": "explicar",
+    "fr": "expliquer"
+  },
+  {
+    "es": "encontrar",
+    "fr": "trouver"
+  },
+  {
+    "es": "terminar",
+    "fr": "finir"
+  },
+  {
+    "es": "olvidar",
+    "fr": "oublier"
+  },
+  {
+    "es": "abrir",
+    "fr": "ouvrir"
+  },
+  {
+    "es": "cerrar",
+    "fr": "fermer"
+  },
+  {
+    "es": "organizar",
+    "fr": "organiser"
+  },
+  {
+    "es": "jugar",
+    "fr": "jouer"
+  },
+  {
+    "es": "correr",
+    "fr": "courir"
+  },
+  {
+    "es": "caminar",
+    "fr": "marcher"
+  },
+  {
+    "es": "sentarse",
+    "fr": "s’asseoir"
+  },
+  {
+    "es": "enviar",
+    "fr": "envoyer"
+  },
+  {
+    "es": "firmar",
+    "fr": "signer"
+  },
+  {
+    "es": "lavarse",
+    "fr": "se laver"
+  },
+  {
+    "es": "meterse",
+    "fr": "se mettre"
+  },
+  {
+    "es": "reunirse",
+    "fr": "se réunir"
+  },
+  {
+    "es": "deber",
+    "fr": "devoir"
+  },
+  {
+    "es": "necesitar",
+    "fr": "nécessiter"
+  },
+  {
+    "es": "pasar",
+    "fr": "passer"
+  },
+  {
+    "es": "llegar",
+    "fr": "arriver"
+  },
+  {
+    "es": "llevar",
+    "fr": "porter"
+  },
+  {
+    "es": "dejar",
+    "fr": "laisser"
+  },
+  {
+    "es": "parecer",
+    "fr": "paraître"
+  },
+  {
+    "es": "quedar",
+    "fr": "rester"
+  },
+  {
+    "es": "empezar",
+    "fr": "commencer"
+  },
+  {
+    "es": "perder",
+    "fr": "perdre"
+  },
+  {
+    "es": "recordar",
+    "fr": "rappeler",
+    "fr_label": "rappeler (à la mémoire)"
+  },
+  {
+    "es": "morir",
+    "fr": "mourir"
+  },
+  {
+    "es": "nacer",
+    "fr": "naître"
+  },
+  {
+    "es": "salvar",
+    "fr": "sauver"
+  },
+  {
+    "es": "mantener",
+    "fr": "maintenir"
+  },
+  {
+    "es": "conseguir",
+    "fr": "obtenir"
+  },
+  {
+    "es": "existir",
+    "fr": "exister"
+  },
+  {
+    "es": "ocurrir",
+    "fr": "survenir"
+  },
+  {
+    "es": "resultar",
+    "fr": "résulter"
+  },
+  {
+    "es": "caer",
+    "fr": "tomber"
+  },
+  {
+    "es": "subir",
+    "fr": "monter"
+  },
+  {
+    "es": "bajar",
+    "fr": "descendre"
+  },
+  {
+    "es": "entrar",
+    "fr": "entrer"
+  },
+  {
+    "es": "regresar",
+    "fr": "retourner"
+  },
+  {
+    "es": "continuar",
+    "fr": "continuer"
+  },
+  {
+    "es": "comenzar",
+    "fr": "débuter"
+  },
+  {
+    "es": "acabar",
+    "fr": "terminer"
+  },
+  {
+    "es": "evitar",
+    "fr": "éviter"
+  },
+  {
+    "es": "lograr",
+    "fr": "réussir"
+  },
+  {
+    "es": "alcanzar",
+    "fr": "atteindre"
+  },
+  {
+    "es": "coger",
+    "fr": "attraper"
+  },
+  {
+    "es": "elegir",
+    "fr": "choisir"
+  },
+  {
+    "es": "preferir",
+    "fr": "préférer"
+  },
+  {
+    "es": "repetir",
+    "fr": "répéter"
+  },
+  {
+    "es": "cocinar",
+    "fr": "cuisiner"
+  },
+  {
+    "es": "desayunar",
+    "fr": "déjeuner",
+    "fr_label": "déjeuner (le matin)",
+    "es_label": "desayunar (por la mañana)"
+  },
+  {
+    "es": "almorzar",
+    "fr": "déjeuner",
+    "fr_label": "déjeuner (à midi)",
+    "es_label": "almorzar (al mediodía)"
+  },
+  {
+    "es": "probar",
+    "fr": "essayer"
+  },
+  {
+    "es": "tocar",
+    "fr": "toucher"
+  },
+  {
+    "es": "mejorar",
+    "fr": "améliorer"
+  },
+  {
+    "es": "utilizar",
+    "fr": "employer"
+  },
+  {
+    "es": "expresar",
+    "fr": "exprimer"
+  },
+  {
+    "es": "añadir",
+    "fr": "ajouter"
+  },
+  {
+    "es": "incluir",
+    "fr": "inclure"
+  },
+  {
+    "es": "quitar",
+    "fr": "enlever"
+  },
+  {
+    "es": "sacar",
+    "fr": "retirer"
+  },
+  {
+    "es": "llenar",
+    "fr": "remplir"
+  },
+  {
+    "es": "vaciar",
+    "fr": "vider"
+  },
+  {
+    "es": "guardar",
+    "fr": "garder"
+  },
+  {
+    "es": "proteger",
+    "fr": "protéger"
+  },
+  {
+    "es": "cuidar",
+    "fr": "soigner"
+  },
+  {
+    "es": "visitar",
+    "fr": "visiter"
+  },
+  {
+    "es": "acompañar",
+    "fr": "accompagner"
+  },
+  {
+    "es": "recorrer",
+    "fr": "parcourir"
+  },
+  {
+    "es": "cruzar",
+    "fr": "traverser"
+  },
+  {
+    "es": "desear",
+    "fr": "désirer"
+  },
+  {
+    "es": "odiar",
+    "fr": "détester"
+  },
+  {
+    "es": "reír",
+    "fr": "rire"
+  },
+  {
+    "es": "sonreír",
+    "fr": "sourire"
+  },
+  {
+    "es": "llorar",
+    "fr": "pleurer"
+  },
+  {
+    "es": "gritar",
+    "fr": "crier"
+  },
+  {
+    "es": "callar",
+    "fr": "taire",
+    "fr_label": "taire (une information)"
+  },
+  {
+    "es": "mentir",
+    "fr": "mentir"
+  },
+  {
+    "es": "prometer",
+    "fr": "promettre"
+  },
+  {
+    "es": "ofrecer",
+    "fr": "offrir"
+  },
+  {
+    "es": "admitir",
+    "fr": "admettre"
+  },
+  {
+    "es": "rechazar",
+    "fr": "refuser"
+  },
+  {
+    "es": "invitar",
+    "fr": "inviter"
+  },
+  {
+    "es": "agradecer",
+    "fr": "remercier"
+  },
+  {
+    "es": "felicitar",
+    "fr": "féliciter"
+  },
+  {
+    "es": "perdonar",
+    "fr": "pardonner"
+  },
+  {
+    "es": "adquirir",
+    "fr": "acquérir"
+  },
+  {
+    "es": "alquilar",
+    "fr": "louer"
+  },
+  {
+    "es": "reservar",
+    "fr": "réserver"
+  },
+  {
+    "es": "costar",
+    "fr": "coûter"
+  },
+  {
+    "es": "valer",
+    "fr": "valoir"
+  },
+  {
+    "es": "ahorrar",
+    "fr": "économiser"
+  },
+  {
+    "es": "aprovechar",
+    "fr": "profiter"
+  },
+  {
+    "es": "pesar",
+    "fr": "peser"
+  },
+  {
+    "es": "medir",
+    "fr": "mesurer"
+  },
+  {
+    "es": "comparar",
+    "fr": "comparer"
+  },
+  {
+    "es": "escoger",
+    "fr": "sélectionner"
+  },
+  {
+    "es": "comprobar",
+    "fr": "vérifier"
+  },
+  {
+    "es": "reconocer",
+    "fr": "reconnaître"
+  },
+  {
+    "es": "traducir",
+    "fr": "traduire"
+  },
+  {
+    "es": "pronunciar",
+    "fr": "prononcer"
+  },
+  {
+    "es": "describir",
+    "fr": "décrire"
+  },
+  {
+    "es": "presentar",
+    "fr": "présenter"
+  },
+  {
+    "es": "mostrar",
+    "fr": "montrer"
+  },
+  {
+    "es": "señalar",
+    "fr": "indiquer"
+  },
+  {
+    "es": "compartir",
+    "fr": "partager"
+  },
+  {
+    "es": "imaginar",
+    "fr": "imaginer"
+  },
+  {
+    "es": "construir",
+    "fr": "construire"
+  },
+  {
+    "es": "reparar",
+    "fr": "réparer"
+  },
+  {
+    "es": "limitar",
+    "fr": "limiter"
+  },
+  {
+    "es": "reducir",
+    "fr": "réduire"
+  },
+  {
+    "es": "aumentar",
+    "fr": "augmenter"
+  },
+  {
+    "es": "crecer",
+    "fr": "grandir"
+  },
+  {
+    "es": "participar",
+    "fr": "participer"
+  },
+  {
+    "es": "durar",
+    "fr": "durer"
+  }
 ]

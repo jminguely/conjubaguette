@@ -33,7 +33,7 @@ const SUBJECT_KEY_BY_LANGUAGE = {
   },
   es: {
     yo: '1s',
-    'tú': '2s',
+    tú: '2s',
     él: '3s',
     nosotros: '1p',
     vosotros: '2p',

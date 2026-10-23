@@ -2,63 +2,57 @@ import { defineStore } from 'pinia'
 import Cookies from 'js-cookie'
 import availableVerbs from '../src/assets/data/verbs.json'
 import { getCookieJson } from './storage'
-
+const key = 'verboloco.verbs.v1'
+export const verbId = (verb) => `${verb.fr}:${verb.es}`
+const save = (verbs) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(verbs.map(verbId)))
+  } catch {
+    /* Preferences remain usable when browser storage is unavailable. */
+  }
+}
+const restore = () => {
+  try {
+    const saved = JSON.parse(localStorage.getItem(key))
+    if (Array.isArray(saved)) return availableVerbs.filter((verb) => saved.includes(verbId(verb)))
+  } catch {
+    /* Recover malformed or inaccessible storage using legacy preferences. */
+  }
+  const legacy = getCookieJson('checkedVerbsNew', null)
+  const selected = Array.isArray(legacy)
+    ? availableVerbs.filter((verb) => legacy.some((v) => v && verbId(v) === verbId(verb)))
+    : [...availableVerbs]
+  save(selected)
+  Cookies.remove('checkedVerbsNew')
+  return selected
+}
 export const useVerbsStore = defineStore('checkedVerbs', {
-  state: () => {
-    let checkedVerbs = getCookieJson('checkedVerbsNew', [])
-    checkedVerbs = Array.isArray(checkedVerbs) ? checkedVerbs : []
-
-    checkedVerbs = checkedVerbs.filter((checkedVerb) =>
-      availableVerbs.some((verb) => JSON.stringify(verb) === JSON.stringify(checkedVerb))
-    )
-
-    if (checkedVerbs.length === 0) {
-      checkedVerbs = availableVerbs.map((verb) => verb)
-      Cookies.set('checkedVerbsNew', JSON.stringify(checkedVerbs))
-    }
-    return {
-      checkedVerbs
-    }
-  },
+  state: () => ({ checkedVerbs: restore() }),
   actions: {
+    persist() {
+      save(this.checkedVerbs)
+    },
     checkAllVerbs() {
-      this.checkedVerbs = availableVerbs.map((verb) => verb)
-      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+      this.checkedVerbs = [...availableVerbs]
+      this.persist()
     },
     uncheckAllVerbs() {
       this.checkedVerbs = []
-      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+      this.persist()
     },
-    checkVerbs(verbsArray) {
-      const newChecked = [...this.checkedVerbs]
-      verbsArray.forEach((verb) => {
-        if (!newChecked.some((v) => JSON.stringify(v) === JSON.stringify(verb))) {
-          newChecked.push(verb)
-        }
-      })
-      this.checkedVerbs = newChecked
-      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+    checkVerbs(verbs) {
+      const selected = new Set([...this.checkedVerbs, ...verbs].map(verbId))
+      this.checkedVerbs = availableVerbs.filter((verb) => selected.has(verbId(verb)))
+      this.persist()
     },
-    uncheckVerbs(verbsArray) {
-      this.checkedVerbs = this.checkedVerbs.filter(
-        (checkedVerb) =>
-          !verbsArray.some((verb) => JSON.stringify(verb) === JSON.stringify(checkedVerb))
-      )
-      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+    uncheckVerbs(verbs) {
+      const removed = new Set(verbs.map(verbId))
+      this.checkedVerbs = this.checkedVerbs.filter((verb) => !removed.has(verbId(verb)))
+      this.persist()
     },
     toggleVerb(verb) {
-      const verbObject = JSON.parse(verb)
-      const index = this.checkedVerbs.findIndex(
-        (v) => JSON.stringify(v) === JSON.stringify(verbObject)
-      )
-
-      if (index >= 0) {
-        this.checkedVerbs.splice(index, 1)
-      } else {
-        this.checkedVerbs.push(verbObject)
-      }
-
-      Cookies.set('checkedVerbsNew', JSON.stringify(this.checkedVerbs))
+      if (this.checkedVerbs.some((v) => verbId(v) === verbId(verb))) this.uncheckVerbs([verb])
+      else this.checkVerbs([verb])
     }
   }
 })

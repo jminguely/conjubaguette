@@ -1,41 +1,72 @@
 <template>
-  <header class="noise sticky top-0 z-50 py-3 bg-yellow shadow-xl">
-    <div class="container max-w-7xl mx-auto flex justify-between items-center px-5">
+  <header class="site-header">
+    <div class="header-inner">
       <button
-        class="text-xl md:text-3xl hover:text-pink-dark"
-        aria-label="Open general settings"
+        class="header-button"
+        :aria-label="t('openSettings')"
         @click="$emit('toggle-modal', 'GeneralSettings')"
       >
-        <CustomIcon name="settings" class="w-7 h-7 md:w-9 md:h-9 m-auto" />
+        <CustomIcon name="settings" class="w-5 h-5" /><span>{{ t('settings') }}</span>
       </button>
-      <h1 class="logo">VerboLoco!</h1>
+      <h1 class="logo">VerboLoco<span>!</span></h1>
       <button
-        class="text-xl md:text-3xl hover:text-pink-dark"
-        aria-label="Open verb settings"
+        class="header-button"
+        :aria-label="t('openVerbs')"
         @click="$emit('toggle-modal', 'VerbsSettings')"
       >
-        <CustomIcon name="verbs" class="w-8 h-8 md:w-10 md:h-10 m-auto" />
+        <CustomIcon name="verbs" class="w-5 h-5" /><span>{{ t('myVerbs') }}</span>
       </button>
     </div>
   </header>
 </template>
-
-<style lang="postcss" scoped>
-.logo {
-  @apply text-2xl md:text-4xl font-bold;
-  letter-spacing: -0.05em;
-  text-shadow:
-    -1px -1px 0 #fff,
-    1px -1px 0 #fff,
-    -1px 1px 0 #fff,
-    1px 1px 0 #fff,
-    3px 3px #00000033;
-}
-</style>
-
 <script setup>
-import { defineEmits } from 'vue'
+import { useUiLanguage } from '@/composables/useUiLanguage'
+const { t } = useUiLanguage()
 import CustomIcon from './CustomIcon.vue'
-
 defineEmits(['toggle-modal'])
 </script>
+<style scoped>
+.site-header {
+  background: #ffdf57;
+  border-bottom: 1.5px solid #281b38;
+}
+.header-inner {
+  max-width: 1100px;
+  margin: auto;
+  padding: 1rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.logo {
+  font-family: 'Fredoka', sans-serif;
+  font-size: clamp(1.6rem, 4vw, 2rem);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+}
+.logo span {
+  color: #a22f60;
+}
+.header-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+}
+.header-button:hover {
+  background: #fff6;
+}
+@media (max-width: 500px) {
+  .header-button span {
+    display: none;
+  }
+  .header-inner {
+    padding: 0.6rem 1rem;
+  }
+}
+</style>

@@ -7,6 +7,7 @@ on:
     paths:
       - .github/workflows/deploy-api.yml
       - api/**
+      - app/src/assets/data/verbDifficulty.json
 
 jobs:
   ci:
@@ -37,7 +38,10 @@ jobs:
       - name: Run tests 🧪
         run: pytest
 
-      - name: 🚀 Ship the whole thin
+      - name: Include shared verb difficulty data
+        run: cp ../app/src/assets/data/verbDifficulty.json verbDifficulty.json
+
+      - name: Deploy API
         id: deploy
         uses: Pendect/action-rsyncer@v1.1.0
         env:
@@ -49,5 +53,5 @@ jobs:
           src: "./api/*"
           dest: ${{vars.DEPLOY_DEST}}/api
 
-      - name: 🧨 Kickstart node server
+      - name: Restart API
         run: curl --basic --user '${{ vars.ALWAYSDATA_API }} account=jminguely:' --data '' --request POST https://api.alwaysdata.com/v1/site/${{ vars.ALWAYSDATA_SITE_ID_API }}/restart/

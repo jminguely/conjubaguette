@@ -25,4 +25,3 @@ export const getCookieString = (key, fallback, allowedValues) => {
   if (!value) return fallback
   return allowedValues?.includes(value) ? value : fallback
 }
-

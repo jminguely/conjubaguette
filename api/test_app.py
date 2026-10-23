@@ -296,3 +296,41 @@ def test_conjugate_pronominal_french_real(client, monkeypatch):
     assert data["verb"]["difficulty"] == "medium"
     assert data["conjugation"]["present-tense"]["1s"] == "me lave"
     assert data["conjugation"]["present-tense"]["1p"] == "nous lavons"
+
+
+@pytest.mark.parametrize("value", [[], {}, 42, True, "x" * 101])
+def test_rejects_non_string_or_oversized_tense_fields(client, value):
+    response = client.post("/conjugate/fr/manger", json={"tenses": {"present": {"mood": value, "name": "Présent"}}})
+    assert response.status_code == 400
+
+
+def test_rejects_oversized_body(client):
+    response = client.post("/conjugate/fr/manger", json={"padding": "x" * 17000})
+    assert response.status_code == 413
+    assert response.get_json()["error"] == "Request body is too large"
+
+
+def test_rejects_invalid_verb(client):
+    response = client.post("/conjugate/fr/123", json={"tenses": {"present": {"mood": "Indicatif", "name": "Présent"}}})
+    assert response.status_code == 400
+
+
+def test_entire_catalogue_supports_all_configured_tenses(client, monkeypatch):
+    """Every selectable pair must load in either study direction."""
+    import json
+    from pathlib import Path
+
+    monkeypatch.setattr("app.get_conjugator", _ORIGINAL_GET_CONJUGATOR)
+    data_dir = Path(__file__).resolve().parents[1] / "app/src/assets/data"
+    verbs = json.loads((data_dir / "verbs.json").read_text(encoding="utf-8"))
+    tenses = json.loads((data_dir / "tenses.json").read_text(encoding="utf-8"))
+    for verb in verbs:
+        for language in ("fr", "es"):
+            response = client.post(
+                f"/conjugate/{language}/{verb[language]}",
+                json={"tenses": {key: value[language] for key, value in tenses.items()}},
+            )
+            result = response.get_json()
+            assert response.status_code == 200, (verb, language, result)
+            assert not result.get("missingTenses"), (verb, language, result)
+            assert set(result["conjugation"]) == set(tenses), (verb, language)

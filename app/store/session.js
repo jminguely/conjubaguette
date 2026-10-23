@@ -5,25 +5,29 @@ import { getCookieDate, getCookieNumber, getCookieString } from './storage'
 export const useSessionStore = defineStore('session', {
   state: () => ({
     counter: getCookieNumber('counterNew', 0),
-    dailyGoal: getCookieNumber('dailyGoalNew', 20),
+    dailyGoal: Math.min(500, Math.max(1, Math.floor(getCookieNumber('dailyGoalNew', 20)))),
     lastUpdated: getCookieDate('lastUpdatedNew'),
     languageSetting: getCookieString('languageSettingNew', 'es', ['es', 'fr']),
-    difficultySetting: getCookieString('difficultySettingNew', 'all', ['all', 'easy', 'medium', 'hard']),
+    difficultySetting: getCookieString('difficultySettingNew', 'all', [
+      'all',
+      'easy',
+      'medium',
+      'hard'
+    ]),
     personSetting: getCookieString('personSettingNew', 'any', ['any', 'first', 'second', 'third'])
   }),
   actions: {
-    incrementCounter() {
-      const today = new Date()
-      const lastUpdatedDay = new Date(this.lastUpdated)
-
-      if (
-        today.getDate() !== lastUpdatedDay.getDate() ||
-        today.getMonth() !== lastUpdatedDay.getMonth() ||
-        today.getFullYear() !== lastUpdatedDay.getFullYear()
-      ) {
+    resetDailyCounter() {
+      if (new Date(this.lastUpdated).toDateString() !== new Date().toDateString()) {
         this.counter = 0
+        this.lastUpdated = new Date()
+        Cookies.set('counterNew', '0')
+        Cookies.set('lastUpdatedNew', String(this.lastUpdated))
       }
-
+    },
+    incrementCounter() {
+      this.resetDailyCounter()
+      const today = new Date()
       this.counter++
       this.lastUpdated = today
 
@@ -31,7 +35,7 @@ export const useSessionStore = defineStore('session', {
       Cookies.set('lastUpdatedNew', String(this.lastUpdated))
     },
     setDailyGoal(event) {
-      this.dailyGoal = Math.max(1, Number(event.target.value) || 20)
+      this.dailyGoal = Math.min(500, Math.max(1, Math.floor(Number(event.target.value)) || 20))
       Cookies.set('dailyGoalNew', String(this.dailyGoal))
     },
     setLanguageSetting(event) {

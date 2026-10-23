@@ -1,199 +1,175 @@
 <template>
-  <div class="flex flex-col py-2">
-    <div>
-      <div class="flex gap-3 mb-6 justify-center">
-        <button @click="uncheckAll" class="cartoon-button text-base bg-white w-1/2">
-          Uncheck All
-        </button>
-        <button @click="checkAll" class="cartoon-button text-base bg-green-dark w-1/2">
-          Check All
-        </button>
-      </div>
-
-      <div class="flex flex-col gap-6">
-        <div
-          v-for="level in ['easy', 'medium', 'hard']"
-          :key="level"
-          class="border-2 border-black rounded-xl p-4 bg-gray-50/50 shadow-[4px_4px_0_rgba(0,0,0,1)]"
+  <div>
+    <label class="sr-only" for="verb-search">{{ t('searchVerbs') }}</label>
+    <input
+      id="verb-search"
+      v-model="search"
+      class="cartoon-input w-full"
+      type="search"
+      :placeholder="t('searchPlaceholder')"
+    />
+    <div class="sort-control">
+      <label for="verb-sort">{{ t('sort') }}</label>
+      <select id="verb-sort" v-model="sortOrder" class="cartoon-select">
+        <option value="usefulness">{{ t('usefulness') }}</option>
+        <option value="difficulty">{{ t('difficultySort') }}</option>
+        <option :value="language">{{ t(language) }} · A–Z</option>
+        <option :value="secondaryLanguage">{{ t(secondaryLanguage) }} · A–Z</option>
+      </select>
+    </div>
+    <p class="sort-note">
+      {{
+        t(
+          sortOrder === 'usefulness'
+            ? 'usefulnessNote'
+            : sortOrder === 'difficulty'
+              ? 'difficultyNote'
+              : 'alphabetNote'
+        )
+      }}
+    </p>
+    <div class="selection-toolbar">
+      <p class="text-sm text-black/60" role="status">
+        {{ t('selected', { count: verbsStore.checkedVerbs.length, total: availableVerbs.length })
+        }}<span v-if="search.trim()"> · {{ t('found', { count: visibleVerbs.length }) }}</span>
+      </p>
+      <div class="flex gap-2">
+        <button
+          class="small-button"
+          :disabled="!visibleVerbs.length"
+          @click="verbsStore.uncheckVerbs(visibleVerbs)"
         >
-          <div class="flex items-center justify-between mb-4 pb-2 border-b-2 border-black/10">
-            <div class="flex items-center gap-2">
-              <span
-                class="w-3.5 h-3.5 rounded-full border border-black"
-                :class="{
-                  'bg-green-dark': level === 'easy',
-                  'bg-orange': level === 'medium',
-                  'bg-pink': level === 'hard'
-                }"
-              ></span>
-              <h3 class="font-black text-lg uppercase text-black">
-                {{ getLevelLabel(level) }}
-              </h3>
-            </div>
-            <div class="flex gap-2">
-              <button
-                @click="uncheckLevel(level)"
-                class="px-3 py-1 text-xs font-bold bg-white border-2 border-black rounded shadow-[2px_2px_0_rgba(0,0,0,1)] hover:bg-black/5 active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_rgba(0,0,0,1)] transition-all"
-              >
-                Uncheck
-              </button>
-              <button
-                @click="checkLevel(level)"
-                class="px-3 py-1 text-xs font-bold text-white border-2 border-black rounded shadow-[2px_2px_0_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0_rgba(0,0,0,1)] transition-all"
-                :class="{
-                  'bg-green-dark': level === 'easy',
-                  'bg-orange': level === 'medium',
-                  'bg-pink': level === 'hard'
-                }"
-              >
-                Check
-              </button>
-            </div>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[300px] overflow-y-auto pr-1">
-            <label
-              v-for="(verb, index) in getVerbsByLevel(level)"
-              :key="index"
-              class="flex items-center justify-between cartoon-button bg-white text-black !p-3 cursor-pointer hover:bg-black/5"
-              :class="
-                verbsStore.checkedVerbs.some((v) => JSON.stringify(v) === JSON.stringify(verb))
-                  ? 'border-green-dark bg-green-dark/10'
-                  : ''
-              "
-            >
-              <div class="flex flex-col flex-1 text-left">
-                <span class="font-bold border-b-2 border-black/10 pb-1 mb-1">{{
-                  verb.fr_label ? verb.fr_label : verb.fr
-                }}</span>
-                <span class="font-bold text-black/60">{{
-                  verb.es_label ? verb.es_label : verb.es
-                }}</span>
-              </div>
-              <div class="ml-4 flex items-center">
-                <input
-                  type="checkbox"
-                  class="w-6 h-6 accent-green-dark rounded cursor-pointer"
-                  :value="JSON.stringify(verb)"
-                  :checked="
-                    verbsStore.checkedVerbs.some((v) => JSON.stringify(v) === JSON.stringify(verb))
-                  "
-                  @change="toggleVerb($event)"
-                />
-              </div>
-            </label>
-          </div>
-        </div>
+          {{ t(search.trim() ? 'clearResults' : 'clearAll') }}
+        </button>
+        <button
+          class="small-button"
+          :disabled="!visibleVerbs.length"
+          @click="verbsStore.checkVerbs(visibleVerbs)"
+        >
+          {{ t(search.trim() ? 'selectResults' : 'selectAll') }}
+        </button>
       </div>
     </div>
+    <p v-if="!verbsStore.checkedVerbs.length" class="state-message text-sm">
+      {{ t('emptySelection') }}
+    </p>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <label v-for="verb in visibleVerbs" :key="verb.fr + ':' + verb.es" class="selection-row">
+        <div class="min-w-0">
+          <span :lang="language">{{ verb[language + '_label'] || verb[language] }}</span
+          ><span class="translation" :lang="secondaryLanguage">{{
+            verb[secondaryLanguage + '_label'] || verb[secondaryLanguage]
+          }}</span
+          ><span
+            v-if="sortOrder === 'difficulty'"
+            class="difficulty-label"
+            :class="getVerbDifficulty(verb)"
+            >{{ t(getVerbDifficulty(verb)) }}</span
+          >
+        </div>
+        <input
+          type="checkbox"
+          :checked="selected.has(verb.fr + ':' + verb.es)"
+          @change="verbsStore.toggleVerb(verb)"
+        />
+      </label>
+    </div>
+    <p v-if="!visibleVerbs.length" class="text-sm text-black/60 py-5">
+      {{ t('noMatches', { search }) }}
+    </p>
   </div>
 </template>
-
 <script setup>
-import { ref } from 'vue'
+import { useUiLanguage } from '@/composables/useUiLanguage'
+const { t, language, secondaryLanguage } = useUiLanguage()
+import { ref, computed, watch } from 'vue'
 import availableVerbs from '@/assets/data/verbs.json'
 import { getVerbDifficulty } from '@/lib/verbDifficulty'
-
+import { sortVerbs, VERB_SORT_OPTIONS } from '@/lib/verbSorting'
+import { normalizeAnswer } from '@/lib/exercise'
 import { useVerbsStore } from '/store/verbs'
-
-let verbsStore = ref(useVerbsStore())
-
-function checkAll() {
-  verbsStore.value.checkAllVerbs()
-}
-
-function uncheckAll() {
-  verbsStore.value.uncheckAllVerbs()
-}
-
-function toggleVerb(e) {
-  if (verbsStore.value) {
-    verbsStore.value.toggleVerb(e.target.value)
+import { useSessionStore } from '/store/session'
+const verbsStore = useVerbsStore()
+const sessionStore = useSessionStore()
+const search = ref('')
+const preferenceKey = 'verboloco.verbSort.v1'
+const restoreSort = () => {
+  try {
+    const saved = localStorage.getItem(preferenceKey)
+    return VERB_SORT_OPTIONS.includes(saved) ? saved : 'usefulness'
+  } catch {
+    return 'usefulness'
   }
 }
-
-function getLevelLabel(level) {
-  if (level === 'easy') return 'Facile (Easy)'
-  if (level === 'medium') return 'Moyen (Medium)'
-  if (level === 'hard') return 'Difficile (Hard)'
-  return level
-}
-
-function getVerbsByLevel(level) {
-  return availableVerbs.filter((verb) => getVerbDifficulty(verb) === level)
-}
-
-function checkLevel(level) {
-  const verbs = getVerbsByLevel(level)
-  verbsStore.value.checkVerbs(verbs)
-}
-
-function uncheckLevel(level) {
-  const verbs = getVerbsByLevel(level)
-  verbsStore.value.uncheckVerbs(verbs)
-}
+const sortOrder = ref(restoreSort())
+watch(sortOrder, (value) => {
+  try {
+    localStorage.setItem(preferenceKey, value)
+  } catch {
+    /* Sorting still works without persistent storage. */
+  }
+})
+const selected = computed(() => new Set(verbsStore.checkedVerbs.map((v) => v.fr + ':' + v.es)))
+const visibleVerbs = computed(() =>
+  sortVerbs(
+    availableVerbs.filter((verb) =>
+      normalizeAnswer([verb.fr, verb.es, verb.fr_label, verb.es_label].join(' ')).includes(
+        normalizeAnswer(search.value)
+      )
+    ),
+    sortOrder.value,
+    sessionStore.languageSetting
+  )
+)
 </script>
-
-<style lang="postcss" scoped>
-.btn {
-  @apply text-xs font-bold py-2 px-4 rounded bg-pink text-white;
+<style scoped>
+.sort-control {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
 }
-
-.switch {
-  @apply relative inline-block w-9 h-5;
+.sort-control label {
+  white-space: nowrap;
+  font-size: 0.85rem;
+  color: #776b7d;
 }
-
-.switch input {
-  @apply opacity-0 w-0 h-0;
+.sort-control select {
+  min-width: 0;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.9rem;
 }
-
-.slider {
-  @apply absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-black/50;
-  transition: all 0.4s;
+.sort-note {
+  font-size: 0.78rem;
+  color: #776b7d;
+  line-height: 1.5;
+  margin-top: 0.5rem;
 }
-
-.slider:before {
-  content: '';
-  @apply absolute h-3 w-3 left-1 bottom-1 bg-white;
-  transition: all 0.4s;
+.selection-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
 }
-
-input:checked + .slider {
-  @apply bg-pink;
+.selection-row .difficulty-label {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 5px;
+  margin-top: 0.4rem;
 }
-
-input:focus + .slider {
-  @apply shadow-orange outline-orange;
+.easy {
+  background: #e1f4e7;
+  color: #286144;
 }
-
-input:checked + .slider:before {
-  transform: translateX(1rem);
+.medium {
+  background: #fff0ce;
+  color: #805a13;
 }
-
-.slider.round {
-  @apply rounded-full;
-}
-
-.slider.round:before {
-  @apply rounded-full;
-}
-
-.equal-width {
-  width: 33.33%;
-}
-
-/* Custom scrollbar styles for cartoon theme */
-div::-webkit-scrollbar {
-  width: 6px;
-}
-div::-webkit-scrollbar-track {
-  background: transparent;
-}
-div::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 3px;
-}
-div::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.4);
+.hard {
+  background: #ffe1eb;
+  color: #963755;
 }
 </style>

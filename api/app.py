@@ -8,6 +8,7 @@ from flask_cors import CORS
 from asgiref.wsgi import WsgiToAsgi
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 16 * 1024
 
 ALLOWED_ORIGINS = [
     origin.strip()
@@ -178,9 +179,15 @@ def validate_conjugation_request(lang):
     if not isinstance(tenses, dict) or not tenses:
         return None, error_response("Expected a non-empty tenses object", 400)
 
+    if len(tenses) > 32:
+        return None, error_response("Too many tenses", 400)
+
     invalid_tenses = []
     for tense_key, tense_value in tenses.items():
-        if not isinstance(tense_value, dict) or not tense_value.get("mood") or not tense_value.get("name"):
+        if not isinstance(tense_value, dict) or any(
+            not isinstance(tense_value.get(field), str) or not 0 < len(tense_value[field]) <= 100
+            for field in ("mood", "name")
+        ):
             invalid_tenses.append(tense_key)
 
     if invalid_tenses:
@@ -285,6 +292,9 @@ def conjugate(lang, verb):
     if validation_error:
         return validation_error
 
+    if not 1 <= len(verb) <= 100 or not all(char.isalpha() or char in " '’-" for char in verb):
+        return error_response("Invalid verb", 400)
+
     # Strip pronominal prefix/suffix for conjugation query
     conjugate_verb_query = verb
     is_pronominal = False
@@ -304,20 +314,20 @@ def conjugate(lang, verb):
 
     try:
         conjugated_verb = get_conjugator(lang).conjugate(conjugate_verb_query)
-    except RuntimeError as exc:
+    except RuntimeError:
+        app.logger.exception("Conjugation service unavailable")
         return error_response(
             "Conjugation service unavailable",
             503,
-            {"reason": str(exc)},
         )
-    except Exception as exc:
+    except Exception:
+        app.logger.exception("Unable to conjugate verb")
         return error_response(
             "Unable to conjugate verb",
             422,
-            {"verb": verb, "language": lang, "reason": str(exc)},
+            {"verb": verb, "language": lang},
         )
 
-    infinitive = conjugated_verb.verb_info.infinitive
     template = conjugated_verb.verb_info.template
     root = conjugated_verb.verb_info.root
 
@@ -350,6 +360,11 @@ def conjugate(lang, verb):
         response["missingTenses"] = missing_tenses
 
     return jsonify(response)
+
+@app.errorhandler(413)
+def payload_too_large(_error):
+    return error_response("Request body is too large", 413)
+
 
 @app.get('/health')
 def health():

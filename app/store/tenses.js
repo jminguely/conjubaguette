@@ -7,7 +7,7 @@ export const useTensesStore = defineStore('checkedTenses', {
   state: () => {
     let checkedTenses = getCookieJson('checkedTensesNew', [])
     checkedTenses = Array.isArray(checkedTenses) ? checkedTenses : []
-    checkedTenses = checkedTenses.filter((tense) => tenses[tense])
+    checkedTenses = [...new Set(checkedTenses.filter((tense) => Object.hasOwn(tenses, tense)))]
 
     if (checkedTenses.length === 0) {
       checkedTenses = ['present-tense']
@@ -19,6 +19,8 @@ export const useTensesStore = defineStore('checkedTenses', {
   },
   actions: {
     checkTense(tense) {
+      if (!Object.hasOwn(tenses, tense)) return
+      if (this.checkedTenses.length === 1 && this.checkedTenses.includes(tense)) return
       if (!this.checkedTenses.includes(tense)) {
         this.checkedTenses.push(tense)
       } else {
